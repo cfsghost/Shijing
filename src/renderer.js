@@ -8,7 +8,6 @@ class Renderer {
 	constructor(shiji) {
 		this.shiji = shiji;
 		this.Components = Components;
-		this.components = {};
 		this.input = new Input(this);
 
 		// Initializing offscreen buffer
@@ -19,8 +18,6 @@ class Renderer {
 	}
 
 	removeComponent(component) {
-
-		delete this.components[component.node.id];
 
 		if (!component.subComponents)
 			return;
@@ -74,9 +71,12 @@ class Renderer {
 		if (!DOM)
 			return null;
 
-		var componentId = DOM.getAttribute('shijiref');
+		var id = DOM.getAttribute('shijiref');
 
-		return this.components[componentId] || null;
+		var astHandler = this.shiji.astHandler;
+		var node = astHandler.getNodeById(id);
+
+		return node ? node.component : null;
 	}
 
 	getChildDOMs(DOM, DOMs) {
@@ -131,11 +131,7 @@ class Renderer {
 			this.setInternalProperty(node, 'component', component);
 
 			var task = this.renderComponent(component);
-
 			task.then(function() {
-
-				// Add to list
-				this.components[component.node.id] = component;
 
 				resolve(component);
 

@@ -20,8 +20,12 @@ class ASTHandler {
 
 	load(ast) {
 		this.ast = ast;
-
+		this.ast.root.id = this.generateId();
 		this.initializeNodes(this.ast.root);
+	}
+
+	generateId() {
+		return Math.random().toString().substr(2) + Date.now();
 	}
 
 	initializeNodes(node) {
@@ -36,7 +40,7 @@ class ASTHandler {
 		node.childrens.forEach(function(subNode, index) {
 
 			if (!subNode.id)
-				subNode.id = Math.random().toString().substr(2) + Date.now();
+				subNode.id = this.generateId();
 
 			this.setInternalProperty(subNode, 'parent', node);
 			this.setInternalProperty(subNode, 'prevNode', prevNode);

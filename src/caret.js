@@ -146,7 +146,7 @@ class Caret {
 				_offset++;
 			}
 		}
-
+console.log(component);
 		this._setPosition(component, _offset);
 	}
 
