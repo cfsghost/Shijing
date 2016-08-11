@@ -72,7 +72,7 @@ export default class Paragraph extends Component {
 				}
 			}
 
-			component.node.dom = (doms.length > 0) ? doms : doms[0];
+			component.dom = (doms.length > 0) ? doms : doms[0];
 		}.bind(this));
 	}
 
@@ -134,10 +134,10 @@ export default class Paragraph extends Component {
 			.html(text.replace(/ /g, '&nbsp'))
 			.css(style);
 		
-		this.renderer.setInternalProperty(this.node, 'dom', $DOM[0]);
+		this.dom = $DOM[0];
 
 		if (this.subComponents)
-			this.renderer.appendComponents(this.node, this.subComponents);
+			this.renderer.appendComponents(this, this.subComponents);
 
 		return this.layout($DOM);
 	}

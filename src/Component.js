@@ -8,6 +8,7 @@ class Component extends events.EventEmitter {
 		this.blockType = true;
 		this.renderer = renderer;
 		this.node = node;
+		this.dom = null;
 		this.subComponents = null;
 		this.id = Math.random().toString().substr(2) + Date.now();
 
@@ -108,14 +109,14 @@ class Component extends events.EventEmitter {
 		return new Promise(function(resolve) {
 
 			// old DOM
-			var old = this.node.dom;
+			var old = this.dom;
 
 			// Re-render this this
 			var renderTask = this.renderer.renderComponent(this);
 			renderTask.then(async function() {
 
 				// Replace old DOM with new DOM
-				$(old).replaceWith(this.node.dom);
+				$(old).replaceWith(this.dom);
 
 				// Notice sub-components that is ready to go
 				await this.componentDidMount();
@@ -128,7 +129,7 @@ class Component extends events.EventEmitter {
 	}
 
 	remove() {
-		$(this.node.dom).remove();
+		$(this.dom).remove();
 	}
 
 	backspace(target, from) {
@@ -285,8 +286,8 @@ class Component extends events.EventEmitter {
 				targetDOM = $(range.startContainer).parent()[0];
 
 			var offset = 0;
-			for (var index in this.node.dom) {
-				var dom = this.node.dom[index];
+			for (var index in this.dom) {
+				var dom = this.dom[index];
 
 				if (targetDOM == dom) {
 					break;
@@ -329,11 +330,11 @@ class Component extends events.EventEmitter {
 			};
 		}
 
-		if (this.node.dom instanceof Array) {
+		if (this.dom instanceof Array) {
 
 			if (offset == 0) {
 				return {
-					DOM: this.node.dom[0],
+					DOM: this.dom[0],
 					offset: 0
 				};
 			}
@@ -341,8 +342,8 @@ class Component extends events.EventEmitter {
 			var dom;
 			var count = offset;
 
-			for (var index in this.node.dom) {
-				dom = this.node.dom[index];
+			for (var index in this.dom) {
+				dom = this.dom[index];
 				var text = dom.childNodes[0];
 
 				if (text.length > count) {
@@ -351,7 +352,7 @@ class Component extends events.EventEmitter {
 
 				count -= text.length;
 
-				if (count == 0 && parseInt(index) + 1 == this.node.dom.length) {
+				if (count == 0 && parseInt(index) + 1 == this.dom.length) {
 					return {
 						DOM: dom,
 						offset: text.length
@@ -366,7 +367,7 @@ class Component extends events.EventEmitter {
 		}
 
 		return {
-			DOM: this.node.dom,
+			DOM: this.dom,
 			offset: offset
 		}
 

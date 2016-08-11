@@ -103,10 +103,6 @@ class ASTHandler {
 		return node.childrens[index];
 	}
 
-	setDOM(node, dom) {
-		this.setInternalProperty(node, 'dom', dom);
-	}
-
 	setStyle(node, styles) {
 		node.style = Object.assign({}, node.style, styles);
 	}

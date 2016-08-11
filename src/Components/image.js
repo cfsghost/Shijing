@@ -38,7 +38,7 @@ export default class Image extends Component {
 					style.height = this.node.style.height;
 			}
 
-			var $dom = $(this.node.dom);
+			var $dom = $(this.dom);
 
 			// Using cache if it exists
 			var cache = caches[this.node.src] || null;
@@ -115,7 +115,7 @@ export default class Image extends Component {
 			var $DOM = $('<div>')
 				.css(style);
 
-			this.renderer.setInternalProperty(node, 'dom', $DOM[0]);
+			this.dom = $DOM[0];
 
 			// Loading directly if cache exists already
 			if (caches[this.node.src]) {

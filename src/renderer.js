@@ -38,7 +38,7 @@ class Renderer {
 	getComponentByDOM(components, DOM) {
 		for (var index in components) {
 			var component = components[index];
-			if (component.node.dom == DOM) {
+			if (component.dom == DOM) {
 				return component;
 			}
 		}
@@ -91,14 +91,16 @@ class Renderer {
 		}
 	}
 
-	appendComponents(node, components) {
+	appendComponents(target, components) {
 
-		var $DOM = $(node.dom);
+		//var $DOM = $(node.dom);
+		var $DOM = $(target.dom);
 
 		// append DOMs of components to specific node's DOM
 		if (components) {
 			components.forEach(function(component) {
-				$DOM.append(component.node.dom);
+				//$DOM.append(component.node.dom);
+				$DOM.append(component.dom);
 			});
 		}
 	}
@@ -126,11 +128,11 @@ class Renderer {
 			
 			// Create component
 			var component = new Initializer(this, node, subComponents);
+			this.setInternalProperty(node, 'component', component);
 
 			var task = this.renderComponent(component);
-			task.then(function() {
 
-				this.setInternalProperty(node, 'component', component);
+			task.then(function() {
 
 				// Add to list
 				this.components[component.id] = component;
@@ -149,7 +151,8 @@ class Renderer {
 			var task = component.render();
 			task.then(function() {
 
-				$(component.node.dom)
+				$(component.dom)
+//				$(component.node.dom)
 					.attr('shijiref', component.id)
 					.addClass('shiji-component');
 

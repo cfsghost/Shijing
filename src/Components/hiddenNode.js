@@ -4,7 +4,8 @@ export default class HiddenNode extends Component {
 
 	update() {
 		// Clear old DOMs
-		$(this.node.dom).empty();
+		//$(this.node.dom).empty();
+		$(this.dom).empty();
 
 		// Re-render this this
 		this.renderer.renderComponent(this);
@@ -17,7 +18,9 @@ export default class HiddenNode extends Component {
 			var node = this.node;
 			var subComponents = this.subComponents;
 
-			this.renderer.appendComponents(node, subComponents);
+			this.dom = document.createDocumentFragment();
+
+			this.renderer.appendComponents(this, subComponents);
 
 			resolve();
 

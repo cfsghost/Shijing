@@ -44,7 +44,6 @@ class Shiji {
 	render() {
 
 		var root = this.astHandler.getRoot();
-		this.astHandler.setDOM(root, this.$workarea[0]);
 
 		// initializing default width to fit container size
 		this.astHandler.setStyle(root, {
@@ -55,6 +54,8 @@ class Shiji {
 
 			this.renderer.render(root)
 				.then(async function(rootComponent) {
+
+					this.$workarea.append(rootComponent.dom);
 
 					await rootComponent.componentDidMount();
 

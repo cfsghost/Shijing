@@ -20,7 +20,7 @@ export default class Inline extends Component {
 				.html(text.replace(/ /g, '&nbsp'))
 				.css(node.style || {});
 
-			this.renderer.setInternalProperty(node, 'dom', $DOM[0]);
+			this.dom = $DOM[0];
 
 			resolve();
 		}.bind(this));
