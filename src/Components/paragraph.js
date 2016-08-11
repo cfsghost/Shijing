@@ -62,7 +62,7 @@ export default class Paragraph extends Component {
 			var doms = [];
 			for (var index in this.lineViews) {
 				var lineView = this.lineViews[index];
-				var dom = $(lineView).find('[shijiref=' + component.id + ']').first();
+				var dom = $(lineView).find('[shijiref=' + component.node.id + ']').first();
 
 				if (dom.length) {
 					doms.push(dom[0]);

@@ -10,7 +10,6 @@ class Component extends events.EventEmitter {
 		this.node = node;
 		this.dom = null;
 		this.subComponents = null;
-		this.id = Math.random().toString().substr(2) + Date.now();
 
 		if (subComponents) {
 			this.updateSubComponents(subComponents);

@@ -20,7 +20,7 @@ class Renderer {
 
 	removeComponent(component) {
 
-		delete this.components[component.id];
+		delete this.components[component.node.id];
 
 		if (!component.subComponents)
 			return;
@@ -29,7 +29,7 @@ class Renderer {
 		for (var index in component.subComponents) {
 			var comp = component.subComponents[index];
 
-			delete this.components[comp.id];
+			delete this.components[comp.node.id];
 
 			this.removeComponent(comp);
 		}
@@ -135,7 +135,7 @@ class Renderer {
 			task.then(function() {
 
 				// Add to list
-				this.components[component.id] = component;
+				this.components[component.node.id] = component;
 
 				resolve(component);
 
@@ -153,7 +153,7 @@ class Renderer {
 
 				$(component.dom)
 //				$(component.node.dom)
-					.attr('shijiref', component.id)
+					.attr('shijiref', component.node.id)
 					.addClass('shiji-component');
 
 				resolve();
