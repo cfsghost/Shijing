@@ -91,7 +91,7 @@ class Input {
 			newOffset += pos.offset;
 
 			// done everything so we update now
-			var task = this.astHandler.update(node);
+			var task = node.component.refresh();
 			task.then(function() {
 
 				// Set new position to caret

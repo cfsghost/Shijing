@@ -249,12 +249,6 @@ class ASTHandler {
 
 		this.unregisterNode(node);
 	}
-
-	update(node) {
-
-		// Notify component that time to update itself
-		return node.component.refresh();
-	}
 }
 
 export default ASTHandler;

@@ -54,7 +54,7 @@ class Component extends events.EventEmitter {
 				astHandler.removeNode(this.node);
 
 				// Update it
-				var task = astHandler.update(astHandler.getParentNode(this.node));
+				var task = astHandler.getParentNode(this.node).component.refresh();
 				task.then(function() {
 					resolve();
 				});
@@ -192,7 +192,7 @@ class Component extends events.EventEmitter {
 				sets.after
 			].join(''));
 
-			var task = astHandler.update(target.node);
+			var task = target.node.component.refresh();
 			task.then(function() {
 				resolve({
 					component: target,
@@ -229,7 +229,7 @@ class Component extends events.EventEmitter {
 		var parentComponent = this.findBlockParent(true);
 		return new Promise(function(resolve) {
 
-			var task = astHandler.update(parentComponent.node);
+			var task = parentComponent.node.component.refresh();
 			task.then(function() {
 
 				resolve({
@@ -389,18 +389,7 @@ class Component extends events.EventEmitter {
 						this.updateSubComponents(subComponents);
 
 					this.update().then(resolve);
-/*
-					this.update().then(function() {
 
-						var tasks = subComponents.map(function(component) {
-							return component.componentDidMount();
-						});
-
-						Promise
-							.all(tasks)
-							.then(resolve);
-					});
-*/
 				}.bind(this))
 				.catch(reject);
 		}.bind(this));
