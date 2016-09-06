@@ -240,8 +240,7 @@ console.log('Cursor2', this.startNode, leftOffset);
 		var astHandler = this.renderer.shiji.astHandler;
 		var index = astHandler.getIndex(this.startNode);
 		if (index == -1) {
-			// Target is not a node belongs to this node
-			throw new Error('Cannot get index of startNode');
+			return 0;
 		}
 
 		// Put curosr on parent
