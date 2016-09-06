@@ -36,7 +36,7 @@ class BlockComponent extends Component {
 
 		if (offset === 0)
 			return 0;
-
+console.log(this.node, offset);
 		if (this.node.text) {
 			return offset ? offset : this.node.text.length + 1;
 		} else if (this.node.childrens) {
@@ -209,16 +209,14 @@ console.log('getCaretLength', this.node.childrens);
 		var target = astHandler.getChildrenNode(this.node, index);
 		while(target) {
 
-//			if (target.component.allowedCursor) {
-				if (leftOffset > 0) {
-					console.log('BEFORE', offset, index, leftOffset);
-					leftOffset = target.component.setCursor(cursor, leftOffset - 1);
-					console.log('AFTER', offset, index, leftOffset);
-				} else {
-					console.log('LEFT', leftOffset);
-					leftOffset = target.component.setCursor(cursor, leftOffset - 1);
-				}
-//			}
+			if (leftOffset > 0) {
+				console.log('BEFORE', offset, index, leftOffset);
+				leftOffset = target.component.setCursor(cursor, leftOffset - 1);
+				console.log('AFTER', offset, index, leftOffset);
+			} else {
+				console.log('LEFT', leftOffset);
+				leftOffset = target.component.setCursor(cursor, leftOffset - 1);
+			}
 
 			if (leftOffset == 0) {
 				return 0;
