@@ -63,7 +63,7 @@ class Cursor {
 			range: range
 		};
 
-		// Notinhg left in this DOM
+		// Nothing left in this DOM
 		if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
 			point.x = $dom.offset().left - $container.position().left;
 			point.y = $dom.offset().top - $container.position().top;
@@ -126,7 +126,7 @@ class Cursor {
 	}
 
 	setPosition(node, offset) {
-//console.log('CURSOR-SETPOS', node);
+
 		// Figure out position
 		var caret = node.component.getCaret(offset);
 
@@ -231,6 +231,7 @@ console.log('Cursor1', this, this.startNode, this.startOffset, offset);
 
 		// Call start node to move cursor
 		var leftOffset = this.startNode.component.move(this, offset);
+console.log('MOVED', this, this.startNode, this.startOffset);
 		if (leftOffset == 0) {
 			return leftOffset;
 		}
@@ -250,6 +251,12 @@ console.log('Cursor2', this.startNode, leftOffset);
 
 		console.log('PARENT', parentNode, index, leftOffset);
 		if (leftOffset > 0) {
+//TODO
+			// There is no node behind current position
+//			if (!astHandler.getChildrenNode(parentNode, index + 1)) {
+//				return this.move(leftOffset);
+//			}
+
 			this.setPosition(parentNode, index + 1);
 			leftOffset--;
 		} else {

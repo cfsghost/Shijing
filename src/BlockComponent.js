@@ -22,7 +22,7 @@ class BlockComponent extends Component {
 						len += subNode.component.getLength();
 					}
 
-					return len + index + 1;
+					return len;
 				}
 			}
 			
@@ -34,21 +34,20 @@ class BlockComponent extends Component {
 
 	getCaretLength(offset) {
 
-		if (offset === 0)
+		if (offset == 0)
 			return 0;
-console.log(this.node, offset);
+
 		if (this.node.text) {
 			return offset ? offset : this.node.text.length + 1;
 		} else if (this.node.childrens) {
 			var _offset = offset || this.node.childrens.length;
 
-			if (offset <= this.node.childrens.length) {
+			if (_offset <= this.node.childrens.length) {
 				var len = 0;
-console.log('getCaretLength', this.node.childrens);
-				for (var index = 0; index < offset; index++) {
+
+				for (var index = 0; index < _offset; index++) {
 					var subNode = this.node.childrens[index];
 					len += subNode.component.getCaretLength();
-					console.log('COUNTing', subNode, subNode.component.getCaretLength());
 				}
 
 				return len + index + 1;
@@ -56,6 +55,8 @@ console.log('getCaretLength', this.node.childrens);
 
 			return 0;
 		}
+
+		return 0;
 	}
 
 	getOffset(range) {
@@ -93,24 +94,17 @@ console.log('getCaretLength', this.node.childrens);
 		if (!this.node.text && this.node.childrens) {
 			var astHandler = this.renderer.shiji.astHandler;
 			var node = astHandler.getChildrenNode(this.node, offset);
-//			console.log(this.node, node, offset);
+
+			// No such node
+			if (!node) {
+				node = astHandler.getLastNode(this.node);
+				return node.component.getPosition(node.component.getLength());
+			}
+
 			return {
 				DOM: node.component.getDOM(),
 				offset: 0
 			};
-/*
-			var count = offset;
-			for (var index in this.node.childrens) {
-				var subNode = this.node.childrens[index];
-
-				var pos = subNode.component.getPosition(count);
-				if (pos.DOM) {
-					return pos;
-				}
-
-				count = pos.offset;
-			}
-*/
 		}
 
 		// Overflow
@@ -184,55 +178,31 @@ console.log('getCaretLength', this.node.childrens);
 	setCursor(cursor, offset) {
 
 		if (offset == 0) {
-			cursor.setPosition(this.node, offset);
-			return 0;
-		}
-
-		var astHandler = this.renderer.shiji.astHandler;
-
-		// ignore First empty node
-		var leftOffset = offset;
-		console.log(0, leftOffset);
-		if (leftOffset > 0) {
-			leftOffset--;
-		} else {
-			leftOffset++;
-		}
-
-		if (leftOffset == 0) {
 			cursor.setPosition(this.node, 0);
 			return 0;
 		}
 
+		// ignore First empty node
+		var leftOffset = offset;
+		leftOffset--;
+
 		// Traverse node tree
 		var index = 0;
+		var astHandler = this.renderer.shiji.astHandler;
 		var target = astHandler.getChildrenNode(this.node, index);
 		while(target) {
 
-			if (leftOffset > 0) {
-				console.log('BEFORE', offset, index, leftOffset);
-				leftOffset = target.component.setCursor(cursor, leftOffset - 1);
-				console.log('AFTER', offset, index, leftOffset);
-			} else {
-				console.log('LEFT', leftOffset);
-				leftOffset = target.component.setCursor(cursor, leftOffset - 1);
-			}
+			var len = target.component.getCaretLength();
+			console.log('W', index, len, leftOffset);
+			if (leftOffset <= len)
+				return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
 
-			if (leftOffset == 0) {
-				return 0;
-			}
+			leftOffset -= len;
 
 			// The area between children nodes
-			if (leftOffset > 0) {
-				cursor.setPosition(this.node, index + 1);
-				leftOffset--;
-			} else {
-				cursor.setPosition(this.node, index);
-				leftOffset++;
-			}
-			console.log('BETWEEN', index, leftOffset);
-
+			leftOffset--;
 			if (leftOffset == 0) {
+				cursor.setPosition(this.node, index + 1);
 				return 0;
 			}
 			
