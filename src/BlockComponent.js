@@ -158,23 +158,6 @@ class BlockComponent extends Component {
 
 	}
 
-	getCaret(offset) {
-
-		// Getting correct position
-		var pos = this.getPosition(offset);
-
-		// Figure out caret position
-		var point = this.renderer.caret.figureCaretPoint(pos.DOM, pos.offset);
-
-		point.style = {
-			background: 'red',
-			width: '2px',
-			height: '15px'
-		};
-
-		return point;
-	}
-
 	setCursor(cursor, offset) {
 
 		if (offset == 0) {
