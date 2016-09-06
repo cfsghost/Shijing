@@ -8,12 +8,15 @@ class InlineComponent extends Component {
 		this.blockType = false;
 	}
 
-	getLength(offset) {
-		return offset ? offset : this.node.text.length;
+	getLength() {
+		return 0;
 	}
 
 	getCaretLength(offset) {
-		return this.getLength(offset) + 1;
+
+		var len = this.getLength(offset);
+
+		return len ? this.getLength(offset) + 1 : 0;
 	}
 
 	getOffset(range) {

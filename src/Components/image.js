@@ -18,10 +18,6 @@ export default class Image extends InlineComponent {
 		return 0;
 	}
 
-	getCaretLength() {
-		return 0;
-	}
-
 	setCursor(cursor, offset) {
 
 		// Ignore 

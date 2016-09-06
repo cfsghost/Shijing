@@ -2,6 +2,10 @@ import InlineComponent from '../InlineComponent';
 
 export default class Inline extends InlineComponent {
 
+	getLength(offset) {
+		return offset ? offset : this.node.text.length;
+	}
+
 	render() {
 
 		return new Promise(function(resolve) {
