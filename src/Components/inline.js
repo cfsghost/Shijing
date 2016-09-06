@@ -1,12 +1,6 @@
-import Component from '../Component';
+import InlineComponent from '../InlineComponent';
 
-export default class Inline extends Component {
-
-	constructor(renderer, node, subComponents) {
-		super(renderer, node, subComponents);
-
-		this.blockType = false;
-	}
+export default class Inline extends InlineComponent {
 
 	render() {
 

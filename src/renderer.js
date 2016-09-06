@@ -1,4 +1,5 @@
 import Offscreen from './offscreen';
+import Cursor from './cursor';
 import Caret from './caret';
 import Components from './Components';
 import Input from './input';
@@ -7,6 +8,7 @@ class Renderer {
 
 	constructor(shiji) {
 		this.shiji = shiji;
+		this.astHandler = shiji.astHandler;
 		this.Components = Components;
 		this.input = new Input(this);
 
@@ -14,7 +16,8 @@ class Renderer {
 		this.offscreen = new Offscreen(this);
 
 		// Initializing caret
-		this.caret = new Caret(this);
+//		this.caret = new Caret(this);
+		this.caret = new Cursor(this);
 	}
 
 	removeComponent(component) {
@@ -64,6 +67,38 @@ class Renderer {
 			return this.getParentComponentDOM(dom.parentNode);
 
 		return null;
+	}
+
+	getOwnerByDOM(dom) {
+
+		function findComponent(dom) {
+
+			var $dom = $(dom);
+
+			// Check whether it is a component
+			if ($dom.hasClass('shiji-component')) {
+				return dom;
+			}
+
+			// It has parent node. just check it
+			if (dom.parentNode)
+				return findComponent(dom.parentNode);
+
+			return null;
+		}
+
+		var DOM = findComponent(dom);
+		if (!DOM)
+			return null;
+
+		// Getting component ID
+		var id = DOM.getAttribute('shijiref');
+
+		// Getting node by using component ID
+		var astHandler = this.shiji.astHandler;
+		var node = astHandler.getNodeById(id);
+
+		return node ? node.component : null;
 	}
 
 	getParentComponentByDOM(dom) {

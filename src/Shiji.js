@@ -19,7 +19,8 @@ class Shiji {
 			});
 		this.$workarea = $('<div>')
 			.css({
-				position: 'relative'
+				position: 'relative',
+				textAlign: 'initial'
 			});
 
 		this.renderer = new Renderer(this);

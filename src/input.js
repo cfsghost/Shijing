@@ -19,6 +19,10 @@ class Input {
 			switch(e.keyCode) {
 			case Key.Left:
 
+				this.ctx.caret.move(-1);
+				this.ctx.caret.show();
+
+				break;
 				var pos = this.ctx.caret.getCurrentPosition();
 				if (pos.offset == 0) {
 
@@ -34,6 +38,11 @@ class Input {
 				break;
 
 			case Key.Right:
+
+				this.ctx.caret.move(1);
+				this.ctx.caret.show();
+
+				break;
 
 				var pos = this.ctx.caret.getCurrentPosition();
 
@@ -56,17 +65,16 @@ class Input {
 			if (e.metaKey)
 				return true;
 
-			var newOffset = 1;
 			var pos = this.ctx.caret.getCurrentPosition();
-			var node = pos.component.node;
-
+			var node = pos.startNode;
+/*
 			// Backspace
 			if (e.keyCode == Key.Backspace) {
 				newOffset = -1;
 
 				// Tell parent component to deal with backspace because it might cross two components
 				var parentComponent = pos.component.getParentComponent();
-				var task = parentComponent.backspace(pos.component, pos.offset);
+				var task = parentComponent.backspace(pos.startNode.component, pos.startOffset);
 				task.then(function(pos) {
 
 					if (!pos) {
@@ -84,18 +92,17 @@ class Input {
 				}.bind(this));
 				return;
 			}
-
+*/
 			// Insert character
-			this.astHandler.insert(node, pos.offset, String.fromCharCode(e.keyCode));
-
-			newOffset += pos.offset;
+			this.astHandler.insert(pos.startNode, pos.startOffset, String.fromCharCode(e.keyCode));
 
 			// done everything so we update now
 			var task = node.component.refresh();
 			task.then(function() {
 
 				// Set new position to caret
-				this.ctx.caret.setPositionByNode(node, newOffset);
+				this.ctx.caret.move(1);
+				//this.ctx.caret.setPositionByNode(node, pos.startOffset + 1);
 				this.ctx.caret.show();
 			}.bind(this));
 

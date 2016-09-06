@@ -10,6 +10,7 @@ class Component extends events.EventEmitter {
 		this.node = node;
 		this.dom = null;
 		this.subComponents = null;
+		this.allowedCursor = true;
 
 		if (subComponents) {
 			this.updateSubComponents(subComponents);
@@ -37,7 +38,7 @@ class Component extends events.EventEmitter {
 		var astHandler = this.renderer.shiji.astHandler;
 
 		return new Promise(function(resolve) {
-
+/*
 			// Remove itself if it's empty
 			var killself = false;
 			if (!this.node.text && !this.node.childrens) {
@@ -61,7 +62,7 @@ class Component extends events.EventEmitter {
 
 				return;
 			}
-
+*/
 			this.emit('blur');
 		}.bind(this));
 	}
@@ -76,6 +77,15 @@ class Component extends events.EventEmitter {
 			return this.node.childrens.length;
 
 		return -1;
+	}
+
+	getDOM(index) {
+
+		if (this.dom instanceof Array) {
+			return this.dom[index || 0];
+		}
+
+		return this.dom;
 	}
 
 	getParentComponent() {
@@ -275,101 +285,20 @@ class Component extends events.EventEmitter {
 		this.subComponents = subComponents;
 	}
 
-	getOffset(range) {
+	getCaret(offset) {
 
-		// if component cross over multiple doms
-		if (this.node.dom instanceof Array) {
-			var targetDOM = range.startContainer;
+		// Getting correct position
+		var pos = this.getPosition(offset);
 
-			if (range.startContainer.nodeType == Node.TEXT_NODE)
-				targetDOM = $(range.startContainer).parent()[0];
+		var point = this.renderer.caret.figureCaretPoint(pos.DOM, pos.offset);
 
-			var offset = 0;
-			for (var index in this.dom) {
-				var dom = this.dom[index];
+		point.style = {
+			background: 'red',
+			width: '2px',
+			height: '15px'
+		};
 
-				if (targetDOM == dom) {
-					break;
-				}
-
-				if (dom.nodeType == Node.TEXT_NODE) {
-					offset += dom.length;
-				} else {
-					offset += dom.childNodes[0].length;
-				}
-			}
-
-			return offset + range.startOffset;
-		}
-
-		return range.startOffset;
-	}
-
-	getPosition(offset) {
-
-		if (!this.node.text && this.node.childrens) {
-			var count = offset;
-			for (var index in this.node.childrens) {
-				var subNode = this.node.childrens[index];
-
-				var pos = subNode.component.getPosition(count);
-				if (pos.DOM) {
-					return pos;
-				}
-
-				count = pos.offset;
-			}
-		}
-
-		// Overflow
-		if (this.node.text.length < offset) {
-			return {
-				DOM: null,
-				offset: offset - this.node.text.length
-			};
-		}
-
-		if (this.dom instanceof Array) {
-
-			if (offset == 0) {
-				return {
-					DOM: this.dom[0],
-					offset: 0
-				};
-			}
-
-			var dom;
-			var count = offset;
-
-			for (var index in this.dom) {
-				dom = this.dom[index];
-				var text = dom.childNodes[0];
-
-				if (text.length > count) {
-					break;
-				}
-
-				count -= text.length;
-
-				if (count == 0 && parseInt(index) + 1 == this.dom.length) {
-					return {
-						DOM: dom,
-						offset: text.length
-					}
-				}
-			}
-
-			return {
-				DOM: dom,
-				offset: count
-			};
-		}
-
-		return {
-			DOM: this.dom,
-			offset: offset
-		}
-
+		return point;
 	}
 
 	refresh() {

@@ -1,7 +1,7 @@
-import Component from '../Component';
+import BlockComponent from '../BlockComponent';
 import InlineLayout from '../Layouts/inline';
 
-export default class Paragraph extends Component {
+export default class Paragraph extends BlockComponent {
 
 	constructor(renderer, node, subComponents) {
 		super(renderer, node, subComponents);
@@ -35,7 +35,7 @@ export default class Paragraph extends Component {
 
 		return offset;
 	}
-
+/*
 	getPosition(offset) {
 
 		var count = offset;
@@ -53,7 +53,7 @@ export default class Paragraph extends Component {
 			}
 		}
 	}
-
+*/
 	updateDOMs() {
 
 		// sync dom of all components because original dom might be splited by inline layout
@@ -72,7 +72,7 @@ export default class Paragraph extends Component {
 				}
 			}
 
-			component.dom = (doms.length > 0) ? doms : doms[0];
+			component.dom = (doms.length > 1) ? doms : doms[0];
 		}.bind(this));
 	}
 

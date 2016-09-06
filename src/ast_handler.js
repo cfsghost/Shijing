@@ -104,6 +104,12 @@ class ASTHandler {
 	}
 
 	getChildrenNode(node, index) {
+
+		if (!node.childrens)
+			return null;
+		else if (node.childrens.length <= index)
+			return null;
+
 		return node.childrens[index];
 	}
 
@@ -152,7 +158,14 @@ class ASTHandler {
 	}
 
 	getIndex(node) {
-		return this.getParentNode(node).childrens.indexOf(node);
+		var parentNode = this.getParentNode(node);
+
+		if (!parentNode)
+			return -1;
+		else if (!parentNode.childrens)
+			return -1;
+
+		return parentNode.childrens.indexOf(node);
 	}
 
 	merge(target, node) {

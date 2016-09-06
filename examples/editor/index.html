@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
 		<title>Editor example</title>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+		<script src="jquery.min.js"></script>
 		<style>
+			body {
+				background: #222222;
+			}
+
 			#editor {
+				display: inline-block;
+				background: white;
 				width: 600px;
 				height: 400px;
-				border: 1px solid #ddd;
+			}
+
+			.layout {
+				text-align: center;
 			}
 		</style>
 	</head>
 	<body>
-		<div id="editor"></div>
-		<script src="/static/bundle.js"></script>
+		<div class='layout'>
+			<div id="editor"></div>
+		</div>
+		<script src="static/bundle.js"></script>
 	</body>
 </html>

@@ -1,6 +1,6 @@
-import Component from '../Component';
+import BlockComponent from '../BlockComponent';
 
-export default class HiddenNode extends Component {
+export default class HiddenNode extends BlockComponent {
 
 	update() {
 		// Clear old DOMs

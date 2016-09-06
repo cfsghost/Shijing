@@ -1,18 +1,31 @@
-import Component from '../Component';
+import InlineComponent from '../InlineComponent';
 
 var caches = {};
 
-export default class Image extends Component {
+export default class Image extends InlineComponent {
 
 	constructor(renderer, node, subComponents) {
 		super(renderer, node, subComponents);
 
-		this.blockType = false;
 		this.loaded = false;
+		this.allowedCursor = false;
+
+		// Inline block
+		this.blockType = true;
 	}
 
 	getLength() {
-		return -1;
+		return 0;
+	}
+
+	getCaretLength() {
+		return 0;
+	}
+
+	setCursor(cursor, offset) {
+
+		// Ignore 
+		return offset + 1;
 	}
 
 	getPosition(offset) {
