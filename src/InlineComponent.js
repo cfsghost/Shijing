@@ -118,7 +118,17 @@ class InlineComponent extends Component {
 	}
 
 	move(cursor, offset) {
-		return this.setCursor(cursor, cursor.startOffset + offset);
+
+		var pos = cursor.startOffset + offset;
+		var leftOffset = this.setCursor(cursor, pos);
+
+		// Auto move back when cusor is working at head of content
+		if (pos == 0) {
+			if (offset < 0)
+				return leftOffset - 1;
+		}
+
+		return leftOffset;
 	}
 
 	setCursor(cursor, offset) {
