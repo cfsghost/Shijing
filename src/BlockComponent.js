@@ -91,6 +91,7 @@ class BlockComponent extends Component {
 	}
 
 	getPosition(offset) {
+
 		if (!this.node.text && this.node.childrens) {
 			var astHandler = this.renderer.shiji.astHandler;
 			var node = astHandler.getChildrenNode(this.node, offset);
@@ -176,7 +177,7 @@ class BlockComponent extends Component {
 		while(target) {
 
 			var len = target.component.getCaretLength();
-			console.log('W', index, len, leftOffset);
+			console.log('W', index, len, leftOffset, target);
 			if (leftOffset <= len)
 				return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
 
@@ -202,12 +203,38 @@ class BlockComponent extends Component {
 			return 0;
 
 		console.log('MOVE', cursor, cursor.startNode, cursor.startOffset, this.getCaretLength(cursor.startOffset), offset);
-		var pos = this.getCaretLength(cursor.startOffset) + offset;
-		if (pos > 0) {
-			return this.setCursor(cursor, pos);
+		var leftOffset = this.getCaretLength(cursor.startOffset) + offset;
+		if (leftOffset > 0) {
+			leftOffset = this.setCursor(cursor, leftOffset);
 		}
 
-		return pos;
+		return leftOffset;
+	}
+
+	adjustCursorPosition(cursor, direction) {
+
+		console.log('ADJUST CURSOR');
+
+		var astHandler = this.renderer.shiji.astHandler;
+
+		// Check nodes
+		var prevNode = astHandler.getChildrenNode(this.node, cursor.startOffset - 1);
+		var nextNode = astHandler.getChildrenNode(this.node, cursor.startOffset);
+
+		if (prevNode && nextNode) {
+
+			// Should not stay between two inline nodes.
+			if (!prevNode.component.blockType && !nextNode.component.blockType) {
+				console.log('SKIP', direction ? 'NEXT' : 'BACK');
+
+				// skip
+				if (direction) {
+					return cursor.move(2);
+				} else {
+					return cursor.move(-1);
+				}
+			}
+		}
 	}
 }
 

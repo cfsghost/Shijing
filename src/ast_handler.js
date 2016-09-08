@@ -107,7 +107,7 @@ class ASTHandler {
 
 		if (!node.childrens)
 			return null;
-		else if (node.childrens.length <= index)
+		else if (node.childrens.length <= index || index < 0)
 			return null;
 
 		return node.childrens[index];

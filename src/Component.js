@@ -289,7 +289,6 @@ class Component extends events.EventEmitter {
 
 		// Getting correct position
 		var pos = this.getPosition(offset);
-
 		var point = this.renderer.caret.figureCaretPoint(pos.DOM, pos.offset);
 
 		point.style = {
@@ -299,6 +298,9 @@ class Component extends events.EventEmitter {
 		};
 
 		return point;
+	}
+
+	adjustCursorPosition(cursor, direction) {
 	}
 
 	refresh() {

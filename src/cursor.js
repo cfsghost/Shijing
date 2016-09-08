@@ -68,11 +68,11 @@ class Cursor {
 			point.x = $dom.offset().left - $container.position().left;
 			point.y = $dom.offset().top - $container.position().top;
 			range.selectNode(dom);
-		} else if (offset + 1 >= textNode.length) {
+		} else if (offset >= textNode.length) {
 
 			// Last character in a line
-			range.setStart(textNode, offset - 1);
-			range.setEnd(textNode, offset);
+			range.setStart(textNode, textNode.length - 1);
+			range.setEnd(textNode, textNode.length);
 
 			// Getting rect information then figure out exact position
 			var rect = range.getBoundingClientRect();
@@ -115,12 +115,12 @@ class Cursor {
 
 			// fire events
 			if (old) {
-				old.component.onBlur();
+				old.component.onBlur(this);
 			}
 
 			// trigger onFocus
 			if (this.startNode) {
-				this.startNode.component.onFocus();
+				this.startNode.component.onFocus(this);
 			}
 		}
 	}
@@ -223,7 +223,6 @@ class Cursor {
 
 	move(offset) {
 
-		// Do nothing
 		if (offset == 0)
 			return 0;
 
@@ -250,18 +249,14 @@ console.log('Cursor2', this.startNode, leftOffset);
 
 		console.log('PARENT', parentNode, index, leftOffset);
 		if (leftOffset > 0) {
-//TODO
-			// There is no node behind current position
-//			if (!astHandler.getChildrenNode(parentNode, index + 1)) {
-//				return this.move(leftOffset);
-//			}
-
 			this.setPosition(parentNode, index + 1);
 			leftOffset--;
 		} else {
 			this.setPosition(parentNode, index);
 			leftOffset++;
 		}
+
+		parentNode.component.adjustCursorPosition(this, (offset > 0) ? true : false);
 
 		return this.move(leftOffset);
 	}
