@@ -136,6 +136,14 @@ class ASTHandler {
 		};
 	}
 
+	replaceNode(oldNode, newNode) {
+
+		var parentNode = this.getParentNode(oldNode);
+		var index = this.getIndex(oldNode);
+
+		parentNode.childrens.splice(index, 1, newNode);
+	}
+
 	insert(node, offset, value) {
 
 		// TODO: it should update sub nodes when it's not pure text

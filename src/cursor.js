@@ -25,8 +25,8 @@ class Cursor {
 			})
 			.appendTo(this.$dom);
 
-		renderer.shiji.$container.append(this.$dom);
-
+		renderer.shiji.$overlay.append(this.$dom);
+/*
 		// Set cursor position
 		renderer.shiji.$origin[0].addEventListener('mousedown', function(e) {
 			var range = document.caretRangeFromPoint(e.clientX, e.clientY);
@@ -45,7 +45,12 @@ class Cursor {
 			this.setPositionByDOM(parentNode, offset);
 			this.show();
 
+			setTimeout(function() {
+				renderer.input.focus();
+			}, 0);
+
 		}.bind(this), false);
+*/
 	}
 
 	figureCaretPoint(dom, offset) {
@@ -53,7 +58,7 @@ class Cursor {
 		var $dom = $(dom);
 		var range = document.createRange();
 		var textNode = (dom.childNodes) ? dom.childNodes[0] : null;
-		var $container = this.renderer.shiji.$container;
+		var $container = this.renderer.shiji.$overlay;
 
 		var point = {
 			x: 0,
@@ -65,8 +70,8 @@ class Cursor {
 
 		// Nothing left in this DOM
 		if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
-			point.x = $dom.offset().left - $container.position().left;
-			point.y = $dom.offset().top - $container.position().top;
+			point.x = $dom.offset().left - $container.offset().left;
+			point.y = $dom.offset().top - $container.offset().top;
 			range.selectNode(dom);
 		} else if (offset >= textNode.length) {
 
@@ -76,8 +81,8 @@ class Cursor {
 
 			// Getting rect information then figure out exact position
 			var rect = range.getBoundingClientRect();
-			point.x = rect.right - $container.position().left;
-			point.y = rect.top - $container.position().top;
+			point.x = rect.right - $container.offset().left;
+			point.y = rect.top - $container.offset().top;
 			point.lastChar = true;
 		} else {
 			range.setStart(textNode, offset);
@@ -85,8 +90,8 @@ class Cursor {
 
 			// Getting rect information then figure out exact position
 			var rect = range.getBoundingClientRect();
-			point.x = rect.left - $container.position().left;
-			point.y = rect.top - $container.position().top;
+			point.x = rect.left - $container.offset().left;
+			point.y = rect.top - $container.offset().top;
 		}
 
 		range.collapse(true);

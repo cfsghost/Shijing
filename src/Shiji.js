@@ -17,21 +17,29 @@ class Shiji {
 			.css({
 				position: 'relative'
 			});
+		this.$layout = $('<div>')
+			.css({
+				position: 'relative'
+			});
 		this.$workarea = $('<div>')
 			.css({
-				position: 'relative',
+				position: 'absolute',
 				textAlign: 'initial'
 			});
+		this.$overlay = $('<div>')
+			.css({
+				position: 'absolute',
+				textAlign: 'initial'
+			});
+		
+		this.$origin.append(this.$container)
+		this.$container
+			.append(this.$layout);
+		this.$layout
+			.append(this.$workarea)
+			.append(this.$overlay);
 
 		this.renderer = new Renderer(this);
-		
-		this.$origin
-			.css({
-//				overflow: 'hidden',
-//				overflowY: 'visible'
-			})
-			.append(this.$container)
-			.append(this.$workarea)
 
 		this.render();
 	}
