@@ -1,3 +1,10 @@
+var Key = {
+	Left: 37,
+	Up: 38,
+	Right: 39,
+	Down: 40,
+	Backspace: 8,
+};
 
 class InputHandler {
 
@@ -80,6 +87,25 @@ class InputHandler {
 							this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 						}
 					}.bind(this));
+
+					return;
+				}
+
+				// Direction keys
+				switch(e.keyCode) {
+				case Key.Left:
+
+					cursor.move(-1);
+					cursor.show();
+
+					break;
+
+				case Key.Right:
+
+					cursor.move(1);
+					cursor.show();
+
+					break;
 				}
 
 			}.bind(this))
