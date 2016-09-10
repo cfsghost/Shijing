@@ -12,11 +12,15 @@ export default class Inline extends InlineComponent {
 
 			var node = this.node;
 			var text = this.node.text || '';
+			var defStyle = {
+				whiteSpace: 'pre-wrap',
+				wordBreak: 'break-all'
+			};
 
 			var $DOM = $('<span>')
 				.addClass('inline-component')
 				.html(text.replace(/ /g, '&nbsp'))
-				.css(node.style || {});
+				.css(node.style ? Object.assign(defStyle, node.style) : defStyle);
 
 			this.dom = $DOM[0];
 
