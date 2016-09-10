@@ -88,6 +88,23 @@ class Component extends events.EventEmitter {
 		return this.dom;
 	}
 
+	getDOMs() {
+		if (this.dom instanceof Array) {
+			return this.dom
+		}
+
+		return [ this.dom ];
+	}
+
+	getRects() {
+
+		var rects = []
+		this.subComponents.forEach(function(component) {
+			rects = rects.concat(component.getRects());
+		});
+		return rects;
+	}
+
 	getParentComponent() {
 
 		var parentNode = this.renderer.shiji.astHandler.getParentNode(this.node);

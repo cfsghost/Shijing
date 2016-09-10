@@ -18,6 +18,28 @@ export default class Image extends InlineComponent {
 		return 0;
 	}
 
+	getRects() {
+
+		var rects = [];
+
+		// Check this text node
+		var range = document.createRange();
+		range.selectNode(this.dom);
+		var clientRects = range.getClientRects();
+
+		for (var index = 0; index < clientRects.length; index++) {
+			var rect = clientRects[index];
+			rects.push(rect);
+		}
+
+		return [
+			{
+				DOM: this.dom,
+				rects: rects
+			}
+		];
+	}
+
 	setCursor(cursor, offset) {
 
 		// Ignore 

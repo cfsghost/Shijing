@@ -19,6 +19,50 @@ class InlineComponent extends Component {
 		return len ? this.getLength(offset) + 1 : 0;
 	}
 
+	getRects(DOM) {
+
+		var rects = [];
+
+		if (!DOM) {
+			var doms = this.getDOMs();
+
+			doms.forEach(function(DOM) {
+				rects = rects.concat(this.getRects(DOM));
+			}.bind(this));
+
+			return rects;
+		}
+
+		// traverse child nodes if node is not text node
+		if (DOM.nodeType != Node.TEXT_NODE) {
+
+			if (DOM.childNodes) {
+				for (var i = 0; i < DOM.childNodes.length; i++) {
+					rects = rects.concat(this.getRects(DOM.childNodes[i]));
+				}
+			}
+
+			return rects;
+		}
+
+		// Check this text node
+		var range = document.createRange();
+		range.selectNode(DOM);
+		var clientRects = range.getClientRects();
+
+		for (var index = 0; index < clientRects.length; index++) {
+			var rect = clientRects[index];
+			rects.push(rect);
+		}
+
+		return [
+			{
+				DOM: DOM,
+				rects: rects
+			}
+		];
+	}
+
 	getOffset(range) {
 
 		// if component cross over multiple doms

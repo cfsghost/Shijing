@@ -95,7 +95,7 @@ export default class Paragraph extends BlockComponent {
 				offscreen.resize(this.style.width, this.style.height);
 
 				// Apply inline layout
-				var layout = new InlineLayout(offscreen);
+				var layout = new InlineLayout(this, offscreen);
 				try {
 					this.lineViews = layout.grabLines($DOM[0]);
 				} catch(e) {
@@ -104,7 +104,7 @@ export default class Paragraph extends BlockComponent {
 				}
 
 				this.updateDOMs();
-
+//return resolve();
 				// Clear all then re-append lines
 				$DOM
 					.empty()
