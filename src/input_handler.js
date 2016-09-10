@@ -19,8 +19,8 @@ class InputHandler {
 				position: 'absolute',
 				top: 0,
 				left: 0,
-//				border: '1px solid orange',
 				border: '0px',
+//				border: '1px solid orange',
 				display: 'none'
 			});
 
@@ -45,6 +45,8 @@ class InputHandler {
 				});
 
 				preeditMode = true;
+
+				console.log('COMP START');
 			}.bind(this))
 			.on('compositionend', function(e) {
 
@@ -54,11 +56,19 @@ class InputHandler {
 				});
 
 				preeditMode = false;
+
+				console.log('COMP END', this.$inputBody.text());
 			}.bind(this))
 			.on('keydown', function(e) {
-				var cursor = this.ctx.ctx.caret;
 
-				if (e.which == 229) {
+				if (e.metaKey)
+					return true;
+
+				var cursor = this.ctx.ctx.caret;
+console.log('KEYDOWN', this.$inputBody.text());
+				//if (preeditMode && e.which == 229) {
+				//if (preeditMode) {
+				if (preeditMode || e.which == 229) {
 
 					if (!originContent) {
 						originContent = cursor.startNode.text.slice(0);
@@ -104,6 +114,30 @@ class InputHandler {
 
 					cursor.move(1);
 					cursor.show();
+
+					break;
+
+				case Key.Backspace:
+
+					// Getting text
+					var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
+
+					// Replace old text with new text
+					this.astHandler.setText(cursor.startNode, [
+						sets.before.substr(0, cursor.startOffset - 1),
+						sets.after
+					].join(''));
+
+					// done everything so we update now
+					var task = cursor.startNode.component.refresh();
+					task.then(function() {
+
+						// Set new position to caret
+						cursor.move(-1);
+						cursor.show();
+
+						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+					}.bind(this));
 
 					break;
 				}
