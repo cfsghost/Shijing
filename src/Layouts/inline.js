@@ -21,12 +21,12 @@ class Inline {
 		console.time('grabLines');
 
 		var rects = this.rootComponent.getRects();
-		console.log(rects);
+//		console.log(rects);
 
 		rects.forEach(function(rectSet) {
 			this._figureLineStates(rectSet.DOM, rectSet.rects);
 		}.bind(this));
-		console.log(this.lineStates);
+//		console.log(this.lineStates);
 		//this._figureLineStates(rects);
 /*
 		if (DOM.childNodes) {

@@ -10785,12 +10785,12 @@
 					console.time('grabLines');
 
 					var rects = this.rootComponent.getRects();
-					console.log(rects);
+					//		console.log(rects);
 
 					rects.forEach(function (rectSet) {
 						this._figureLineStates(rectSet.DOM, rectSet.rects);
 					}.bind(this));
-					console.log(this.lineStates);
+					//		console.log(this.lineStates);
 					//this._figureLineStates(rects);
 					/*
 		   		if (DOM.childNodes) {
@@ -12044,6 +12044,7 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var Key = {
+			ESC: 27,
 			Left: 37,
 			Up: 38,
 			Right: 39,
@@ -12076,8 +12077,10 @@
 
 				this.$inputBody = this.$inputBox.contents().find('body');
 
+				/* Keyboard events */
 				var originContent = null;
 				var preeditMode = false;
+				var updated = false;
 				this.$inputBody.attr('contenteditable', true).on('compositionstart', function (e) {
 					// Display input box
 					this.$inputBox.css({
@@ -12085,8 +12088,28 @@
 					});
 
 					preeditMode = true;
+					originContent = null;
 
 					console.log('COMP START');
+				}.bind(this)).on('compositionupdate', function (e) {
+					console.log('COMP UPDATE', e.originalEvent.data);
+					var cursor = this.ctx.ctx.caret;
+
+					if (!originContent) {
+						originContent = cursor.startNode.text.slice(0);
+					} else {
+						cursor.startNode.text = originContent.slice(0);
+					}
+
+					var str = e.originalEvent.data;
+					this.astHandler.insert(cursor.startNode, cursor.startOffset, str);
+
+					// done everything so we update now
+					var task = cursor.startNode.component.refresh();
+					task.then(function () {
+
+						return;
+					}.bind(this));
 				}.bind(this)).on('compositionend', function (e) {
 
 					// Hide input box
@@ -12096,53 +12119,24 @@
 
 					preeditMode = false;
 
-					console.log('COMP END', this.$inputBody.text());
+					console.log('COMP END', e.originalEvent.data, e);
 				}.bind(this)).on('keydown', function (e) {
 
 					if (e.metaKey) return true;
 
 					var cursor = this.ctx.ctx.caret;
-					console.log('KEYDOWN', this.$inputBody.text());
-					//if (preeditMode && e.which == 229) {
-					//if (preeditMode) {
-					if (preeditMode || e.which == 229) {
-
-						if (!originContent) {
-							originContent = cursor.startNode.text.slice(0);
-						} else {
-							cursor.startNode.text = originContent.slice(0);
-						}
-
-						var buffer = this.$inputBody.text();
-						this.astHandler.insert(cursor.startNode, cursor.startOffset, buffer);
-
-						// done everything so we update now
-						var task = cursor.startNode.component.refresh();
-						task.then(function () {
-
-							// Entered already
-							if (!preeditMode) {
-								this.$inputBody.empty();
-
-								// clear buffer
-								originContent = null;
-
-								// Set new position to caret
-								cursor.move(buffer.length);
-								cursor.show();
-
-								this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-							}
-						}.bind(this));
-
+					console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
+					if (preeditMode) {
 						return;
 					}
+
 					// Direction keys
 					switch (e.keyCode) {
 						case Key.Left:
 
 							cursor.move(-1);
 							cursor.show();
+							this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 							break;
 
@@ -12150,6 +12144,7 @@
 
 							cursor.move(1);
 							cursor.show();
+							this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 							break;
 
@@ -12173,7 +12168,36 @@
 							}.bind(this));
 
 							break;
+
+						case Key.ESC:
+
+							if (originContent) {
+								cursor.startNode.text = originContent;
+
+								// done everything so we update now
+								var task = cursor.startNode.component.refresh();
+								task.then(function () {
+
+									originContent = null;
+									this.$inputBody.empty();
+								}.bind(this));
+							}
+
+							break;
+
+						default:
+							if (originContent) {
+								originContent = null;
+
+								// Set new position to caret
+								cursor.move(this.$inputBody.text().length);
+								cursor.show();
+								this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+								this.$inputBody.empty();
+							}
 					}
+				}.bind(this)).on('input', function (e) {
+					console.log('INPUT', this.$inputBody.text(), e);
 				}.bind(this)).on('keypress', function (e) {
 
 					if (e.metaKey) return true;
@@ -12212,6 +12236,7 @@
 				key: 'focus',
 				value: function focus() {
 					console.log('FOCUS');
+					this.$inputBody.empty();
 					this.$inputBody.focus();
 				}
 			}]);
