@@ -197,10 +197,14 @@ console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
 
 	setCursorPosition(x, y) {
 
+		this.$inputBox.css({
+			top: y
+		});
+
 		this.$inputBody.css({
 			textIndent: x,
 			marginLeft: 0,
-			marginTop: y
+			marginTop: 0
 		});
 	}
 
