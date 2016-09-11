@@ -12066,7 +12066,8 @@
 					left: 0,
 					border: '0px',
 					//				border: '1px solid orange',
-					display: 'none'
+					display: 'none',
+					pointerEvents: 'none'
 				});
 
 				this.shiji.$overlay.append(this.$inputBox);
@@ -12076,7 +12077,9 @@
 				/* Keyboard events */
 				var originContent = null;
 				var preeditMode = false;
-				this.$inputBody.attr('contenteditable', true).on('compositionstart', function (e) {
+				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
+					this.$inputBody.empty();
+				}.bind(this)).on('compositionstart', function (e) {
 					// Display input box
 					this.$inputBox.css({
 						display: ''
@@ -12087,7 +12090,7 @@
 
 					console.log('COMP START');
 				}.bind(this)).on('compositionupdate', function (e) {
-					console.log('COMP UPDATE', e.originalEvent.data);
+					//				console.log('COMP UPDATE', e.originalEvent.data);
 					var cursor = this.ctx.ctx.caret;
 
 					if (!originContent) {
@@ -12114,7 +12117,7 @@
 
 					preeditMode = false;
 
-					console.log('COMP END', e.originalEvent.data, e);
+					//				console.log('COMP END', e.originalEvent.data, e);
 
 					var cursor = this.ctx.ctx.caret;
 					originContent = null;
@@ -12129,7 +12132,7 @@
 					if (e.metaKey) return true;
 
 					var cursor = this.ctx.ctx.caret;
-					console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
+					//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
 					if (preeditMode) {
 						return;
 					}
@@ -12220,9 +12223,16 @@
 				key: 'focus',
 				value: function focus() {
 					console.log('FOCUS');
-					this.$inputBody.empty();
 					this.$inputBody.focus();
-					this.$inputBody[0].setSelectionRange(0, 0);
+					this.$inputBody.empty();
+
+					// Workaround: reset input method because it is no reaction sometimes
+					var selection = this.$inputBox.get(0).contentWindow.getSelection();
+					var range = document.createRange();
+					range.selectNodeContents(this.$inputBody[0]);
+					range.collapse();
+					selection.removeAllRanges();
+					selection.addRange(range);
 				}
 			}]);
 

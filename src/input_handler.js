@@ -22,7 +22,8 @@ class InputHandler {
 				left: 0,
 				border: '0px',
 //				border: '1px solid orange',
-				display: 'none'
+				display: 'none',
+				pointerEvents: 'none'
 			});
 
 		this.shiji.$overlay.append(this.$inputBox);
@@ -36,6 +37,12 @@ class InputHandler {
 		var preeditMode = false;
 		this.$inputBody
 			.attr('contenteditable', true)
+			.attr('spellcheck', false)
+			.attr('aria-multiline', true)
+			.attr('role', 'textbox')
+			.on('blur', function(e) {
+				this.$inputBody.empty();
+			}.bind(this))
 			.on('compositionstart', function(e) {
 				// Display input box
 				this.$inputBox.css({
@@ -48,7 +55,7 @@ class InputHandler {
 				console.log('COMP START');
 			}.bind(this))
 			.on('compositionupdate', function(e) {
-				console.log('COMP UPDATE', e.originalEvent.data);
+//				console.log('COMP UPDATE', e.originalEvent.data);
 				var cursor = this.ctx.ctx.caret;
 
 				if (!originContent) {
@@ -77,7 +84,7 @@ class InputHandler {
 
 				preeditMode = false;
 
-				console.log('COMP END', e.originalEvent.data, e);
+//				console.log('COMP END', e.originalEvent.data, e);
 
 				var cursor = this.ctx.ctx.caret;
 				originContent = null;
@@ -95,7 +102,7 @@ class InputHandler {
 					return true;
 
 				var cursor = this.ctx.ctx.caret;
-console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
+//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
 				if (preeditMode) {
 					return;
 				}
@@ -190,9 +197,16 @@ console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
 
 	focus() {
 		console.log('FOCUS');
-		this.$inputBody.empty();
 		this.$inputBody.focus();
-		this.$inputBody[0].setSelectionRange(0, 0);
+		this.$inputBody.empty();
+
+		// Workaround: reset input method because it is no reaction sometimes
+		var selection = this.$inputBox.get(0).contentWindow.getSelection();
+		var range = document.createRange();
+		range.selectNodeContents(this.$inputBody[0]);
+		range.collapse();
+		selection.removeAllRanges();
+		selection.addRange(range);
 	}
 }
 
