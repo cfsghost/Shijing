@@ -64,7 +64,7 @@
 	shiji.loadAst({
 		root: {
 			childrens: [{
-				type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
+				type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
 			}, {
 				type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'orange' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
 			}]
@@ -8621,7 +8621,7 @@
 					position: 'absolute',
 					top: 0,
 					left: 0,
-					border: '1px solid black',
+					//			border: '1px solid black',
 					pointerEvents: 'none'
 				});
 
@@ -9284,8 +9284,12 @@
 
 						var node = this.node;
 						var text = this.node.text || '';
+						var defStyle = {
+							whiteSpace: 'pre-wrap',
+							wordBreak: 'break-all'
+						};
 
-						var $DOM = $('<span>').addClass('inline-component').html(text.replace(/ /g, '&nbsp')).css(node.style || {});
+						var $DOM = $('<span>').addClass('inline-component').html(text.replace(/ /g, '&nbsp')).css(node.style ? Object.assign(defStyle, node.style) : defStyle);
 
 						this.dom = $DOM[0];
 
@@ -9347,6 +9351,49 @@
 					var len = this.getLength(offset);
 
 					return len ? this.getLength(offset) + 1 : 0;
+				}
+			}, {
+				key: 'getRects',
+				value: function getRects(DOM) {
+
+					var rects = [];
+
+					if (!DOM) {
+						var doms = this.getDOMs();
+
+						doms.forEach(function (DOM) {
+							rects = rects.concat(this.getRects(DOM));
+						}.bind(this));
+
+						return rects;
+					}
+
+					// traverse child nodes if node is not text node
+					if (DOM.nodeType != Node.TEXT_NODE) {
+
+						if (DOM.childNodes) {
+							for (var i = 0; i < DOM.childNodes.length; i++) {
+								rects = rects.concat(this.getRects(DOM.childNodes[i]));
+							}
+						}
+
+						return rects;
+					}
+
+					// Check this text node
+					var range = document.createRange();
+					range.selectNode(DOM);
+					var clientRects = range.getClientRects();
+
+					for (var index = 0; index < clientRects.length; index++) {
+						var rect = clientRects[index];
+						rects.push(rect);
+					}
+
+					return [{
+						DOM: DOM,
+						rects: rects
+					}];
 				}
 			}, {
 				key: 'getOffset',
@@ -9644,6 +9691,25 @@
 					}
 
 					return this.dom;
+				}
+			}, {
+				key: 'getDOMs',
+				value: function getDOMs() {
+					if (this.dom instanceof Array) {
+						return this.dom;
+					}
+
+					return [this.dom];
+				}
+			}, {
+				key: 'getRects',
+				value: function getRects() {
+
+					var rects = [];
+					this.subComponents.forEach(function (component) {
+						rects = rects.concat(component.getRects());
+					});
+					return rects;
 				}
 			}, {
 				key: 'getParentComponent',
@@ -10025,6 +10091,27 @@
 					return 0;
 				}
 			}, {
+				key: 'getRects',
+				value: function getRects() {
+
+					var rects = [];
+
+					// Check this text node
+					var range = document.createRange();
+					range.selectNode(this.dom);
+					var clientRects = range.getClientRects();
+
+					for (var index = 0; index < clientRects.length; index++) {
+						var rect = clientRects[index];
+						rects.push(rect);
+					}
+
+					return [{
+						DOM: this.dom,
+						rects: rects
+					}];
+				}
+			}, {
 				key: 'setCursor',
 				value: function setCursor(cursor, offset) {
 
@@ -10362,7 +10449,7 @@
 							offscreen.resize(this.style.width, this.style.height);
 
 							// Apply inline layout
-							var layout = new _inline2.default(offscreen);
+							var layout = new _inline2.default(this, offscreen);
 							try {
 								this.lineViews = layout.grabLines($DOM[0]);
 							} catch (e) {
@@ -10371,7 +10458,7 @@
 							}
 
 							this.updateDOMs();
-
+							//return resolve();
 							// Clear all then re-append lines
 							$DOM.empty().append(this.lineViews);
 
@@ -10698,9 +10785,10 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var Inline = function () {
-			function Inline(offscreen) {
+			function Inline(rootComponent, offscreen) {
 				_classCallCheck(this, Inline);
 
+				this.rootComponent = rootComponent;
 				this.rootDOM = null;
 				this.range = document.createRange();
 				this.checkRange = document.createRange();
@@ -10721,12 +10809,21 @@
 
 					console.time('grabLines');
 
-					if (DOM.childNodes) {
-						for (var i = 0; i < DOM.childNodes.length; i++) {
-							this._grabRects(DOM.childNodes[i]);
-						}
-					}
+					var rects = this.rootComponent.getRects();
+					console.log(rects);
 
+					rects.forEach(function (rectSet) {
+						this._figureLineStates(rectSet.DOM, rectSet.rects);
+					}.bind(this));
+					//		console.log(this.lineStates);
+					//this._figureLineStates(rects);
+					/*
+		   		if (DOM.childNodes) {
+		   			for (var i = 0; i < DOM.childNodes.length; i++) {
+		   				this._grabRects(DOM.childNodes[i]);
+		   			}
+		   		}
+		   */
 					this._grabLines();
 					this._packLineViews();
 
@@ -10777,6 +10874,40 @@
 					}
 
 					this.lineMap = [];
+				}
+			}, {
+				key: '_figureLineStates',
+				value: function _figureLineStates(DOM, rects) {
+
+					for (var index = 0; index < rects.length; index++) {
+						var rect = rects[index];
+
+						var existed = false;
+						if (this.lineStates.length) {
+							var state = this.lineStates[this.lineStates.length - 1];
+
+							// The same line
+							if (rect.top >= state.rect.top && rect.top <= state.rect.bottom || rect.bottom >= state.rect.top && rect.bottom <= state.rect.bottom) {
+
+								if (rect.bottom > state.rect.bottom) state.rect.bottom = rect.bottom;
+
+								state.rect.right = rect.right;
+								existed = true;
+							}
+						}
+
+						if (!existed) {
+							this.lineStates.push({
+								DOM: DOM,
+								rect: {
+									top: rect.top,
+									bottom: rect.bottom,
+									left: rect.left,
+									right: rect.right
+								}
+							});
+						}
+					}
 				}
 			}, {
 				key: '_grabRects',
@@ -11990,25 +12121,16 @@
 
 					preeditMode = false;
 
-					console.log('COMP END');
-
-					var cursor = this.ctx.ctx.caret;
-
-					// clear buffer
-					originContent = null;
-
-					// Set new position to caret
-					cursor.move(this.$inputBody.text().length);
-					cursor.show();
-
-					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
-					this.$inputBody.empty();
+					console.log('COMP END', this.$inputBody.text());
 				}.bind(this)).on('keydown', function (e) {
+
+					if (e.metaKey) return true;
+
 					var cursor = this.ctx.ctx.caret;
 					console.log('KEYDOWN', this.$inputBody.text());
 					//if (preeditMode && e.which == 229) {
-					if (preeditMode) {
+					//if (preeditMode) {
+					if (preeditMode || e.which == 229) {
 
 						if (!originContent) {
 							originContent = cursor.startNode.text.slice(0);
@@ -12040,7 +12162,6 @@
 
 						return;
 					}
-
 					// Direction keys
 					switch (e.keyCode) {
 						case Key.Left:
@@ -12056,8 +12177,32 @@
 							cursor.show();
 
 							break;
+
+						case Key.Backspace:
+
+							// Getting text
+							var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
+
+							// Replace old text with new text
+							this.astHandler.setText(cursor.startNode, [sets.before.substr(0, cursor.startOffset - 1), sets.after].join(''));
+
+							// done everything so we update now
+							var task = cursor.startNode.component.refresh();
+							task.then(function () {
+
+								// Set new position to caret
+								cursor.move(-1);
+								cursor.show();
+
+								this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+							}.bind(this));
+
+							break;
 					}
 				}.bind(this)).on('keypress', function (e) {
+
+					if (e.metaKey) return true;
+
 					var cursor = this.ctx.ctx.caret;
 
 					this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));

@@ -8,7 +8,7 @@ class Offscreen {
 			position: 'absolute',
 			top: 0,
 			left: 0,
-			border: '1px solid black',
+//			border: '1px solid black',
 			pointerEvents: 'none'
 		});
 

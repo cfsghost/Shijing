@@ -100,7 +100,6 @@ console.log('KEYDOWN', this.$inputBody.text());
 
 					return;
 				}
-
 				// Direction keys
 				switch(e.keyCode) {
 				case Key.Left:
@@ -144,6 +143,10 @@ console.log('KEYDOWN', this.$inputBody.text());
 
 			}.bind(this))
 			.on('keypress', function(e) {
+
+				if (e.metaKey)
+					return true;
+
 				var cursor = this.ctx.ctx.caret;
 
 				this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));

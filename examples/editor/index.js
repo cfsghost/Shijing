@@ -11,7 +11,7 @@ shiji.loadAst({
 					{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
 					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
-					{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
+					{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
 					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
 					{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
