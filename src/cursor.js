@@ -1,13 +1,17 @@
+import events from 'events';
 
-class Cursor {
+class Cursor extends events.EventEmitter {
 
 	constructor(renderer) {
+		super();
+
 		this.renderer = renderer;
 		this.timer = -1;
 		this.startOffset = -1;
 		this.startNode = null;
 		this.endNode = null;
 		this.endOffest = null;
+		this.baseline = null;
 		this.$dom = $('<div>')
 			.css({
 				position: 'absolute',
@@ -103,6 +107,11 @@ class Cursor {
 				this.startNode.component.onFocus(this);
 			}
 		}
+
+		setTimeout(function() {
+			this.emit('update', this);
+		}.bind(this), 0);
+
 	}
 
 	setPosition(node, offset) {
@@ -117,6 +126,24 @@ class Cursor {
 		}, caret.style));
 
 		this._setPosition(node, offset);
+	}
+
+	setPositionByAxis(x, y) {
+		var range = document.caretRangeFromPoint(x, y);
+		var textNode = range.startContainer;
+		var offset = this.startOffset = range.startOffset;
+
+		range.detach();
+		
+		// We don't need text node, just getting its parent
+		var parentNode = textNode;
+		if (textNode.nodeType == Node.TEXT_NODE) {
+			parentNode = textNode.parentNode;
+		}
+
+		// Set position
+		this.setPositionByDOM(parentNode, offset);
+		this.show();
 	}
 
 	setPositionByDOM(dom, offset) {
@@ -199,6 +226,15 @@ class Cursor {
 		}
 
 		return newOffset;
+	}
+
+	moveUp() {
+
+		if (this.baseline == null)
+			this.baseline = this.$caret.css('left');
+
+
+
 	}
 
 	move(offset) {

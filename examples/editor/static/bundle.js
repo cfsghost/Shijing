@@ -8695,7 +8695,7 @@
 
 	/***/ },
 	/* 300 */
-	/***/ function(module, exports) {
+	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
 
@@ -8705,33 +8705,49 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _events = __webpack_require__(306);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var Cursor = function () {
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Cursor = function (_events$EventEmitter) {
+			_inherits(Cursor, _events$EventEmitter);
+
 			function Cursor(renderer) {
 				_classCallCheck(this, Cursor);
 
-				this.renderer = renderer;
-				this.timer = -1;
-				this.startOffset = -1;
-				this.startNode = null;
-				this.endNode = null;
-				this.endOffest = null;
-				this.$dom = $('<div>').css({
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
+
+				_this.renderer = renderer;
+				_this.timer = -1;
+				_this.startOffset = -1;
+				_this.startNode = null;
+				_this.endNode = null;
+				_this.endOffest = null;
+				_this.baseline = null;
+				_this.$dom = $('<div>').css({
 					position: 'absolute',
 					top: 0,
 					left: 0,
 					zIndex: 10000
 				});
 
-				this.$caret = $('<div>').css({
+				_this.$caret = $('<div>').css({
 					position: 'absolute',
 					background: 'red',
 					width: '2px',
 					height: '15px'
-				}).appendTo(this.$dom);
+				}).appendTo(_this.$dom);
 
-				renderer.shiji.$overlay.append(this.$dom);
+				renderer.shiji.$overlay.append(_this.$dom);
+				return _this;
 			}
 
 			_createClass(Cursor, [{
@@ -8811,6 +8827,10 @@
 							this.startNode.component.onFocus(this);
 						}
 					}
+
+					setTimeout(function () {
+						this.emit('update', this);
+					}.bind(this), 0);
 				}
 			}, {
 				key: 'setPosition',
@@ -8826,6 +8846,25 @@
 					}, caret.style));
 
 					this._setPosition(node, offset);
+				}
+			}, {
+				key: 'setPositionByAxis',
+				value: function setPositionByAxis(x, y) {
+					var range = document.caretRangeFromPoint(x, y);
+					var textNode = range.startContainer;
+					var offset = this.startOffset = range.startOffset;
+
+					range.detach();
+
+					// We don't need text node, just getting its parent
+					var parentNode = textNode;
+					if (textNode.nodeType == Node.TEXT_NODE) {
+						parentNode = textNode.parentNode;
+					}
+
+					// Set position
+					this.setPositionByDOM(parentNode, offset);
+					this.show();
 				}
 			}, {
 				key: 'setPositionByDOM',
@@ -8911,6 +8950,12 @@
 					return newOffset;
 				}
 			}, {
+				key: 'moveUp',
+				value: function moveUp() {
+
+					if (this.baseline == null) this.baseline = this.$caret.css('left');
+				}
+			}, {
 				key: 'move',
 				value: function move(offset) {
 
@@ -8965,7 +9010,7 @@
 			}]);
 
 			return Cursor;
-		}();
+		}(_events2.default.EventEmitter);
 
 		exports.default = Cursor;
 
@@ -11076,26 +11121,13 @@
 			// Set cursor position
 			renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
 				var cursor = this.ctx.caret;
-				var range = document.caretRangeFromPoint(e.clientX, e.clientY);
-				var textNode = range.startContainer;
-				var offset = cursor.startOffset = range.startOffset;
 
-				range.detach();
-
-				// We don't need text node, just getting its parent
-				var parentNode = textNode;
-				if (textNode.nodeType == Node.TEXT_NODE) {
-					parentNode = textNode.parentNode;
-				}
-
-				// Set position
-				cursor.setPositionByDOM(parentNode, offset);
-				cursor.show();
-
-				setTimeout(function () {
+				cursor.on('update', function (cursor) {
 					this.inputHandler.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 					this.inputHandler.focus();
-				}.bind(this), 0);
+				}.bind(this));
+
+				cursor.setPositionByAxis(e.clientX, e.clientY);
 			}.bind(this), false);
 		};
 
@@ -11956,6 +11988,12 @@
 
 					// Direction keys
 					switch (e.keyCode) {
+						case Key.Up:
+							break;
+
+						case Key.Down:
+							break;
+
 						case Key.Left:
 
 							cursor.move(-1);

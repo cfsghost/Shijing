@@ -109,6 +109,12 @@ class InputHandler {
 
 				// Direction keys
 				switch(e.keyCode) {
+				case Key.Up:
+					break;
+
+				case Key.Down:
+					break;
+
 				case Key.Left:
 
 					cursor.move(-1);
