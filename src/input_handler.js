@@ -52,7 +52,7 @@ class InputHandler {
 				preeditMode = true;
 				originContent = null;
 
-				console.log('COMP START');
+//				console.log('COMP START');
 			}.bind(this))
 			.on('compositionupdate', function(e) {
 //				console.log('COMP UPDATE', e.originalEvent.data);
@@ -153,9 +153,6 @@ class InputHandler {
 					this.$inputBody.empty();
 				}
 
-			}.bind(this))
-			.on('input', function(e) {
-				console.log('INPUT', this.$inputBody.text(), e);
 			}.bind(this))
 			.on('keypress', function(e) {
 
