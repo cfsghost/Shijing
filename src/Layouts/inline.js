@@ -26,7 +26,7 @@ class Inline {
 		rects.forEach(function(rectSet) {
 			this._figureLineStates(rectSet.DOM, rectSet.rects);
 		}.bind(this));
-//		console.log(this.lineStates);
+		console.log(this.lineStates);
 		//this._figureLineStates(rects);
 /*
 		if (DOM.childNodes) {
@@ -97,7 +97,7 @@ class Inline {
 				var state = this.lineStates[this.lineStates.length - 1];
 
 				// The same line
-				if ((rect.top >= state.rect.top && rect.top <= state.rect.bottom) ||
+				if ((rect.top >= state.rect.top && rect.top < state.rect.bottom) ||
 					(rect.bottom >= state.rect.top && rect.bottom <= state.rect.bottom)) {
 
 					if (rect.bottom > state.rect.bottom)

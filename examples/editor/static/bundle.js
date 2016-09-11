@@ -8732,31 +8732,6 @@
 				}).appendTo(this.$dom);
 
 				renderer.shiji.$overlay.append(this.$dom);
-				/*
-		  		// Set cursor position
-		  		renderer.shiji.$origin[0].addEventListener('mousedown', function(e) {
-		  			var range = document.caretRangeFromPoint(e.clientX, e.clientY);
-		  			var textNode = range.startContainer;
-		  			var offset = this.startOffset = range.startOffset;
-		  
-		  			range.detach();
-		  			
-		  			// We don't need text node, just getting its parent
-		  			var parentNode = textNode;
-		  			if (textNode.nodeType == Node.TEXT_NODE) {
-		  				parentNode = textNode.parentNode;
-		  			}
-		  
-		  			// Set position
-		  			this.setPositionByDOM(parentNode, offset);
-		  			this.show();
-		  
-		  			setTimeout(function() {
-		  				renderer.input.focus();
-		  			}, 0);
-		  
-		  		}.bind(this), false);
-		  */
 			}
 
 			_createClass(Cursor, [{
@@ -10815,7 +10790,7 @@
 					rects.forEach(function (rectSet) {
 						this._figureLineStates(rectSet.DOM, rectSet.rects);
 					}.bind(this));
-					//		console.log(this.lineStates);
+					console.log(this.lineStates);
 					//this._figureLineStates(rects);
 					/*
 		   		if (DOM.childNodes) {
@@ -10887,7 +10862,7 @@
 							var state = this.lineStates[this.lineStates.length - 1];
 
 							// The same line
-							if (rect.top >= state.rect.top && rect.top <= state.rect.bottom || rect.bottom >= state.rect.top && rect.bottom <= state.rect.bottom) {
+							if (rect.top >= state.rect.top && rect.top < state.rect.bottom || rect.bottom >= state.rect.top && rect.bottom <= state.rect.bottom) {
 
 								if (rect.bottom > state.rect.bottom) state.rect.bottom = rect.bottom;
 
