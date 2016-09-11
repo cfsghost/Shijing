@@ -12071,16 +12071,11 @@
 
 				this.shiji.$overlay.append(this.$inputBox);
 
-				$(this.$inputBox.get(0).contentWindow).on('load', function () {
-					console.log('ready');
-				});
-
 				this.$inputBody = this.$inputBox.contents().find('body');
 
 				/* Keyboard events */
 				var originContent = null;
 				var preeditMode = false;
-				var updated = false;
 				this.$inputBody.attr('contenteditable', true).on('compositionstart', function (e) {
 					// Display input box
 					this.$inputBox.css({
@@ -12120,6 +12115,15 @@
 					preeditMode = false;
 
 					console.log('COMP END', e.originalEvent.data, e);
+
+					var cursor = this.ctx.ctx.caret;
+					originContent = null;
+
+					// Set new position to caret
+					cursor.move(this.$inputBody.text().length);
+					cursor.show();
+					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+					this.$inputBody.empty();
 				}.bind(this)).on('keydown', function (e) {
 
 					if (e.metaKey) return true;
@@ -12169,32 +12173,8 @@
 
 							break;
 
-						case Key.ESC:
-
-							if (originContent) {
-								cursor.startNode.text = originContent;
-
-								// done everything so we update now
-								var task = cursor.startNode.component.refresh();
-								task.then(function () {
-
-									originContent = null;
-									this.$inputBody.empty();
-								}.bind(this));
-							}
-
-							break;
-
 						default:
-							if (originContent) {
-								originContent = null;
-
-								// Set new position to caret
-								cursor.move(this.$inputBody.text().length);
-								cursor.show();
-								this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-								this.$inputBody.empty();
-							}
+							this.$inputBody.empty();
 					}
 				}.bind(this)).on('input', function (e) {
 					console.log('INPUT', this.$inputBody.text(), e);
@@ -12242,6 +12222,7 @@
 					console.log('FOCUS');
 					this.$inputBody.empty();
 					this.$inputBody.focus();
+					this.$inputBody[0].setSelectionRange(0, 0);
 				}
 			}]);
 
