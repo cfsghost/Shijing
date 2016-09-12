@@ -1,0 +1,11 @@
+.shiji-lineview {
+	line-height: 1.15;
+}
+
+.shiji-paragraph {
+	margin-top: 1em;
+}
+
+.shiji-paragraph:first-child {
+	margin-top: 0px;
+}

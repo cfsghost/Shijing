@@ -130,7 +130,8 @@ export default class Paragraph extends BlockComponent {
 		var text = this.node.text || '';
 
 		// Create DOM
-		var $DOM = $('<p>')
+		var $DOM = $('<div>')
+			.addClass('shiji-paragraph')
 			.html(text.replace(/ /g, '&nbsp'))
 			.css(style);
 		

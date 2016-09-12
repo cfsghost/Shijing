@@ -3,6 +3,7 @@ import ActionDispatcher from './action_dispatcher';
 import ASTHandler from './ast_handler';
 import Actions from './Actions';
 
+require('./css/main.css');
 require('./css/loader.css');
 
 class Shiji {
