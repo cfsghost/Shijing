@@ -244,9 +244,8 @@ class Cursor extends events.EventEmitter {
 			return null;
 	}
 
-	moveUp() {
+	getLineView() {
 
-		var y;
 		var node = this.findLineViewManager(this.startNode);
 		if (node) {
 			// Getting DOM by using startNode and startOffset
@@ -260,14 +259,27 @@ class Cursor extends events.EventEmitter {
 
 				// Found
 				if (range.isPointInRange(pos.DOM)) {
-
-					// Previous line
-					if (index > 0) {
-						var $lineView = node.component.lineViews[index - 1];
-						y = $lineView.offset().top;
-					}
-					break;
+					return {
+						arr: node.component.lineViews,
+						lineView: lineView,
+						index: parseInt(index)
+					};
 				}
+			}
+		}
+
+		return null;
+	}
+
+	moveUp() {
+
+		var y;
+		var lineView = this.getLineView();
+		if (lineView) {
+			// Previous line
+			if (lineView.index > 0) {
+				var $lineView = lineView.arr[lineView.index - 1];
+				y = $lineView.offset().top;
 			}
 		}
 
@@ -289,28 +301,12 @@ class Cursor extends events.EventEmitter {
 	moveDown() {
 
 		var y;
-		var node = this.findLineViewManager(this.startNode);
-		if (node) {
-			// Getting DOM by using startNode and startOffset
-			var pos = this.startNode.component.getPosition(this.startOffset);
-			var range = document.createRange();
-
-			// Figure line which contains such DOM
-			for (var index in node.component.lineViews) {
-				var lineView = node.component.lineViews[index];
-				range.selectNode(lineView[0]);
-
-				// Found
-				if (range.isPointInRange(pos.DOM)) {
-
-					// Next line
-					if (parseInt(index) + 1 <= node.component.lineViews.length) {
-						var $lineView = node.component.lineViews[parseInt(index) + 1];
-						y = $lineView.offset().top;
-					}
-
-					break;
-				}
+		var lineView = this.getLineView();
+		if (lineView) {
+			// Next line
+			if (lineView.index + 1 <= lineView.arr.length) {
+				var $lineView = lineView.arr[lineView.index + 1];
+				y = $lineView.offset().top;
 			}
 		}
 
