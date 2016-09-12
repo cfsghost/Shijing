@@ -1,4 +1,5 @@
 import events from 'events';
+import Caret from './caret';
 
 class Cursor extends events.EventEmitter {
 
@@ -20,15 +21,20 @@ class Cursor extends events.EventEmitter {
 				zIndex: 10000
 			});
 
+		this.caret = new Caret();
+		this.caret.$dom.appendTo(this.$dom);
+/*
 		this.$caret = $('<div>')
 			.css({
 				position: 'absolute',
 				background: 'red',
 				width: '2px',
-				height: '15px'
+				height: '15px',
+				top: 0,
+				left: 0
 			})
 			.appendTo(this.$dom);
-
+*/
 		renderer.shiji.$overlay.append(this.$dom);
 	}
 
@@ -119,12 +125,17 @@ class Cursor extends events.EventEmitter {
 		// Figure out position
 		var caret = node.component.getCaret(offset);
 
+		this.caret.move(caret.x, caret.y);
+		this.caret.setStyle({
+			height: caret.height
+		});
+		/*
 		this.$caret.css(Object.assign({
 			height: caret.height,
 			left: caret.x,
 			top: caret.y
 		}, caret.style));
-
+*/
 		this._setPosition(node, offset);
 	}
 
@@ -152,12 +163,17 @@ class Cursor extends events.EventEmitter {
 
 		var point = this.figureCaretPoint(dom, offset);
 
+		this.caret.move(point.x, point.y);
+		this.caret.setStyle({
+			height: point.height
+		});
+/*
 		this.$caret.css({
 			height: point.height,
 			left: point.x,
 			top: point.y
 		});
-
+*/
 		// Find out component
 		var component =  this.renderer.getOwnerByDOM(dom);
 		if (component) {
@@ -230,11 +246,30 @@ class Cursor extends events.EventEmitter {
 
 	moveUp() {
 
+		var $container = this.renderer.shiji.$overlay;
+
 		if (this.baseline == null)
-			this.baseline = this.$caret.css('left');
+			this.baseline = this.caret.x;
 
+		var y = this.caret.y - this.caret.$dom.height();
+		if (y < 0)
+			y = 0;
 
+		this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+	}
 
+	moveDown() {
+
+		var $container = this.renderer.shiji.$overlay;
+
+		if (this.baseline == null)
+			this.baseline = this.caret.x;
+
+		var y = this.caret.y + this.caret.$dom.height();
+		if (y < 0)
+			y = 0;
+
+		this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 	}
 
 	move(offset) {
@@ -279,14 +314,7 @@ console.log('Cursor2', this.startNode, leftOffset);
 
 	show() {
 
-		clearInterval(this.timer);
-
-		this.$caret.show();
-
-		// Blinking
-		this.timer = setInterval(function() {
-			this.$caret.toggle();
-		}.bind(this), 400);
+		this.caret.show();
 	}
 
 }

@@ -7,17 +7,17 @@ class Input {
 		this.ctx = renderer;
 		this.astHandler = this.ctx.shiji.astHandler;
 		this.inputHandler = new InputHandler(this);
+		this.cursor = this.ctx.caret;
+
+		this.cursor.on('update', function() {
+			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
+			this.inputHandler.focus();
+		}.bind(this));
 
 		// Set cursor position
 		renderer.shiji.$origin[0].addEventListener('mousedown', function(e) {
-			var cursor = this.ctx.caret;
-
-			cursor.on('update', function(cursor) {
-				this.inputHandler.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-				this.inputHandler.focus();
-			}.bind(this));
-
-			cursor.setPositionByAxis(e.clientX, e.clientY);
+console.log('MOUSE', e.clientX, e.clientY);
+			this.cursor.setPositionByAxis(e.clientX, e.clientY);
 
 		}.bind(this), false);
 	}

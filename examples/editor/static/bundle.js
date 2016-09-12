@@ -8360,7 +8360,6 @@
 				this.shiji = shiji;
 				this.astHandler = shiji.astHandler;
 				this.Components = _Components2.default;
-				this.input = new _input2.default(this);
 
 				// Initializing offscreen buffer
 				this.offscreen = new _offscreen2.default(this);
@@ -8368,6 +8367,7 @@
 				// Initializing caret
 				//		this.caret = new Caret(this);
 				this.caret = new _cursor2.default(this);
+				this.input = new _input2.default(this);
 			}
 
 			_createClass(Renderer, [{
@@ -8709,6 +8709,10 @@
 
 		var _events2 = _interopRequireDefault(_events);
 
+		var _caret = __webpack_require__(301);
+
+		var _caret2 = _interopRequireDefault(_caret);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8739,13 +8743,20 @@
 					zIndex: 10000
 				});
 
-				_this.$caret = $('<div>').css({
-					position: 'absolute',
-					background: 'red',
-					width: '2px',
-					height: '15px'
-				}).appendTo(_this.$dom);
-
+				_this.caret = new _caret2.default();
+				_this.caret.$dom.appendTo(_this.$dom);
+				/*
+		  		this.$caret = $('<div>')
+		  			.css({
+		  				position: 'absolute',
+		  				background: 'red',
+		  				width: '2px',
+		  				height: '15px',
+		  				top: 0,
+		  				left: 0
+		  			})
+		  			.appendTo(this.$dom);
+		  */
 				renderer.shiji.$overlay.append(_this.$dom);
 				return _this;
 			}
@@ -8839,12 +8850,17 @@
 					// Figure out position
 					var caret = node.component.getCaret(offset);
 
-					this.$caret.css(Object.assign({
-						height: caret.height,
-						left: caret.x,
-						top: caret.y
-					}, caret.style));
-
+					this.caret.move(caret.x, caret.y);
+					this.caret.setStyle({
+						height: caret.height
+					});
+					/*
+		   this.$caret.css(Object.assign({
+		   	height: caret.height,
+		   	left: caret.x,
+		   	top: caret.y
+		   }, caret.style));
+		   */
 					this._setPosition(node, offset);
 				}
 			}, {
@@ -8874,12 +8890,17 @@
 
 					var point = this.figureCaretPoint(dom, offset);
 
-					this.$caret.css({
-						height: point.height,
-						left: point.x,
-						top: point.y
+					this.caret.move(point.x, point.y);
+					this.caret.setStyle({
+						height: point.height
 					});
-
+					/*
+		   		this.$caret.css({
+		   			height: point.height,
+		   			left: point.x,
+		   			top: point.y
+		   		});
+		   */
 					// Find out component
 					var component = this.renderer.getOwnerByDOM(dom);
 					if (component) {
@@ -8953,7 +8974,27 @@
 				key: 'moveUp',
 				value: function moveUp() {
 
-					if (this.baseline == null) this.baseline = this.$caret.css('left');
+					var $container = this.renderer.shiji.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					var y = this.caret.y - this.caret.$dom.height();
+					if (y < 0) y = 0;
+
+					this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+				}
+			}, {
+				key: 'moveDown',
+				value: function moveDown() {
+
+					var $container = this.renderer.shiji.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					var y = this.caret.y + this.caret.$dom.height();
+					if (y < 0) y = 0;
+
+					this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 				}
 			}, {
 				key: 'move',
@@ -8998,14 +9039,7 @@
 				key: 'show',
 				value: function show() {
 
-					clearInterval(this.timer);
-
-					this.$caret.show();
-
-					// Blinking
-					this.timer = setInterval(function () {
-						this.$caret.toggle();
-					}.bind(this), 400);
+					this.caret.show();
 				}
 			}]);
 
@@ -9029,210 +9063,49 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var Caret = function () {
-			function Caret(renderer) {
+			function Caret() {
 				_classCallCheck(this, Caret);
 
-				this.renderer = renderer;
-				this.timer = -1;
-				this.curComponent = null;
-				this.offset = 0;
+				this.timer = null;
+				this.x = 0;
+				this.y = 0;
 				this.$dom = $('<div>').css({
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					zIndex: 10000
-				});
-
-				this.$caret = $('<div>').css({
 					position: 'absolute',
 					background: 'red',
 					width: '2px',
 					height: '15px'
-				}).appendTo(this.$dom);
-
-				renderer.shiji.$container.append(this.$dom);
-
-				// Set cursor position
-				renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
-					var range = document.caretRangeFromPoint(e.clientX, e.clientY);
-					var textNode = range.startContainer;
-					var offset = this.offset = range.startOffset;
-
-					range.detach();
-
-					// We don't need text node, just getting its parent
-					var parentNode = textNode;
-					if (textNode.nodeType == Node.TEXT_NODE) {
-						parentNode = textNode.parentNode;
-					}
-
-					// Set position
-					this.setPositionByDOM(parentNode, offset);
-					this.show();
-				}.bind(this), false);
+				});
 			}
 
 			_createClass(Caret, [{
-				key: 'figureCaretPoint',
-				value: function figureCaretPoint(dom, offset) {
+				key: 'move',
+				value: function move(x, y) {
 
-					var $dom = $(dom);
-					var range = document.createRange();
-					var textNode = dom.childNodes[0];
-					var $container = this.renderer.shiji.$container;
+					this.x = x;
+					this.y = y;
 
-					var point = {
-						x: 0,
-						y: $dom.position().top,
-						height: $dom.height(),
-						lastChar: false,
-						range: range
-					};
-
-					// Notinhg left in this DOM
-					if (!textNode) {
-						point.x = $dom.offset().left - $container.position().left;
-						point.y = $dom.offset().top - $container.position().top;
-						range.selectNode(dom);
-					} else if (offset + 1 >= textNode.length) {
-
-						// Last character in a line
-						range.setStart(textNode, offset - 1);
-						range.setEnd(textNode, offset);
-						var rect = range.getBoundingClientRect();
-						point.x = rect.right - $container.position().left;
-						point.y = rect.top - $container.position().top;
-						point.lastChar = true;
-					} else {
-
-						range.setStart(textNode, offset);
-						range.setEnd(textNode, offset + 1);
-						var rect = range.getBoundingClientRect();
-						point.x = rect.left - $container.position().left;
-						point.y = rect.top - $container.position().top;
-					}
-
-					range.collapse(true);
-
-					return point;
-				}
-			}, {
-				key: '_setPosition',
-				value: function _setPosition(component, offset) {
-					this.offset = offset;
-
-					// Change component
-					var old = this.curComponent;
-					this.curComponent = component;
-
-					var changed = false;
-					if (component && old) {
-						if (component.node.id != old.node.id) {
-							changed = true;
-						}
-					}
-
-					if (changed) {
-
-						// fire events
-						if (old) {
-							old.onBlur();
-						}
-
-						component.onFocus();
-					}
-				}
-			}, {
-				key: 'getCurrentPosition',
-				value: function getCurrentPosition() {
-					return {
-						component: this.curComponent,
-						offset: this.offset
-					};
-				}
-			}, {
-				key: 'setPositionByNode',
-				value: function setPositionByNode(node, offset) {
-					return this.setPosition(node.component, offset);
-				}
-			}, {
-				key: 'setPositionByDOM',
-				value: function setPositionByDOM(dom, offset) {
-
-					var _offset = offset;
-					var point = this.figureCaretPoint(dom, offset);
-
-					this.$caret.css({
-						height: point.height,
-						left: point.x,
-						top: point.y
+					this.$dom.css({
+						left: x,
+						top: y
 					});
-
-					// Find out component
-					var component = this.renderer.getParentComponentByDOM(dom);
-					if (component) {
-						_offset = component.getOffset(point.range);
-
-						if (point.lastChar) {
-							_offset++;
-						}
-					}
-					console.log(component);
-					this._setPosition(component, _offset);
 				}
 			}, {
-				key: 'setPosition',
-				value: function setPosition(component, offset) {
+				key: 'setStyle',
+				value: function setStyle(styles) {
 
-					this._setPosition(component, offset);
-
-					// figure out position on the screen
-					var pos = component.getPosition(offset);
-					if (!pos.DOM) {
-						return pos.offset;
-					}
-
-					var point = this.figureCaretPoint(pos.DOM, pos.offset);
-
-					this.$caret.css({
-						height: point.height,
-						left: point.x,
-						top: point.y
-					});
-
-					return true;
-				}
-			}, {
-				key: 'shiftPosition',
-				value: function shiftPosition(offset) {
-					this.offset += offset;
-				}
-			}, {
-				key: 'insertText',
-				value: function insertText(text) {
-
-					if (!this.curComponent) return;
-
-					this.curComponent.insertText(this.offset, text);
-				}
-			}, {
-				key: 'blur',
-				value: function blur() {
-					clearInterval(this.timer);
-					this.$caret.hide();
-					this.curComponent = null;
-					this.offset = 0;
+					this.$dom.css(styles);
 				}
 			}, {
 				key: 'show',
 				value: function show() {
+
 					clearInterval(this.timer);
 
-					this.$caret.show();
+					this.$dom.show();
 
 					// Blinking
 					this.timer = setInterval(function () {
-						this.$caret.toggle();
+						this.$dom.toggle();
 					}.bind(this), 400);
 				}
 			}]);
@@ -11117,17 +10990,17 @@
 			this.ctx = renderer;
 			this.astHandler = this.ctx.shiji.astHandler;
 			this.inputHandler = new _input_handler2.default(this);
+			this.cursor = this.ctx.caret;
+
+			this.cursor.on('update', function () {
+				this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
+				this.inputHandler.focus();
+			}.bind(this));
 
 			// Set cursor position
 			renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
-				var cursor = this.ctx.caret;
-
-				cursor.on('update', function (cursor) {
-					this.inputHandler.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-					this.inputHandler.focus();
-				}.bind(this));
-
-				cursor.setPositionByAxis(e.clientX, e.clientY);
+				console.log('MOUSE', e.clientX, e.clientY);
+				this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			}.bind(this), false);
 		};
 
@@ -11974,7 +11847,7 @@
 					// Set new position to caret
 					cursor.move(this.$inputBody.text().length);
 					cursor.show();
-					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+					//				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 					this.$inputBody.empty();
 				}.bind(this)).on('keydown', function (e) {
 
@@ -11989,16 +11862,18 @@
 					// Direction keys
 					switch (e.keyCode) {
 						case Key.Up:
+							cursor.moveUp();
 							break;
 
 						case Key.Down:
+							cursor.moveDown();
 							break;
 
 						case Key.Left:
 
 							cursor.move(-1);
 							cursor.show();
-							this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 							break;
 
@@ -12006,7 +11881,7 @@
 
 							cursor.move(1);
 							cursor.show();
-							this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 							break;
 
@@ -12026,7 +11901,7 @@
 								cursor.move(-1);
 								cursor.show();
 
-								this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+								//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 							}.bind(this));
 
 							break;
@@ -12051,7 +11926,7 @@
 						cursor.move(1);
 						cursor.show();
 
-						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+						//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 					}.bind(this));
 
 					return false;

@@ -92,7 +92,7 @@ class InputHandler {
 				// Set new position to caret
 				cursor.move(this.$inputBody.text().length);
 				cursor.show();
-				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+//				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 				this.$inputBody.empty();
 
 			}.bind(this))
@@ -110,16 +110,18 @@ class InputHandler {
 				// Direction keys
 				switch(e.keyCode) {
 				case Key.Up:
+					cursor.moveUp();
 					break;
 
 				case Key.Down:
+					cursor.moveDown();
 					break;
 
 				case Key.Left:
 
 					cursor.move(-1);
 					cursor.show();
-					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 					break;
 
@@ -127,7 +129,7 @@ class InputHandler {
 
 					cursor.move(1);
 					cursor.show();
-					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 
 					break;
 
@@ -150,7 +152,7 @@ class InputHandler {
 						cursor.move(-1);
 						cursor.show();
 
-						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 					}.bind(this));
 
 					break;
@@ -178,7 +180,7 @@ class InputHandler {
 					cursor.move(1);
 					cursor.show();
 
-					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
 				}.bind(this));
 
 				return false;

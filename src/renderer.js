@@ -10,7 +10,6 @@ class Renderer {
 		this.shiji = shiji;
 		this.astHandler = shiji.astHandler;
 		this.Components = Components;
-		this.input = new Input(this);
 
 		// Initializing offscreen buffer
 		this.offscreen = new Offscreen(this);
@@ -18,6 +17,7 @@ class Renderer {
 		// Initializing caret
 //		this.caret = new Caret(this);
 		this.caret = new Cursor(this);
+		this.input = new Input(this);
 	}
 
 	removeComponent(component) {
