@@ -23,18 +23,7 @@ class Cursor extends events.EventEmitter {
 
 		this.caret = new Caret();
 		this.caret.$dom.appendTo(this.$dom);
-/*
-		this.$caret = $('<div>')
-			.css({
-				position: 'absolute',
-				background: 'red',
-				width: '2px',
-				height: '15px',
-				top: 0,
-				left: 0
-			})
-			.appendTo(this.$dom);
-*/
+
 		renderer.shiji.$overlay.append(this.$dom);
 	}
 
@@ -129,13 +118,7 @@ class Cursor extends events.EventEmitter {
 		this.caret.setStyle({
 			height: caret.height
 		});
-		/*
-		this.$caret.css(Object.assign({
-			height: caret.height,
-			left: caret.x,
-			top: caret.y
-		}, caret.style));
-*/
+
 		this._setPosition(node, offset);
 	}
 
@@ -172,13 +155,7 @@ class Cursor extends events.EventEmitter {
 		this.caret.setStyle({
 			height: point.height
 		});
-/*
-		this.$caret.css({
-			height: point.height,
-			left: point.x,
-			top: point.y
-		});
-*/
+
 		// Find out component
 		var component =  this.renderer.getOwnerByDOM(dom);
 		if (component) {

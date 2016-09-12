@@ -8745,18 +8745,7 @@
 
 				_this.caret = new _caret2.default();
 				_this.caret.$dom.appendTo(_this.$dom);
-				/*
-		  		this.$caret = $('<div>')
-		  			.css({
-		  				position: 'absolute',
-		  				background: 'red',
-		  				width: '2px',
-		  				height: '15px',
-		  				top: 0,
-		  				left: 0
-		  			})
-		  			.appendTo(this.$dom);
-		  */
+
 				renderer.shiji.$overlay.append(_this.$dom);
 				return _this;
 			}
@@ -8854,13 +8843,7 @@
 					this.caret.setStyle({
 						height: caret.height
 					});
-					/*
-		   this.$caret.css(Object.assign({
-		   	height: caret.height,
-		   	left: caret.x,
-		   	top: caret.y
-		   }, caret.style));
-		   */
+
 					this._setPosition(node, offset);
 				}
 			}, {
@@ -8900,13 +8883,7 @@
 					this.caret.setStyle({
 						height: point.height
 					});
-					/*
-		   		this.$caret.css({
-		   			height: point.height,
-		   			left: point.x,
-		   			top: point.y
-		   		});
-		   */
+
 					// Find out component
 					var component = this.renderer.getOwnerByDOM(dom);
 					if (component) {
