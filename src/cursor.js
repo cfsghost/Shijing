@@ -115,11 +115,13 @@ class Cursor extends events.EventEmitter {
 		var caret = node.component.getCaret(offset);
 
 		this.caret.move(caret.x, caret.y);
-		this.caret.setStyle({
-			height: caret.height
-		});
 
 		this._setPosition(node, offset);
+
+		this.caret.setStyle(Object.assign({
+			height: caret.height,
+			fontSize: $(caret.range.startNode).css('font-size')
+		}, node.style || {}));
 	}
 
 	_setPositionByAxis(x, y) {
