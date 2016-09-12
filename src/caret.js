@@ -26,7 +26,20 @@ class Caret {
 		});
 	}
 
+	applyDefaultStyles() {
+
+		this.$dom.removeAttr('style', '');
+		this.$dom.css({
+			left: this.x,
+			top: this.y,
+			position: 'absolute',
+			background: 'black'
+		});
+	}
+
 	setStyle(styles) {
+
+		this.applyDefaultStyles();
 
 		if (!styles.width) {
 			styles.width = '2px';

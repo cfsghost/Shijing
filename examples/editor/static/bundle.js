@@ -9141,8 +9141,22 @@
 					});
 				}
 			}, {
+				key: 'applyDefaultStyles',
+				value: function applyDefaultStyles() {
+
+					this.$dom.removeAttr('style', '');
+					this.$dom.css({
+						left: this.x,
+						top: this.y,
+						position: 'absolute',
+						background: 'black'
+					});
+				}
+			}, {
 				key: 'setStyle',
 				value: function setStyle(styles) {
+
+					this.applyDefaultStyles();
 
 					if (!styles.width) {
 						styles.width = '2px';
