@@ -28,6 +28,10 @@ class Caret {
 
 	setStyle(styles) {
 
+		if (!styles.width) {
+			styles.width = '2px';
+		}
+
 		this.$dom.css(styles);
 
 		if (styles.color) {
