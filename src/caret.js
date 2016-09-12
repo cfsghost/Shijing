@@ -29,6 +29,10 @@ class Caret {
 	setStyle(styles) {
 
 		this.$dom.css(styles);
+
+		if (styles.color) {
+			this.$dom.css('background', styles.color);
+		}
 	}
 
 	show() {

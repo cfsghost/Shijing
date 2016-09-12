@@ -6,8 +6,8 @@ class Input {
 
 		this.ctx = renderer;
 		this.astHandler = this.ctx.shiji.astHandler;
-		this.inputHandler = new InputHandler(this);
 		this.cursor = this.ctx.caret;
+		this.inputHandler = new InputHandler(this);
 
 		this.cursor.on('update', function() {
 			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);

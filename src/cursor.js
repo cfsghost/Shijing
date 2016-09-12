@@ -152,9 +152,6 @@ class Cursor extends events.EventEmitter {
 		var point = this.figureCaretPoint(dom, offset);
 
 		this.caret.move(point.x, point.y);
-		this.caret.setStyle({
-			height: point.height
-		});
 
 		// Find out component
 		var component =  this.renderer.getOwnerByDOM(dom);
@@ -170,6 +167,11 @@ class Cursor extends events.EventEmitter {
 
 		// Store it
 		this._setPosition(component.node, _offset);
+
+		this.caret.setStyle(Object.assign({
+			height: point.height,
+			fontSize: $(dom).css('font-size')
+		}, component.node.style || {}));
 	}
 
 	getCurrentPosition() {

@@ -8880,9 +8880,6 @@
 					var point = this.figureCaretPoint(dom, offset);
 
 					this.caret.move(point.x, point.y);
-					this.caret.setStyle({
-						height: point.height
-					});
 
 					// Find out component
 					var component = this.renderer.getOwnerByDOM(dom);
@@ -8898,6 +8895,11 @@
 
 					// Store it
 					this._setPosition(component.node, _offset);
+
+					this.caret.setStyle(Object.assign({
+						height: point.height,
+						fontSize: $(dom).css('font-size')
+					}, component.node.style || {}));
 				}
 			}, {
 				key: 'getCurrentPosition',
@@ -9078,6 +9080,10 @@
 				value: function setStyle(styles) {
 
 					this.$dom.css(styles);
+
+					if (styles.color) {
+						this.$dom.css('background', styles.color);
+					}
 				}
 			}, {
 				key: 'show',
@@ -10973,8 +10979,8 @@
 
 			this.ctx = renderer;
 			this.astHandler = this.ctx.shiji.astHandler;
-			this.inputHandler = new _input_handler2.default(this);
 			this.cursor = this.ctx.caret;
+			this.inputHandler = new _input_handler2.default(this);
 
 			this.cursor.on('update', function () {
 				this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
@@ -11774,6 +11780,7 @@
 					display: 'none',
 					pointerEvents: 'none'
 				});
+				this.cursor = this.ctx.cursor;
 
 				this.shiji.$overlay.append(this.$inputBox);
 
@@ -11934,6 +11941,11 @@
 				key: 'focus',
 				value: function focus() {
 					console.log('FOCUS');
+					this.$inputBody.css({
+						height: this.cursor.caret.$dom.css('height'),
+						fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
+						color: this.cursor.caret.$dom.css('color') || 'red'
+					});
 					this.$inputBody.focus();
 					this.$inputBody.empty();
 

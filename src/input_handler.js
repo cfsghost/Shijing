@@ -25,6 +25,7 @@ class InputHandler {
 				display: 'none',
 				pointerEvents: 'none'
 			});
+		this.cursor = this.ctx.cursor;
 
 		this.shiji.$overlay.append(this.$inputBox);
 
@@ -202,6 +203,11 @@ class InputHandler {
 
 	focus() {
 		console.log('FOCUS');
+		this.$inputBody.css({
+			height: this.cursor.caret.$dom.css('height'),
+			fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
+			color: this.cursor.caret.$dom.css('color') || 'red',
+		});
 		this.$inputBody.focus();
 		this.$inputBody.empty();
 
