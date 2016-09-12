@@ -206,6 +206,10 @@ class InputHandler {
 		this.$inputBody.css({
 			height: this.cursor.caret.$dom.css('height'),
 			fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
+			fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
+			fontWeight: this.cursor.caret.$dom.css('font-weight') || 'intital',
+			fontStyle: this.cursor.caret.$dom.css('font-style') || 'intital',
+			textDecoration: this.cursor.caret.$dom.css('text-decoration') || 'intital',
 			color: this.cursor.caret.$dom.css('color') || 'red',
 		});
 		this.$inputBody.focus();
