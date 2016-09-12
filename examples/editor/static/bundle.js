@@ -8864,8 +8864,8 @@
 					this._setPosition(node, offset);
 				}
 			}, {
-				key: 'setPositionByAxis',
-				value: function setPositionByAxis(x, y) {
+				key: '_setPositionByAxis',
+				value: function _setPositionByAxis(x, y) {
 					var range = document.caretRangeFromPoint(x, y);
 					var textNode = range.startContainer;
 					var offset = this.startOffset = range.startOffset;
@@ -8881,6 +8881,12 @@
 					// Set position
 					this.setPositionByDOM(parentNode, offset);
 					this.show();
+				}
+			}, {
+				key: 'setPositionByAxis',
+				value: function setPositionByAxis(x, y) {
+					this.baseline = null;
+					this._setPositionByAxis(x, y);
 				}
 			}, {
 				key: 'setPositionByDOM',
@@ -8981,7 +8987,7 @@
 					var y = this.caret.y - this.caret.$dom.height();
 					if (y < 0) y = 0;
 
-					this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 				}
 			}, {
 				key: 'moveDown',
@@ -8994,7 +9000,7 @@
 					var y = this.caret.y + this.caret.$dom.height();
 					if (y < 0) y = 0;
 
-					this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 				}
 			}, {
 				key: 'move',
@@ -11000,7 +11006,6 @@
 
 			// Set cursor position
 			renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
-				this.cursor.baseline = null;
 				this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			}.bind(this), false);
 		};

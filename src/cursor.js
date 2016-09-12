@@ -139,7 +139,7 @@ class Cursor extends events.EventEmitter {
 		this._setPosition(node, offset);
 	}
 
-	setPositionByAxis(x, y) {
+	_setPositionByAxis(x, y) {
 		var range = document.caretRangeFromPoint(x, y);
 		var textNode = range.startContainer;
 		var offset = this.startOffset = range.startOffset;
@@ -155,6 +155,11 @@ class Cursor extends events.EventEmitter {
 		// Set position
 		this.setPositionByDOM(parentNode, offset);
 		this.show();
+	}
+
+	setPositionByAxis(x, y) {
+		this.baseline = null;
+		this._setPositionByAxis(x, y);
 	}
 
 	setPositionByDOM(dom, offset) {
@@ -255,7 +260,7 @@ class Cursor extends events.EventEmitter {
 		if (y < 0)
 			y = 0;
 
-		this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+		this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 	}
 
 	moveDown() {
@@ -269,7 +274,7 @@ class Cursor extends events.EventEmitter {
 		if (y < 0)
 			y = 0;
 
-		this.setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+		this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 	}
 
 	move(offset) {

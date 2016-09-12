@@ -16,7 +16,6 @@ class Input {
 
 		// Set cursor position
 		renderer.shiji.$origin[0].addEventListener('mousedown', function(e) {
-			this.cursor.baseline = null;
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
 
 		}.bind(this), false);
