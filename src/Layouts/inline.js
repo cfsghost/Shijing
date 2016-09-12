@@ -63,10 +63,12 @@ class Inline {
 		}
 
 		// Create line view to store a line data
-		var $lineView = $('<div>').css({
-			background: '#cceeff',
-//				borderBottom: '1px solid black'
-		});
+		var $lineView = $('<div>')
+			.addClass('shiji-lineview')
+			.css({
+					background: '#cceeff',
+	//				borderBottom: '1px solid black'
+			});
 
 		$lineView.append(lineContent);
 

@@ -230,30 +230,97 @@ class Cursor extends events.EventEmitter {
 		return newOffset;
 	}
 
+	findLineViewManager(node) {
+
+		if (node.component.lineViews) {
+			return node;
+		}
+
+		var astHandler = this.renderer.shiji.astHandler;
+		var parentNode = astHandler.getParentNode(node);
+		if (parentNode)
+			return this.findLineViewManager(parentNode);
+		else
+			return null;
+	}
+
 	moveUp() {
+
+		var y;
+		var node = this.findLineViewManager(this.startNode);
+		if (node) {
+			// Getting DOM by using startNode and startOffset
+			var pos = this.startNode.component.getPosition(this.startOffset);
+			var range = document.createRange();
+
+			// Figure line which contains such DOM
+			for (var index in node.component.lineViews) {
+				var lineView = node.component.lineViews[index];
+				range.selectNode(lineView[0]);
+
+				// Found
+				if (range.isPointInRange(pos.DOM)) {
+
+					// Previous line
+					if (index > 0) {
+						var $lineView = node.component.lineViews[index - 1];
+						y = $lineView.offset().top;
+					}
+					break;
+				}
+			}
+		}
 
 		var $container = this.renderer.shiji.$overlay;
 
 		if (this.baseline == null)
 			this.baseline = this.caret.x;
 
-		var y = this.caret.y - this.caret.$dom.height();
-		if (y < 0)
-			y = 0;
+		if (y == undefined) {
+			y = this.caret.y - this.caret.$dom.height();
+			if (y < 0) {
+				y = 0;
+			}
+		}
 
 		this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 	}
 
 	moveDown() {
 
+		var y;
+		var node = this.findLineViewManager(this.startNode);
+		if (node) {
+			// Getting DOM by using startNode and startOffset
+			var pos = this.startNode.component.getPosition(this.startOffset);
+			var range = document.createRange();
+
+			// Figure line which contains such DOM
+			for (var index in node.component.lineViews) {
+				var lineView = node.component.lineViews[index];
+				range.selectNode(lineView[0]);
+
+				// Found
+				if (range.isPointInRange(pos.DOM)) {
+
+					// Next line
+					if (parseInt(index) + 1 <= node.component.lineViews.length) {
+						var $lineView = node.component.lineViews[parseInt(index) + 1];
+						y = $lineView.offset().top;
+					}
+
+					break;
+				}
+			}
+		}
+
 		var $container = this.renderer.shiji.$overlay;
 
 		if (this.baseline == null)
 			this.baseline = this.caret.x;
 
-		var y = this.caret.y + this.caret.$dom.height();
-		if (y < 0)
-			y = 0;
+		if (y == undefined)
+			y = this.caret.y + this.caret.$dom.height();
 
 		this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
 	}
