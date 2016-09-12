@@ -27,6 +27,7 @@ class Input extends events.EventEmitter {
 		renderer.shiji.$origin[0].addEventListener('mousemove', function(e) {
 			if (this.mousedown) {
 				this.dragging = true;
+				this.emit('dragging');
 			}
 		}.bind(this), false);
 

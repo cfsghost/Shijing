@@ -8208,15 +8208,15 @@
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
-		var _action_dispatcher = __webpack_require__(313);
+		var _action_dispatcher = __webpack_require__(314);
 
 		var _action_dispatcher2 = _interopRequireDefault(_action_dispatcher);
 
-		var _ast_handler = __webpack_require__(314);
+		var _ast_handler = __webpack_require__(315);
 
 		var _ast_handler2 = _interopRequireDefault(_ast_handler);
 
-		var _Actions = __webpack_require__(315);
+		var _Actions = __webpack_require__(316);
 
 		var _Actions2 = _interopRequireDefault(_Actions);
 
@@ -8226,8 +8226,8 @@
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+		__webpack_require__(318);
 		__webpack_require__(322);
-		__webpack_require__(317);
 
 		var Shiji = function () {
 			function Shiji(el) {
@@ -8338,11 +8338,11 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _caret = __webpack_require__(301);
+		var _caret = __webpack_require__(302);
 
 		var _caret2 = _interopRequireDefault(_caret);
 
-		var _Components = __webpack_require__(302);
+		var _Components = __webpack_require__(303);
 
 		var _Components2 = _interopRequireDefault(_Components);
 
@@ -8706,11 +8706,11 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(306);
+		var _events = __webpack_require__(301);
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _caret = __webpack_require__(301);
+		var _caret = __webpack_require__(302);
 
 		var _caret2 = _interopRequireDefault(_caret);
 
@@ -9119,6 +9119,12 @@
 	/* 301 */
 	/***/ function(module, exports) {
 
+		module.exports = __webpack_require__(4);
+
+	/***/ },
+	/* 302 */
+	/***/ function(module, exports) {
+
 		'use strict';
 
 		Object.defineProperty(exports, "__esModule", {
@@ -9205,7 +9211,7 @@
 		exports.default = Caret;
 
 	/***/ },
-	/* 302 */
+	/* 303 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9214,14 +9220,14 @@
 			value: true
 		});
 		exports.default = {
-			inline: __webpack_require__(303).default,
+			inline: __webpack_require__(304).default,
 			hiddenNode: __webpack_require__(307).default,
-			image: __webpack_require__(308).default,
-			paragraph: __webpack_require__(309).default
+			image: __webpack_require__(309).default,
+			paragraph: __webpack_require__(310).default
 		};
 
 	/***/ },
-	/* 303 */
+	/* 304 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9232,7 +9238,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(304);
+		var _InlineComponent2 = __webpack_require__(305);
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
@@ -9286,7 +9292,7 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 304 */
+	/* 305 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9297,7 +9303,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _Component2 = __webpack_require__(305);
+		var _Component2 = __webpack_require__(306);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -9513,7 +9519,7 @@
 		exports.default = InlineComponent;
 
 	/***/ },
-	/* 305 */
+	/* 306 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9524,7 +9530,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(306);
+		var _events = __webpack_require__(301);
 
 		var _events2 = _interopRequireDefault(_events);
 
@@ -9952,12 +9958,6 @@
 		exports.default = Component;
 
 	/***/ },
-	/* 306 */
-	/***/ function(module, exports) {
-
-		module.exports = __webpack_require__(4);
-
-	/***/ },
 	/* 307 */
 	/***/ function(module, exports, __webpack_require__) {
 
@@ -9969,7 +9969,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _BlockComponent2 = __webpack_require__(310);
+		var _BlockComponent2 = __webpack_require__(308);
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
@@ -10035,462 +10035,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(304);
-
-		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var caches = {};
-
-		var Image = function (_InlineComponent) {
-			_inherits(Image, _InlineComponent);
-
-			function Image(renderer, node, subComponents) {
-				_classCallCheck(this, Image);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Image).call(this, renderer, node, subComponents));
-
-				_this.loaded = false;
-				_this.allowedCursor = false;
-
-				// Inline block
-				_this.blockType = true;
-				return _this;
-			}
-
-			_createClass(Image, [{
-				key: 'getLength',
-				value: function getLength() {
-					return 0;
-				}
-			}, {
-				key: 'getRects',
-				value: function getRects() {
-
-					var rects = [];
-
-					// Check this text node
-					var range = document.createRange();
-					range.selectNode(this.dom);
-					var clientRects = range.getClientRects();
-
-					for (var index = 0; index < clientRects.length; index++) {
-						var rect = clientRects[index];
-						rects.push(rect);
-					}
-
-					return [{
-						DOM: this.dom,
-						rects: rects
-					}];
-				}
-			}, {
-				key: 'setCursor',
-				value: function setCursor(cursor, offset) {
-
-					// Ignore 
-					return offset + 1;
-				}
-			}, {
-				key: 'getPosition',
-				value: function getPosition(offset) {
-					return {
-						DOM: null,
-						offset: offset - 1
-					};
-				}
-			}, {
-				key: 'loadImage',
-				value: function loadImage() {
-
-					return new Promise(function (resolve) {
-
-						var style = {
-							width: 'initial',
-							height: 'initial'
-						};
-						if (this.node.style) {
-							if (this.node.style.width) style.width = this.node.style.width;
-
-							if (this.node.style.height) style.height = this.node.style.height;
-						}
-
-						var $dom = $(this.dom);
-
-						// Using cache if it exists
-						var cache = caches[this.node.src] || null;
-						if (cache) {
-
-							// Change container's appearance
-							$dom.css({
-								width: 'initial',
-								height: 'initial',
-								border: 'initial'
-							}).empty();
-
-							cache.clone().css(style).appendTo($dom);
-
-							return resolve();
-						}
-
-						// Create a new image object to load image and store it to be cache
-						var $img = $('<img>').css(style).load(function () {
-
-							this.loaded = true;
-							caches[this.node.src] = $img;
-
-							$dom.css({
-								width: null,
-								height: null,
-								border: 'initial'
-							}).empty().append($img);
-
-							resolve();
-						}.bind(this)).attr('src', this.node.src);
-					}.bind(this));
-				}
-			}, {
-				key: 'componentDidMount',
-				value: function () {
-					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-						return regeneratorRuntime.wrap(function _callee$(_context) {
-							while (1) {
-								switch (_context.prev = _context.next) {
-									case 0:
-										if (!this.loaded) {
-											_context.next = 2;
-											break;
-										}
-
-										return _context.abrupt('return');
-
-									case 2:
-										_context.next = 4;
-										return this.loadImage();
-
-									case 4:
-										return _context.abrupt('return', true);
-
-									case 5:
-									case 'end':
-										return _context.stop();
-								}
-							}
-						}, _callee, this);
-					}));
-
-					function componentDidMount() {
-						return _ref.apply(this, arguments);
-					}
-
-					return componentDidMount;
-				}()
-			}, {
-				key: 'render',
-				value: function render() {
-
-					return new Promise(function () {
-						var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(resolve) {
-							var node, style, $DOM, $loader;
-							return regeneratorRuntime.wrap(function _callee2$(_context2) {
-								while (1) {
-									switch (_context2.prev = _context2.next) {
-										case 0:
-											node = this.node;
-											style = Object.assign({}, this.node.style || {}, {
-												width: null,
-												height: null,
-												'box-sizing': 'border-box',
-												'-moz-box-sizing': 'border-box',
-												'-webkit-box-sizing': 'border-box',
-												border: '1px solid #5588ff',
-												display: 'inline-block',
-												background: 'white'
-											});
-											$DOM = $('<div>').css(style);
-
-
-											this.dom = $DOM[0];
-
-											// Loading directly if cache exists already
-
-											if (!caches[this.node.src]) {
-												_context2.next = 9;
-												break;
-											}
-
-											this.loaded = true;
-											_context2.next = 8;
-											return this.loadImage();
-
-										case 8:
-											return _context2.abrupt('return', resolve());
-
-										case 9:
-
-											// Initializing loader
-											$loader = $('<div>').addClass('loader').css({
-												width: '24px',
-												height: '24px',
-												margin: '10px'
-											}).appendTo($DOM);
-
-
-											resolve();
-
-										case 11:
-										case 'end':
-											return _context2.stop();
-									}
-								}
-							}, _callee2, this);
-						}));
-
-						return function (_x) {
-							return _ref2.apply(this, arguments);
-						};
-					}().bind(this));
-				}
-			}]);
-
-			return Image;
-		}(_InlineComponent3.default);
-
-		exports.default = Image;
-
-	/***/ },
-	/* 309 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-		var _BlockComponent2 = __webpack_require__(310);
-
-		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
-
-		var _inline = __webpack_require__(311);
-
-		var _inline2 = _interopRequireDefault(_inline);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var Paragraph = function (_BlockComponent) {
-			_inherits(Paragraph, _BlockComponent);
-
-			function Paragraph(renderer, node, subComponents) {
-				_classCallCheck(this, Paragraph);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Paragraph).call(this, renderer, node, subComponents));
-
-				_this.lineViews = [];
-				_this.style = {};
-				return _this;
-			}
-
-			_createClass(Paragraph, [{
-				key: 'componentDidMount',
-				value: function () {
-					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-						var refresh;
-						return regeneratorRuntime.wrap(function _callee$(_context) {
-							while (1) {
-								switch (_context.prev = _context.next) {
-									case 0:
-										_context.next = 2;
-										return _get(Object.getPrototypeOf(Paragraph.prototype), 'componentDidMount', this).call(this);
-
-									case 2:
-										refresh = _context.sent;
-
-										if (!refresh) {
-											_context.next = 6;
-											break;
-										}
-
-										_context.next = 6;
-										return this.refresh();
-
-									case 6:
-									case 'end':
-										return _context.stop();
-								}
-							}
-						}, _callee, this);
-					}));
-
-					function componentDidMount() {
-						return _ref.apply(this, arguments);
-					}
-
-					return componentDidMount;
-				}()
-			}, {
-				key: 'getOffset',
-				value: function getOffset(range) {
-
-					// If this medthod was called, that means text node only in this component
-					var offset = range.startOffset;
-
-					// Finding line view which contains range
-					for (var index in this.lineViews) {
-						var lineView = this.lineViews[index][0];
-
-						if (range.intersectsNode(lineView)) break;
-
-						// Count length of text node before line view which contains range
-						offset += lineView.childNodes[0].length;
-					}
-
-					return offset;
-				}
-				/*
-		  	getPosition(offset) {
-		  
-		  		var count = offset;
-		  		for (var index in this.lineViews) {
-		  			var dom = this.lineViews[index][0];
-		  			var textNode = dom.childNodes[0];
-		  
-		  			if (textNode.length < count) {
-		  				count -= textNode.length;
-		  			} else {
-		  				return {
-		  					DOM: dom,
-		  					offset: count
-		  				};
-		  			}
-		  		}
-		  	}
-		  */
-
-			}, {
-				key: 'updateDOMs',
-				value: function updateDOMs() {
-
-					// sync dom of all components because original dom might be splited by inline layout
-					this.subComponents.forEach(function (component) {
-
-						var doms = [];
-						for (var index in this.lineViews) {
-							var lineView = this.lineViews[index];
-							var dom = $(lineView).find('[shijiref=' + component.node.id + ']').first();
-
-							if (dom.length) {
-								doms.push(dom[0]);
-							} else if (doms.length > 0 && !dom.length) {
-								// Not found DOM anymore
-								break;
-							}
-						}
-
-						component.dom = doms.length > 1 ? doms : doms[0];
-					}.bind(this));
-				}
-			}, {
-				key: 'layout',
-				value: function layout($DOM) {
-
-					var offscreen = this.renderer.offscreen;
-
-					return new Promise(function (resolve) {
-
-						// Split by line by using offscreen
-						var renderTask = offscreen.render($DOM);
-						renderTask.then(function () {
-
-							// Initializing offscreen
-							offscreen.getContent().css({
-								whiteSpace: 'pre-wrap',
-								wordBreak: 'break-all'
-							});
-							offscreen.resize(this.style.width, this.style.height);
-
-							// Apply inline layout
-							var layout = new _inline2.default(this, offscreen);
-							try {
-								this.lineViews = layout.grabLines($DOM[0]);
-							} catch (e) {
-								console.log(e);
-								console.log($DOM);
-							}
-
-							this.updateDOMs();
-							//return resolve();
-							// Clear all then re-append lines
-							$DOM.empty().append(this.lineViews);
-
-							// Clear offscreen buffer
-							offscreen.empty();
-
-							resolve();
-						}.bind(this));
-					}.bind(this));
-				}
-			}, {
-				key: 'render',
-				value: function render() {
-
-					// Figuring style
-					var style = this.style = Object.assign({}, this.node.parent ? {
-						width: this.node.parent.style.width
-					} : {}, this.node.style || {});
-
-					var text = this.node.text || '';
-
-					// Create DOM
-					var $DOM = $('<div>').addClass('shiji-paragraph').html(text.replace(/ /g, '&nbsp')).css(style);
-
-					this.dom = $DOM[0];
-
-					if (this.subComponents) this.renderer.appendComponents(this, this.subComponents);
-
-					return this.layout($DOM);
-				}
-			}]);
-
-			return Paragraph;
-		}(_BlockComponent3.default);
-
-		exports.default = Paragraph;
-
-	/***/ },
-	/* 310 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		var _Component2 = __webpack_require__(305);
+		var _Component2 = __webpack_require__(306);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -10751,6 +10296,467 @@
 		}(_Component3.default);
 
 		exports.default = BlockComponent;
+
+	/***/ },
+	/* 309 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _InlineComponent2 = __webpack_require__(305);
+
+		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
+
+		var _ImageLoader = __webpack_require__(324);
+
+		var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var imageLoader = new _ImageLoader2.default();
+
+		var Image = function (_InlineComponent) {
+			_inherits(Image, _InlineComponent);
+
+			function Image(renderer, node, subComponents) {
+				_classCallCheck(this, Image);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Image).call(this, renderer, node, subComponents));
+
+				_this.loaded = false;
+				_this.allowedCursor = false;
+
+				// Inline block
+				_this.blockType = true;
+				return _this;
+			}
+
+			_createClass(Image, [{
+				key: 'getLength',
+				value: function getLength() {
+					return 0;
+				}
+			}, {
+				key: 'getRects',
+				value: function getRects() {
+
+					var rects = [];
+
+					// Check this text node
+					var range = document.createRange();
+					range.selectNode(this.dom);
+					var clientRects = range.getClientRects();
+
+					for (var index = 0; index < clientRects.length; index++) {
+						var rect = clientRects[index];
+						rects.push(rect);
+					}
+
+					return [{
+						DOM: this.dom,
+						rects: rects
+					}];
+				}
+			}, {
+				key: 'setCursor',
+				value: function setCursor(cursor, offset) {
+
+					// Ignore 
+					return offset + 1;
+				}
+			}, {
+				key: 'getPosition',
+				value: function getPosition(offset) {
+					return {
+						DOM: null,
+						offset: offset - 1
+					};
+				}
+			}, {
+				key: '_loadImage',
+				value: function _loadImage(style, src) {
+
+					var $dom = $(this.dom);
+
+					// Change container's appearance
+					$dom.css({
+						width: 'initial',
+						height: 'initial',
+						border: 'initial'
+					}).empty();
+
+					// Create a new image object
+					$('<img>').attr('src', src).css(style).appendTo($dom);
+				}
+			}, {
+				key: 'loadImage',
+				value: function loadImage() {
+
+					return new Promise(function (resolve) {
+
+						var style = {
+							width: 'initial',
+							height: 'initial',
+							verticalAlign: 'bottom'
+						};
+						if (this.node.style) {
+							if (this.node.style.width) style.width = this.node.style.width;
+
+							if (this.node.style.height) style.height = this.node.style.height;
+						}
+
+						// Loading image
+						var obj = imageLoader.load(this.node.src);
+						if (obj) {
+
+							this._loadImage(style, obj[0].src);
+							return resolve();
+						}
+
+						// Waiting for image 
+						imageLoader.once(this.node.src, function (obj) {
+							this._loadImage(style, obj[0].src);
+							resolve();
+						}.bind(this));
+					}.bind(this));
+				}
+			}, {
+				key: 'componentDidMount',
+				value: function () {
+					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+						return regeneratorRuntime.wrap(function _callee$(_context) {
+							while (1) {
+								switch (_context.prev = _context.next) {
+									case 0:
+										if (!this.loaded) {
+											_context.next = 2;
+											break;
+										}
+
+										return _context.abrupt('return', false);
+
+									case 2:
+										_context.next = 4;
+										return this.loadImage();
+
+									case 4:
+										return _context.abrupt('return', true);
+
+									case 5:
+									case 'end':
+										return _context.stop();
+								}
+							}
+						}, _callee, this);
+					}));
+
+					function componentDidMount() {
+						return _ref.apply(this, arguments);
+					}
+
+					return componentDidMount;
+				}()
+			}, {
+				key: 'render',
+				value: function render() {
+
+					return new Promise(function () {
+						var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(resolve) {
+							var node, style, $DOM, $loader;
+							return regeneratorRuntime.wrap(function _callee2$(_context2) {
+								while (1) {
+									switch (_context2.prev = _context2.next) {
+										case 0:
+											node = this.node;
+											style = Object.assign({}, this.node.style || {}, {
+												width: null,
+												height: null,
+												display: 'inline-block',
+												background: 'white'
+											});
+											$DOM = $('<div>').css(style);
+
+
+											this.dom = $DOM[0];
+
+											// Loading directly if cache exists already
+
+											if (!imageLoader.exists(this.node.src)) {
+												_context2.next = 9;
+												break;
+											}
+
+											this.loaded = true;
+											_context2.next = 8;
+											return this.loadImage();
+
+										case 8:
+											return _context2.abrupt('return', resolve());
+
+										case 9:
+
+											// Setup background and border
+											$DOM.css({
+												'box-sizing': 'border-box',
+												'-moz-box-sizing': 'border-box',
+												'-webkit-box-sizing': 'border-box',
+												border: '1px solid #5588ff'
+											});
+
+											// Initializing loader
+											$loader = $('<div>').addClass('loader').css({
+												width: '24px',
+												height: '24px',
+												margin: '10px'
+											}).appendTo($DOM);
+
+
+											resolve();
+
+										case 12:
+										case 'end':
+											return _context2.stop();
+									}
+								}
+							}, _callee2, this);
+						}));
+
+						return function (_x) {
+							return _ref2.apply(this, arguments);
+						};
+					}().bind(this));
+				}
+			}]);
+
+			return Image;
+		}(_InlineComponent3.default);
+
+		exports.default = Image;
+
+	/***/ },
+	/* 310 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+		var _BlockComponent2 = __webpack_require__(308);
+
+		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
+
+		var _inline = __webpack_require__(311);
+
+		var _inline2 = _interopRequireDefault(_inline);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Paragraph = function (_BlockComponent) {
+			_inherits(Paragraph, _BlockComponent);
+
+			function Paragraph(renderer, node, subComponents) {
+				_classCallCheck(this, Paragraph);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Paragraph).call(this, renderer, node, subComponents));
+
+				_this.lineViews = [];
+				_this.style = {};
+				return _this;
+			}
+
+			_createClass(Paragraph, [{
+				key: 'componentDidMount',
+				value: function () {
+					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+						var refresh;
+						return regeneratorRuntime.wrap(function _callee$(_context) {
+							while (1) {
+								switch (_context.prev = _context.next) {
+									case 0:
+										_context.next = 2;
+										return _get(Object.getPrototypeOf(Paragraph.prototype), 'componentDidMount', this).call(this);
+
+									case 2:
+										refresh = _context.sent;
+
+										if (!refresh) {
+											_context.next = 6;
+											break;
+										}
+
+										_context.next = 6;
+										return this.refresh();
+
+									case 6:
+									case 'end':
+										return _context.stop();
+								}
+							}
+						}, _callee, this);
+					}));
+
+					function componentDidMount() {
+						return _ref.apply(this, arguments);
+					}
+
+					return componentDidMount;
+				}()
+			}, {
+				key: 'getOffset',
+				value: function getOffset(range) {
+
+					// If this medthod was called, that means text node only in this component
+					var offset = range.startOffset;
+
+					// Finding line view which contains range
+					for (var index in this.lineViews) {
+						var lineView = this.lineViews[index][0];
+
+						if (range.intersectsNode(lineView)) break;
+
+						// Count length of text node before line view which contains range
+						offset += lineView.childNodes[0].length;
+					}
+
+					return offset;
+				}
+				/*
+		  	getPosition(offset) {
+		  
+		  		var count = offset;
+		  		for (var index in this.lineViews) {
+		  			var dom = this.lineViews[index][0];
+		  			var textNode = dom.childNodes[0];
+		  
+		  			if (textNode.length < count) {
+		  				count -= textNode.length;
+		  			} else {
+		  				return {
+		  					DOM: dom,
+		  					offset: count
+		  				};
+		  			}
+		  		}
+		  	}
+		  */
+
+			}, {
+				key: 'updateDOMs',
+				value: function updateDOMs() {
+
+					// sync dom of all components because original dom might be splited by inline layout
+					this.subComponents.forEach(function (component) {
+
+						var doms = [];
+						for (var index in this.lineViews) {
+							var lineView = this.lineViews[index];
+							var dom = $(lineView).find('[shijiref=' + component.node.id + ']').first();
+
+							if (dom.length) {
+								doms.push(dom[0]);
+							} else if (doms.length > 0 && !dom.length) {
+								// Not found DOM anymore
+								break;
+							}
+						}
+
+						component.dom = doms.length > 1 ? doms : doms[0];
+					}.bind(this));
+				}
+			}, {
+				key: 'layout',
+				value: function layout($DOM) {
+
+					var offscreen = this.renderer.offscreen;
+
+					return new Promise(function (resolve) {
+
+						// Split by line by using offscreen
+						var renderTask = offscreen.render($DOM);
+						renderTask.then(function () {
+
+							// Initializing offscreen
+							offscreen.getContent().css({
+								whiteSpace: 'pre-wrap',
+								wordBreak: 'break-all'
+							});
+							offscreen.resize(this.style.width, this.style.height);
+
+							// Apply inline layout
+							var layout = new _inline2.default(this, offscreen);
+							try {
+								this.lineViews = layout.grabLines($DOM[0]);
+							} catch (e) {
+								console.log(e);
+								console.log($DOM);
+							}
+
+							this.updateDOMs();
+							//return resolve();
+							// Clear all then re-append lines
+							$DOM.empty().append(this.lineViews);
+
+							// Clear offscreen buffer
+							offscreen.empty();
+
+							resolve();
+						}.bind(this));
+					}.bind(this));
+				}
+			}, {
+				key: 'render',
+				value: function render() {
+
+					// Figuring style
+					var style = this.style = Object.assign({}, this.node.parent ? {
+						width: this.node.parent.style.width
+					} : {}, this.node.style || {});
+
+					var text = this.node.text || '';
+
+					// Create DOM
+					var $DOM = $('<div>').addClass('shiji-paragraph').html(text.replace(/ /g, '&nbsp')).css(style);
+
+					this.dom = $DOM[0];
+
+					if (this.subComponents) this.renderer.appendComponents(this, this.subComponents);
+
+					return this.layout($DOM);
+				}
+			}]);
+
+			return Paragraph;
+		}(_BlockComponent3.default);
+
+		exports.default = Paragraph;
 
 	/***/ },
 	/* 311 */
@@ -11065,11 +11071,11 @@
 			value: true
 		});
 
-		var _events = __webpack_require__(306);
+		var _events = __webpack_require__(301);
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _input_handler = __webpack_require__(321);
+		var _input_handler = __webpack_require__(313);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
@@ -11110,6 +11116,7 @@
 				renderer.shiji.$origin[0].addEventListener('mousemove', function (e) {
 					if (this.mousedown) {
 						this.dragging = true;
+						this.emit('dragging');
 					}
 				}.bind(_this), false);
 
@@ -11127,6 +11134,241 @@
 
 	/***/ },
 	/* 313 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Key = {
+			Enter: 13,
+			ESC: 27,
+			Left: 37,
+			Up: 38,
+			Right: 39,
+			Down: 40,
+			Backspace: 8
+		};
+
+		var InputHandler = function () {
+			function InputHandler(input) {
+				_classCallCheck(this, InputHandler);
+
+				this.ctx = input;
+				this.shiji = this.ctx.ctx.shiji;
+				this.astHandler = this.ctx.astHandler;
+				this.$inputBox = $('<iframe>').css({
+					width: this.shiji.$origin.width(),
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					border: '0px',
+					//				border: '1px solid orange',
+					display: 'none',
+					pointerEvents: 'none'
+				});
+				this.cursor = this.ctx.cursor;
+
+				this.shiji.$overlay.append(this.$inputBox);
+
+				this.$inputBody = this.$inputBox.contents().find('body');
+
+				/* Keyboard events */
+				var originContent = null;
+				var preeditMode = false;
+				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
+					this.$inputBody.empty();
+				}.bind(this)).on('compositionstart', function (e) {
+					// Display input box
+					this.$inputBox.css({
+						display: ''
+					});
+
+					preeditMode = true;
+					originContent = null;
+
+					//				console.log('COMP START');
+				}.bind(this)).on('compositionupdate', function (e) {
+					//				console.log('COMP UPDATE', e.originalEvent.data);
+					var cursor = this.ctx.ctx.caret;
+
+					if (!originContent) {
+						originContent = cursor.startNode.text.slice(0);
+					} else {
+						cursor.startNode.text = originContent.slice(0);
+					}
+
+					var str = e.originalEvent.data;
+					this.astHandler.insert(cursor.startNode, cursor.startOffset, str);
+
+					// done everything so we update now
+					var task = cursor.startNode.component.refresh();
+					task.then(function () {
+
+						// Update position of input handler
+						cursor.update();
+					}.bind(this));
+				}.bind(this)).on('compositionend', function (e) {
+
+					// Hide input box
+					this.$inputBox.css({
+						display: 'none'
+					});
+
+					preeditMode = false;
+
+					//				console.log('COMP END', e.originalEvent.data, e);
+
+					var cursor = this.ctx.ctx.caret;
+					originContent = null;
+
+					// Set new position to caret
+					cursor.move(this.$inputBody.text().length);
+					cursor.show();
+					//				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+					this.$inputBody.empty();
+				}.bind(this)).on('keydown', function (e) {
+
+					if (e.metaKey) return true;
+
+					var cursor = this.ctx.ctx.caret;
+					//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
+					if (preeditMode) {
+						return;
+					}
+
+					// Direction keys
+					switch (e.keyCode) {
+						case Key.Up:
+							cursor.moveUp();
+							break;
+
+						case Key.Down:
+							cursor.moveDown();
+							break;
+
+						case Key.Left:
+
+							cursor.move(-1);
+							cursor.show();
+							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+
+							break;
+
+						case Key.Right:
+
+							cursor.move(1);
+							cursor.show();
+							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+
+							break;
+
+						case Key.Enter:
+
+							break;
+
+						case Key.Backspace:
+
+							// Getting text
+							var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
+
+							// Replace old text with new text
+							this.astHandler.setText(cursor.startNode, [sets.before.substr(0, cursor.startOffset - 1), sets.after].join(''));
+
+							// done everything so we update now
+							var task = cursor.startNode.component.refresh();
+							task.then(function () {
+
+								// Set new position to caret
+								cursor.move(-1);
+								cursor.show();
+
+								//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+							}.bind(this));
+
+							break;
+
+						default:
+							this.$inputBody.empty();
+					}
+				}.bind(this)).on('keypress', function (e) {
+
+					if (e.metaKey) return true;
+
+					var cursor = this.ctx.ctx.caret;
+
+					this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
+
+					// done everything so we update now
+					var task = cursor.startNode.component.refresh();
+					task.then(function () {
+						this.$inputBody.empty();
+
+						// Set new position to caret
+						cursor.move(1);
+						cursor.show();
+
+						//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+					}.bind(this));
+
+					return false;
+				}.bind(this));
+			}
+
+			_createClass(InputHandler, [{
+				key: 'setCursorPosition',
+				value: function setCursorPosition(x, y) {
+
+					this.$inputBox.css({
+						top: y
+					});
+
+					this.$inputBody.css({
+						textIndent: x,
+						marginLeft: 0,
+						marginTop: 0
+					});
+				}
+			}, {
+				key: 'focus',
+				value: function focus() {
+					console.log('FOCUS');
+					this.$inputBody.css({
+						lineHeight: 1.15,
+						height: this.cursor.caret.$dom.css('height'),
+						fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
+						fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
+						fontWeight: this.cursor.caret.$dom.css('font-weight') || 'intital',
+						fontStyle: this.cursor.caret.$dom.css('font-style') || 'intital',
+						textDecoration: this.cursor.caret.$dom.css('text-decoration') || 'intital',
+						color: this.cursor.caret.$dom.css('color') || 'red'
+					});
+					this.$inputBody.focus();
+					this.$inputBody.empty();
+
+					// Workaround: reset input method because it is no reaction sometimes
+					var selection = this.$inputBox.get(0).contentWindow.getSelection();
+					var range = document.createRange();
+					range.selectNodeContents(this.$inputBody[0]);
+					range.collapse();
+					selection.removeAllRanges();
+					selection.addRange(range);
+				}
+			}]);
+
+			return InputHandler;
+		}();
+
+		exports.default = InputHandler;
+
+	/***/ },
+	/* 314 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11135,7 +11377,7 @@
 		  value: true
 		});
 
-		var _events = __webpack_require__(306);
+		var _events = __webpack_require__(301);
 
 		var _events2 = _interopRequireDefault(_events);
 
@@ -11162,7 +11404,7 @@
 		exports.default = ActionDispatcher;
 
 	/***/ },
-	/* 314 */
+	/* 315 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11462,7 +11704,7 @@
 		exports.default = ASTHandler;
 
 	/***/ },
-	/* 315 */
+	/* 316 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11471,7 +11713,7 @@
 			value: true
 		});
 
-		var _Text = __webpack_require__(316);
+		var _Text = __webpack_require__(317);
 
 		var _Text2 = _interopRequireDefault(_Text);
 
@@ -11505,7 +11747,7 @@
 		exports.default = Actions;
 
 	/***/ },
-	/* 316 */
+	/* 317 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11523,23 +11765,23 @@
 		};
 
 	/***/ },
-	/* 317 */
+	/* 318 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(318);
+		var content = __webpack_require__(319);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(320)(content, {});
+		var update = __webpack_require__(321)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
 			// When the styles change, update the <style> tags
 			if(!content.locals) {
-				module.hot.accept("!!./../../node_modules/css-loader/index.js!./loader.css", function() {
-					var newContent = require("!!./../../node_modules/css-loader/index.js!./loader.css");
+				module.hot.accept("!!./../../node_modules/css-loader/index.js!./main.css", function() {
+					var newContent = require("!!./../../node_modules/css-loader/index.js!./main.css");
 					if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 					update(newContent);
 				});
@@ -11549,21 +11791,21 @@
 		}
 
 	/***/ },
-	/* 318 */
+	/* 319 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(319)();
+		exports = module.exports = __webpack_require__(320)();
 		// imports
 
 
 		// module
-		exports.push([module.id, ".loader {\n\tdisplay: inline-block;\n    border: 3px solid #f3f3f3;\n    border-top: 3px solid #3498db;\n    border-radius: 50%;\n    animation: spin 0.8s ease-in-out infinite;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
+		exports.push([module.id, ".shiji-lineview {\n\tline-height: 1.15;\n}\n\n.shiji-paragraph {\n\tmargin-top: 1em;\n}\n\n.shiji-paragraph:first-child {\n\tmargin-top: 0px;\n}\n", ""]);
 
 		// exports
 
 
 	/***/ },
-	/* 319 */
+	/* 320 */
 	/***/ function(module, exports) {
 
 		/*
@@ -11619,7 +11861,7 @@
 
 
 	/***/ },
-	/* 320 */
+	/* 321 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -11871,241 +12113,6 @@
 
 
 	/***/ },
-	/* 321 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var Key = {
-			Enter: 13,
-			ESC: 27,
-			Left: 37,
-			Up: 38,
-			Right: 39,
-			Down: 40,
-			Backspace: 8
-		};
-
-		var InputHandler = function () {
-			function InputHandler(input) {
-				_classCallCheck(this, InputHandler);
-
-				this.ctx = input;
-				this.shiji = this.ctx.ctx.shiji;
-				this.astHandler = this.ctx.astHandler;
-				this.$inputBox = $('<iframe>').css({
-					width: this.shiji.$origin.width(),
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					border: '0px',
-					//				border: '1px solid orange',
-					display: 'none',
-					pointerEvents: 'none'
-				});
-				this.cursor = this.ctx.cursor;
-
-				this.shiji.$overlay.append(this.$inputBox);
-
-				this.$inputBody = this.$inputBox.contents().find('body');
-
-				/* Keyboard events */
-				var originContent = null;
-				var preeditMode = false;
-				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
-					this.$inputBody.empty();
-				}.bind(this)).on('compositionstart', function (e) {
-					// Display input box
-					this.$inputBox.css({
-						display: ''
-					});
-
-					preeditMode = true;
-					originContent = null;
-
-					//				console.log('COMP START');
-				}.bind(this)).on('compositionupdate', function (e) {
-					//				console.log('COMP UPDATE', e.originalEvent.data);
-					var cursor = this.ctx.ctx.caret;
-
-					if (!originContent) {
-						originContent = cursor.startNode.text.slice(0);
-					} else {
-						cursor.startNode.text = originContent.slice(0);
-					}
-
-					var str = e.originalEvent.data;
-					this.astHandler.insert(cursor.startNode, cursor.startOffset, str);
-
-					// done everything so we update now
-					var task = cursor.startNode.component.refresh();
-					task.then(function () {
-
-						// Update position of input handler
-						cursor.update();
-					}.bind(this));
-				}.bind(this)).on('compositionend', function (e) {
-
-					// Hide input box
-					this.$inputBox.css({
-						display: 'none'
-					});
-
-					preeditMode = false;
-
-					//				console.log('COMP END', e.originalEvent.data, e);
-
-					var cursor = this.ctx.ctx.caret;
-					originContent = null;
-
-					// Set new position to caret
-					cursor.move(this.$inputBody.text().length);
-					cursor.show();
-					//				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-					this.$inputBody.empty();
-				}.bind(this)).on('keydown', function (e) {
-
-					if (e.metaKey) return true;
-
-					var cursor = this.ctx.ctx.caret;
-					//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
-					if (preeditMode) {
-						return;
-					}
-
-					// Direction keys
-					switch (e.keyCode) {
-						case Key.Up:
-							cursor.moveUp();
-							break;
-
-						case Key.Down:
-							cursor.moveDown();
-							break;
-
-						case Key.Left:
-
-							cursor.move(-1);
-							cursor.show();
-							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
-							break;
-
-						case Key.Right:
-
-							cursor.move(1);
-							cursor.show();
-							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
-							break;
-
-						case Key.Enter:
-
-							break;
-
-						case Key.Backspace:
-
-							// Getting text
-							var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
-
-							// Replace old text with new text
-							this.astHandler.setText(cursor.startNode, [sets.before.substr(0, cursor.startOffset - 1), sets.after].join(''));
-
-							// done everything so we update now
-							var task = cursor.startNode.component.refresh();
-							task.then(function () {
-
-								// Set new position to caret
-								cursor.move(-1);
-								cursor.show();
-
-								//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-							}.bind(this));
-
-							break;
-
-						default:
-							this.$inputBody.empty();
-					}
-				}.bind(this)).on('keypress', function (e) {
-
-					if (e.metaKey) return true;
-
-					var cursor = this.ctx.ctx.caret;
-
-					this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
-
-					// done everything so we update now
-					var task = cursor.startNode.component.refresh();
-					task.then(function () {
-						this.$inputBody.empty();
-
-						// Set new position to caret
-						cursor.move(1);
-						cursor.show();
-
-						//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-					}.bind(this));
-
-					return false;
-				}.bind(this));
-			}
-
-			_createClass(InputHandler, [{
-				key: 'setCursorPosition',
-				value: function setCursorPosition(x, y) {
-
-					this.$inputBox.css({
-						top: y
-					});
-
-					this.$inputBody.css({
-						textIndent: x,
-						marginLeft: 0,
-						marginTop: 0
-					});
-				}
-			}, {
-				key: 'focus',
-				value: function focus() {
-					console.log('FOCUS');
-					this.$inputBody.css({
-						lineHeight: 1.15,
-						height: this.cursor.caret.$dom.css('height'),
-						fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
-						fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
-						fontWeight: this.cursor.caret.$dom.css('font-weight') || 'intital',
-						fontStyle: this.cursor.caret.$dom.css('font-style') || 'intital',
-						textDecoration: this.cursor.caret.$dom.css('text-decoration') || 'intital',
-						color: this.cursor.caret.$dom.css('color') || 'red'
-					});
-					this.$inputBody.focus();
-					this.$inputBody.empty();
-
-					// Workaround: reset input method because it is no reaction sometimes
-					var selection = this.$inputBox.get(0).contentWindow.getSelection();
-					var range = document.createRange();
-					range.selectNodeContents(this.$inputBody[0]);
-					range.collapse();
-					selection.removeAllRanges();
-					selection.addRange(range);
-				}
-			}]);
-
-			return InputHandler;
-		}();
-
-		exports.default = InputHandler;
-
-	/***/ },
 	/* 322 */
 	/***/ function(module, exports, __webpack_require__) {
 
@@ -12115,14 +12122,14 @@
 		var content = __webpack_require__(323);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(320)(content, {});
+		var update = __webpack_require__(321)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
 			// When the styles change, update the <style> tags
 			if(!content.locals) {
-				module.hot.accept("!!./../../node_modules/css-loader/index.js!./main.css", function() {
-					var newContent = require("!!./../../node_modules/css-loader/index.js!./main.css");
+				module.hot.accept("!!./../../node_modules/css-loader/index.js!./loader.css", function() {
+					var newContent = require("!!./../../node_modules/css-loader/index.js!./loader.css");
 					if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 					update(newContent);
 				});
@@ -12135,15 +12142,94 @@
 	/* 323 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(319)();
+		exports = module.exports = __webpack_require__(320)();
 		// imports
 
 
 		// module
-		exports.push([module.id, ".shiji-lineview {\n\tline-height: 1.15;\n}\n\n.shiji-paragraph {\n\tmargin-top: 1em;\n}\n\n.shiji-paragraph:first-child {\n\tmargin-top: 0px;\n}\n", ""]);
+		exports.push([module.id, ".loader {\n\tdisplay: inline-block;\n    border: 3px solid #f3f3f3;\n    border-top: 3px solid #3498db;\n    border-radius: 50%;\n    animation: spin 0.8s ease-in-out infinite;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
 
 		// exports
 
+
+	/***/ },
+	/* 324 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(301);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var ImageLoader = function (_events$EventEmitter) {
+			_inherits(ImageLoader, _events$EventEmitter);
+
+			function ImageLoader() {
+				_classCallCheck(this, ImageLoader);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
+
+				_this.caches = {};
+				return _this;
+			}
+
+			_createClass(ImageLoader, [{
+				key: 'exists',
+				value: function exists(src) {
+					return this.caches[src];
+				}
+			}, {
+				key: '_load',
+				value: function _load(src) {
+
+					return this.caches[src] || null;
+				}
+			}, {
+				key: 'load',
+				value: function load(src) {
+					var obj = this._load(src);
+					if (obj) {
+						return obj;
+					}
+
+					if (this.caches.hasOwnProperty(src)) {
+						return null;
+					}
+
+					// Register and ready to load
+					this.caches[src] = null;
+
+					// Create a new image object to load image and store it to be cache
+					var $img = $('<img>').load(function () {
+						this.caches[src] = $img;
+
+						// Fire event
+						this.emit(src, $img);
+					}.bind(this)).attr('src', src);
+
+					return null;
+				}
+			}]);
+
+			return ImageLoader;
+		}(_events2.default.EventEmitter);
+
+		exports.default = ImageLoader;
 
 	/***/ }
 	/******/ ]);

@@ -1,6 +1,7 @@
 import InlineComponent from '../InlineComponent';
+import ImageLoader from '../APIs/ImageLoader';
 
-var caches = {};
+var imageLoader = new ImageLoader();
 
 export default class Image extends InlineComponent {
 
@@ -53,6 +54,26 @@ export default class Image extends InlineComponent {
 		};
 	}
 
+	_loadImage(style, src) {
+
+		var $dom = $(this.dom);
+
+		// Change container's appearance
+		$dom
+			.css({
+				width: 'initial',
+				height: 'initial',
+				border: 'initial'
+			})
+			.empty();
+
+		// Create a new image object
+		$('<img>')
+			.attr('src', src)
+			.css(style)
+			.appendTo($dom);
+	}
+
 	loadImage() {
 
 		return new Promise(function(resolve) {
@@ -60,6 +81,7 @@ export default class Image extends InlineComponent {
 			var style = {
 				width: 'initial',
 				height: 'initial',
+				verticalAlign: 'bottom'
 			};
 			if (this.node.style) {
 				if (this.node.style.width)
@@ -69,56 +91,27 @@ export default class Image extends InlineComponent {
 					style.height = this.node.style.height;
 			}
 
-			var $dom = $(this.dom);
+			// Loading image
+			var obj = imageLoader.load(this.node.src);
+			if (obj) {
 
-			// Using cache if it exists
-			var cache = caches[this.node.src] || null;
-			if (cache) {
-
-				// Change container's appearance
-				$dom
-					.css({
-						width: 'initial',
-						height: 'initial',
-						border: 'initial'
-					})
-					.empty();
-
-				cache
-					.clone()
-					.css(style)
-					.appendTo($dom);
-
+				this._loadImage(style, obj[0].src);
 				return resolve();
 			}
 
-			// Create a new image object to load image and store it to be cache
-			var $img = $('<img>')
-				.css(style)
-				.load(function() {
-
-					this.loaded = true;
-					caches[this.node.src] = $img;
-
-					$dom
-						.css({
-							width: null,
-							height: null,
-							border: 'initial'
-						})
-						.empty()
-						.append($img);
-
-					resolve();
-				}.bind(this))
-				.attr('src', this.node.src);
+			// Waiting for image 
+			imageLoader.once(this.node.src, function(obj) {
+				this._loadImage(style, obj[0].src);
+				resolve();
+			}.bind(this));
 		}.bind(this));
 	}
 
 	async componentDidMount() {
 
+		// No need to load again
 		if (this.loaded)
-			return;
+			return false;
 
 		await this.loadImage();
 
@@ -135,10 +128,6 @@ export default class Image extends InlineComponent {
 			}, this.node.style || {}, {
 				width: null,
 				height: null,
-				'box-sizing': 'border-box',
-				'-moz-box-sizing': 'border-box',
-				'-webkit-box-sizing': 'border-box',
-				border: '1px solid #5588ff',
 				display: 'inline-block',
 				background: 'white'
 			});
@@ -149,12 +138,20 @@ export default class Image extends InlineComponent {
 			this.dom = $DOM[0];
 
 			// Loading directly if cache exists already
-			if (caches[this.node.src]) {
+			if (imageLoader.exists(this.node.src)) {
 				this.loaded = true;
 				await this.loadImage();
 
 				return resolve();
 			}
+
+			// Setup background and border
+			$DOM.css({
+				'box-sizing': 'border-box',
+				'-moz-box-sizing': 'border-box',
+				'-webkit-box-sizing': 'border-box',
+				border: '1px solid #5588ff'
+			});
 
 			// Initializing loader
 			var $loader = $('<div>')
