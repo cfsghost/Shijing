@@ -277,6 +277,7 @@ class Cursor extends events.EventEmitter {
 		if (offset == 0)
 			return 0;
 
+		this.baseline = null;
 console.log('Cursor1', this, this.startNode, this.startOffset, offset);
 
 		// Call start node to move cursor

@@ -9002,6 +9002,7 @@
 
 					if (offset == 0) return 0;
 
+					this.baseline = null;
 					console.log('Cursor1', this, this.startNode, this.startOffset, offset);
 
 					// Call start node to move cursor
@@ -10999,7 +11000,7 @@
 
 			// Set cursor position
 			renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
-				console.log('MOUSE', e.clientX, e.clientY);
+				this.cursor.baseline = null;
 				this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			}.bind(this), false);
 		};
