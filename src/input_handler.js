@@ -1,4 +1,5 @@
 var Key = {
+	Enter: 13,
 	ESC: 27,
 	Left: 37,
 	Up: 38,
@@ -72,7 +73,8 @@ class InputHandler {
 				var task = cursor.startNode.component.refresh();
 				task.then(function() {
 
-					return;
+					// Update position of input handler
+					cursor.update();
 
 				}.bind(this));
 			}.bind(this))
@@ -131,6 +133,10 @@ class InputHandler {
 					cursor.move(1);
 					cursor.show();
 //					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+
+					break;
+
+				case Key.Enter:
 
 					break;
 
@@ -204,6 +210,7 @@ class InputHandler {
 	focus() {
 		console.log('FOCUS');
 		this.$inputBody.css({
+			lineHeight: 1.15,
 			height: this.cursor.caret.$dom.css('height'),
 			fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
 			fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',

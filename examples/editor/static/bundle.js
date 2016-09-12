@@ -8799,6 +8799,21 @@
 					return point;
 				}
 			}, {
+				key: 'update',
+				value: function update() {
+
+					// Figure out position
+					var caret = this.startNode.component.getCaret(this.startOffset);
+
+					this.caret.move(caret.x, caret.y);
+					this.caret.setStyle(Object.assign({
+						height: caret.height,
+						fontSize: $(caret.range.startNode).css('font-size')
+					}, this.startNode.style || {}));
+
+					this.emit('update', this);
+				}
+			}, {
 				key: '_setPosition',
 				value: function _setPosition(node, offset) {
 					this.startOffset = offset;
@@ -11050,6 +11065,10 @@
 			value: true
 		});
 
+		var _events = __webpack_require__(306);
+
+		var _events2 = _interopRequireDefault(_events);
+
 		var _input_handler = __webpack_require__(321);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
@@ -11058,24 +11077,51 @@
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var Input = function Input(renderer) {
-			_classCallCheck(this, Input);
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-			this.ctx = renderer;
-			this.astHandler = this.ctx.shiji.astHandler;
-			this.cursor = this.ctx.caret;
-			this.inputHandler = new _input_handler2.default(this);
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-			this.cursor.on('update', function () {
-				this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
-				this.inputHandler.focus();
-			}.bind(this));
+		var Input = function (_events$EventEmitter) {
+			_inherits(Input, _events$EventEmitter);
 
-			// Set cursor position
-			renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
-				this.cursor.setPositionByAxis(e.clientX, e.clientY);
-			}.bind(this), false);
-		};
+			function Input(renderer) {
+				_classCallCheck(this, Input);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Input).call(this));
+
+				_this.ctx = renderer;
+				_this.astHandler = _this.ctx.shiji.astHandler;
+				_this.cursor = _this.ctx.caret;
+				_this.inputHandler = new _input_handler2.default(_this);
+				_this.mousedown = false;
+				_this.dragging = false;
+
+				_this.cursor.on('update', function () {
+					this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
+					this.inputHandler.focus();
+				}.bind(_this));
+
+				// Set cursor position
+				renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
+					this.cursor.setPositionByAxis(e.clientX, e.clientY);
+					this.mousedown = true;
+				}.bind(_this), false);
+
+				renderer.shiji.$origin[0].addEventListener('mousemove', function (e) {
+					if (this.mousedown) {
+						this.dragging = true;
+					}
+				}.bind(_this), false);
+
+				renderer.shiji.$origin[0].addEventListener('mouseup', function (e) {
+					this.mousedown = false;
+					this.dragging = false;
+				}.bind(_this), false);
+				return _this;
+			}
+
+			return Input;
+		}(_events2.default.EventEmitter);
 
 		exports.default = Input;
 
@@ -11839,6 +11885,7 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var Key = {
+			Enter: 13,
 			ESC: 27,
 			Left: 37,
 			Up: 38,
@@ -11902,7 +11949,8 @@
 					var task = cursor.startNode.component.refresh();
 					task.then(function () {
 
-						return;
+						// Update position of input handler
+						cursor.update();
 					}.bind(this));
 				}.bind(this)).on('compositionend', function (e) {
 
@@ -11956,6 +12004,10 @@
 							cursor.move(1);
 							cursor.show();
 							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+
+							break;
+
+						case Key.Enter:
 
 							break;
 
@@ -12026,6 +12078,7 @@
 				value: function focus() {
 					console.log('FOCUS');
 					this.$inputBody.css({
+						lineHeight: 1.15,
 						height: this.cursor.caret.$dom.css('height'),
 						fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
 						fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
