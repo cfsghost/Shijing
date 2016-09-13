@@ -38,14 +38,16 @@ class Cursor extends events.EventEmitter {
 			y: $dom.position().top,
 			height: $dom.height(),
 			lastChar: false,
-			range: range
+			DOM: dom,
+			offset: offset
 		};
 
 		// Nothing left in this DOM
 		if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
 			point.x = $dom.offset().left - $container.offset().left;
 			point.y = $dom.offset().top - $container.offset().top;
-			range.selectNode(dom);
+			point.DOM = dom;
+			point.offset = 0;
 		} else if (offset >= textNode.length) {
 
 			// Last character in a line
@@ -57,6 +59,27 @@ class Cursor extends events.EventEmitter {
 			point.x = rect.right - $container.offset().left;
 			point.y = rect.top - $container.offset().top;
 			point.lastChar = true;
+			point.DOM = textNode;
+			point.offset = textNode.length - 1;
+		} else if (textNode.nodeValue[offset] == '\n') {
+
+			if (textNode.length == 1) {
+				point.x = $dom.offset().left - $container.offset().left;
+				point.y = $dom.offset().top - $container.offset().top;
+				point.DOM = dom;
+				point.offset = 0;
+			} else {
+				range.setStart(textNode, offset - 1);
+				range.setEnd(textNode, offset);
+
+				// Getting rect information then figure out exact position
+				var rect = range.getBoundingClientRect();
+				point.x = rect.right - $container.offset().left;
+				point.y = rect.top - $container.offset().top;
+				point.lastChar = true;
+				point.DOM = dom;
+				point.offset = offset - 1;
+			}
 		} else {
 			range.setStart(textNode, offset);
 			range.setEnd(textNode, offset + 1);
@@ -65,9 +88,10 @@ class Cursor extends events.EventEmitter {
 			var rect = range.getBoundingClientRect();
 			point.x = rect.left - $container.offset().left;
 			point.y = rect.top - $container.offset().top;
+			console.log(textNode, offset, rect);
+			point.DOM = dom;
+			point.offset = offset;
 		}
-
-		range.collapse(true);
 
 		return point;
 
@@ -81,7 +105,7 @@ class Cursor extends events.EventEmitter {
 		this.caret.move(caret.x, caret.y);
 		this.caret.setStyle(Object.assign({
 			height: caret.height,
-			fontSize: $(caret.range.startNode).css('font-size')
+			fontSize: $(caret.DOM).css('font-size')
 		}, this.startNode.style || {}));
 
 		this.emit('update', this);
@@ -133,7 +157,7 @@ class Cursor extends events.EventEmitter {
 
 		this.caret.setStyle(Object.assign({
 			height: caret.height,
-			fontSize: $(caret.range.startNode).css('font-size')
+			fontSize: $(caret.DOM).css('font-size')
 		}, node.style || {}));
 	}
 
@@ -169,24 +193,23 @@ class Cursor extends events.EventEmitter {
 
 		// Find out component
 		var component =  this.renderer.getOwnerByDOM(dom);
-		if (component) {
+		if (!component)
+			return;
 
-			// Getting the correct offset by using range object
-			_offset = component.getOffset(point.range);
-
-			if (point.lastChar) {
-				_offset++;
-			}
-
-			// Store it
-			this._setPosition(component.node, _offset);
-
-			// Apply styles
-			this.caret.setStyle(Object.assign({
-				height: point.height,
-				fontSize: $(dom).css('font-size')
-			}, component.node.style || {}));
+		// Getting the correct offset by using DOM and offset of DOM
+		_offset = component.getOffset(point.DOM, point.offset);
+		if (point.lastChar) {
+			_offset++;
 		}
+
+		// Store it
+		this._setPosition(component.node, _offset);
+
+		// Apply styles
+		this.caret.setStyle(Object.assign({
+			height: point.height,
+			fontSize: $(dom).css('font-size')
+		}, component.node.style || {}));
 	}
 
 	getCurrentPosition() {

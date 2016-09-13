@@ -105,6 +105,36 @@ class Component extends events.EventEmitter {
 		return rects;
 	}
 
+	getOffset(DOM, targetOffset) {
+
+		// if component cross over multiple doms
+		if (this.dom instanceof Array) {
+			var targetDOM = DOM;
+			if (targetDOM.nodeType == Node.TEXT_NODE)
+				targetDOM = targetDOM.parentNode;
+
+			// Figure out the correct offset
+			var offset = 0;
+			for (var index in this.dom) {
+				var dom = this.dom[index];
+
+				if (targetDOM == dom) {
+					break;
+				}
+
+				if (dom.nodeType == Node.TEXT_NODE) {
+					offset += dom.length;
+				} else {
+					offset += dom.childNodes[0].length;
+				}
+			}
+
+			return offset + targetOffset;
+		}
+
+		return targetOffset;
+	}
+
 	getParentComponent() {
 
 		var parentNode = this.renderer.shiji.astHandler.getParentNode(this.node);

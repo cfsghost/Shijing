@@ -17,10 +17,10 @@ export default class Paragraph extends BlockComponent {
 			await this.refresh();
 	}
 
-	getOffset(range) {
+	getOffset(DOM, targetOffset) {
 
 		// If this medthod was called, that means text node only in this component
-		var offset = range.startOffset;
+		var offset = targetOffset;
 
 		// Finding line view which contains range
 		for (var index in this.lineViews) {

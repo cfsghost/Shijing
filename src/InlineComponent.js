@@ -63,37 +63,6 @@ class InlineComponent extends Component {
 		];
 	}
 
-	getOffset(range) {
-
-		// if component cross over multiple doms
-		if (this.dom instanceof Array) {
-			var targetDOM = range.startContainer;
-
-			if (range.startContainer.nodeType == Node.TEXT_NODE)
-				targetDOM = $(range.startContainer).parent()[0];
-
-			// Figure out the correct offset
-			var offset = 0;
-			for (var index in this.dom) {
-				var dom = this.dom[index];
-
-				if (targetDOM == dom) {
-					break;
-				}
-
-				if (dom.nodeType == Node.TEXT_NODE) {
-					offset += dom.length;
-				} else {
-					offset += dom.childNodes[0].length;
-				}
-			}
-
-			return offset + range.startOffset;
-		}
-
-		return range.startOffset;
-	}
-
 	getPosition(offset) {
 
 		if (!this.node.text && this.node.childrens) {

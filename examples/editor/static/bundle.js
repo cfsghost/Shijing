@@ -8759,14 +8759,16 @@
 						y: $dom.position().top,
 						height: $dom.height(),
 						lastChar: false,
-						range: range
+						DOM: dom,
+						offset: offset
 					};
 
 					// Nothing left in this DOM
 					if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
 						point.x = $dom.offset().left - $container.offset().left;
 						point.y = $dom.offset().top - $container.offset().top;
-						range.selectNode(dom);
+						point.DOM = dom;
+						point.offset = 0;
 					} else if (offset >= textNode.length) {
 
 						// Last character in a line
@@ -8778,6 +8780,27 @@
 						point.x = rect.right - $container.offset().left;
 						point.y = rect.top - $container.offset().top;
 						point.lastChar = true;
+						point.DOM = textNode;
+						point.offset = textNode.length - 1;
+					} else if (textNode.nodeValue[offset] == '\n') {
+
+						if (textNode.length == 1) {
+							point.x = $dom.offset().left - $container.offset().left;
+							point.y = $dom.offset().top - $container.offset().top;
+							point.DOM = dom;
+							point.offset = 0;
+						} else {
+							range.setStart(textNode, offset - 1);
+							range.setEnd(textNode, offset);
+
+							// Getting rect information then figure out exact position
+							var rect = range.getBoundingClientRect();
+							point.x = rect.right - $container.offset().left;
+							point.y = rect.top - $container.offset().top;
+							point.lastChar = true;
+							point.DOM = dom;
+							point.offset = offset - 1;
+						}
 					} else {
 						range.setStart(textNode, offset);
 						range.setEnd(textNode, offset + 1);
@@ -8786,9 +8809,10 @@
 						var rect = range.getBoundingClientRect();
 						point.x = rect.left - $container.offset().left;
 						point.y = rect.top - $container.offset().top;
+						console.log(textNode, offset, rect);
+						point.DOM = dom;
+						point.offset = offset;
 					}
-
-					range.collapse(true);
 
 					return point;
 				}
@@ -8802,7 +8826,7 @@
 					this.caret.move(caret.x, caret.y);
 					this.caret.setStyle(Object.assign({
 						height: caret.height,
-						fontSize: $(caret.range.startNode).css('font-size')
+						fontSize: $(caret.DOM).css('font-size')
 					}, this.startNode.style || {}));
 
 					this.emit('update', this);
@@ -8855,7 +8879,7 @@
 
 					this.caret.setStyle(Object.assign({
 						height: caret.height,
-						fontSize: $(caret.range.startNode).css('font-size')
+						fontSize: $(caret.DOM).css('font-size')
 					}, node.style || {}));
 				}
 			}, {
@@ -8894,24 +8918,22 @@
 
 					// Find out component
 					var component = this.renderer.getOwnerByDOM(dom);
-					if (component) {
+					if (!component) return;
 
-						// Getting the correct offset by using range object
-						_offset = component.getOffset(point.range);
-
-						if (point.lastChar) {
-							_offset++;
-						}
-
-						// Store it
-						this._setPosition(component.node, _offset);
-
-						// Apply styles
-						this.caret.setStyle(Object.assign({
-							height: point.height,
-							fontSize: $(dom).css('font-size')
-						}, component.node.style || {}));
+					// Getting the correct offset by using DOM and offset of DOM
+					_offset = component.getOffset(point.DOM, point.offset);
+					if (point.lastChar) {
+						_offset++;
 					}
+
+					// Store it
+					this._setPosition(component.node, _offset);
+
+					// Apply styles
+					this.caret.setStyle(Object.assign({
+						height: point.height,
+						fontSize: $(dom).css('font-size')
+					}, component.node.style || {}));
 				}
 			}, {
 				key: 'getCurrentPosition',
@@ -9368,37 +9390,6 @@
 					}];
 				}
 			}, {
-				key: 'getOffset',
-				value: function getOffset(range) {
-
-					// if component cross over multiple doms
-					if (this.dom instanceof Array) {
-						var targetDOM = range.startContainer;
-
-						if (range.startContainer.nodeType == Node.TEXT_NODE) targetDOM = $(range.startContainer).parent()[0];
-
-						// Figure out the correct offset
-						var offset = 0;
-						for (var index in this.dom) {
-							var dom = this.dom[index];
-
-							if (targetDOM == dom) {
-								break;
-							}
-
-							if (dom.nodeType == Node.TEXT_NODE) {
-								offset += dom.length;
-							} else {
-								offset += dom.childNodes[0].length;
-							}
-						}
-
-						return offset + range.startOffset;
-					}
-
-					return range.startOffset;
-				}
-			}, {
 				key: 'getPosition',
 				value: function getPosition(offset) {
 
@@ -9682,6 +9673,36 @@
 						rects = rects.concat(component.getRects());
 					});
 					return rects;
+				}
+			}, {
+				key: 'getOffset',
+				value: function getOffset(DOM, targetOffset) {
+
+					// if component cross over multiple doms
+					if (this.dom instanceof Array) {
+						var targetDOM = DOM;
+						if (targetDOM.nodeType == Node.TEXT_NODE) targetDOM = targetDOM.parentNode;
+
+						// Figure out the correct offset
+						var offset = 0;
+						for (var index in this.dom) {
+							var dom = this.dom[index];
+
+							if (targetDOM == dom) {
+								break;
+							}
+
+							if (dom.nodeType == Node.TEXT_NODE) {
+								offset += dom.length;
+							} else {
+								offset += dom.childNodes[0].length;
+							}
+						}
+
+						return offset + targetOffset;
+					}
+
+					return targetOffset;
 				}
 			}, {
 				key: 'getParentComponent',
@@ -10094,37 +10115,6 @@
 					}
 
 					return 0;
-				}
-			}, {
-				key: 'getOffset',
-				value: function getOffset(range) {
-
-					// if component cross over multiple doms
-					if (this.dom instanceof Array) {
-						var targetDOM = range.startContainer;
-
-						if (range.startContainer.nodeType == Node.TEXT_NODE) targetDOM = $(range.startContainer).parent()[0];
-
-						// Figure out the correct offset
-						var offset = 0;
-						for (var index in this.dom) {
-							var dom = this.dom[index];
-
-							if (targetDOM == dom) {
-								break;
-							}
-
-							if (dom.nodeType == Node.TEXT_NODE) {
-								offset += dom.length;
-							} else {
-								offset += dom.childNodes[0].length;
-							}
-						}
-
-						return offset + range.startOffset;
-					}
-
-					return range.startOffset;
 				}
 			}, {
 				key: 'getPosition',
@@ -10617,10 +10607,10 @@
 				}()
 			}, {
 				key: 'getOffset',
-				value: function getOffset(range) {
+				value: function getOffset(DOM, targetOffset) {
 
 					// If this medthod was called, that means text node only in this component
-					var offset = range.startOffset;
+					var offset = targetOffset;
 
 					// Finding line view which contains range
 					for (var index in this.lineViews) {
