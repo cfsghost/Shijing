@@ -8902,15 +8902,16 @@
 						if (point.lastChar) {
 							_offset++;
 						}
+
+						// Store it
+						this._setPosition(component.node, _offset);
+
+						// Apply styles
+						this.caret.setStyle(Object.assign({
+							height: point.height,
+							fontSize: $(dom).css('font-size')
+						}, component.node.style || {}));
 					}
-
-					// Store it
-					this._setPosition(component.node, _offset);
-
-					this.caret.setStyle(Object.assign({
-						height: point.height,
-						fontSize: $(dom).css('font-size')
-					}, component.node.style || {}));
 				}
 			}, {
 				key: 'getCurrentPosition',
