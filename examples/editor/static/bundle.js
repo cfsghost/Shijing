@@ -9115,6 +9115,7 @@
 					width: '2px',
 					height: '15px'
 				});
+				this.isShowed = false;
 			}
 
 			_createClass(Caret, [{
@@ -9134,6 +9135,13 @@
 				value: function applyDefaultStyles() {
 
 					this.$dom.removeAttr('style', '');
+
+					if (this.isShowed) {
+						this.$dom.show();
+					} else {
+						this.$dom.hide();
+					}
+
 					this.$dom.css({
 						left: this.x,
 						top: this.y,
@@ -9163,6 +9171,7 @@
 
 					clearInterval(this.timer);
 
+					this.isShowed = true;
 					this.$dom.show();
 
 					// Blinking
@@ -9174,6 +9183,8 @@
 				key: 'hide',
 				value: function hide() {
 					clearInterval(this.timer);
+
+					this.isShowed = false;
 					this.$dom.hide();
 				}
 			}]);
@@ -11179,6 +11190,8 @@
 					this.preeditMode = true;
 					this.originContent = null;
 
+					this.cursor.hide();
+
 					//				console.log('COMP START');
 				}.bind(this)).on('compositionupdate', function (e) {
 					console.log('COMP UPDATE', e.originalEvent.data);
@@ -11204,6 +11217,7 @@
 						// Update position of cursor and input handler
 						this.cursor.update();
 					}.bind(this));
+
 					this.originContent = null;
 
 					// Set new position to caret

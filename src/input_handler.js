@@ -54,6 +54,8 @@ class InputHandler {
 				this.preeditMode = true;
 				this.originContent = null;
 
+				this.cursor.hide();
+
 //				console.log('COMP START');
 			}.bind(this))
 			.on('compositionupdate', function(e) {
@@ -83,6 +85,7 @@ class InputHandler {
 					this.cursor.update();
 
 				}.bind(this));
+
 				this.originContent = null;
 
 				// Set new position to caret

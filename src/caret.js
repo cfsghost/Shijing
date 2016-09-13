@@ -13,6 +13,7 @@ class Caret {
 				width: '2px',
 				height: '15px'
 			});
+		this.isShowed = false;
 	}
 
 	move(x, y) {
@@ -29,6 +30,13 @@ class Caret {
 	applyDefaultStyles() {
 
 		this.$dom.removeAttr('style', '');
+
+		if (this.isShowed) {
+			this.$dom.show();
+		} else {
+			this.$dom.hide();
+		}
+
 		this.$dom.css({
 			left: this.x,
 			top: this.y,
@@ -56,6 +64,7 @@ class Caret {
 
 		clearInterval(this.timer);
 
+		this.isShowed = true;
 		this.$dom.show();
 
 		// Blinking
@@ -66,6 +75,8 @@ class Caret {
 
 	hide() {
 		clearInterval(this.timer);
+
+		this.isShowed = false;
 		this.$dom.hide();
 	}
 }
