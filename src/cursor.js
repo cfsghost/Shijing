@@ -7,7 +7,6 @@ class Cursor extends events.EventEmitter {
 		super();
 
 		this.renderer = renderer;
-		this.timer = -1;
 		this.startOffset = -1;
 		this.startNode = null;
 		this.endNode = null;
@@ -153,7 +152,6 @@ class Cursor extends events.EventEmitter {
 
 		// Set position
 		this.setPositionByDOM(parentNode, offset);
-		this.show();
 	}
 
 	setPositionByAxis(x, y) {
@@ -376,9 +374,25 @@ console.log('Cursor2', this.startNode, leftOffset);
 		return this.move(leftOffset);
 	}
 
+	setEnd(node, offset) {
+		this.endNode = node;
+		this.endOffset = offset;
+		this.emit('update', this);
+	}
+
 	show() {
+		// Range was selected
+		if (this.endNode != null && this.endOffset != null) {
+			console.log('RANGEEEE');
+			var astHandler = this.renderer.shiji.astHandler;
+			astHandler.getAncestorNode(this.startNode, this.endNode);
+		}
 
 		this.caret.show();
+	}
+
+	hide() {
+		this.caret.hide();
 	}
 
 }

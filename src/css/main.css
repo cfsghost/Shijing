@@ -9,3 +9,7 @@
 .shiji-paragraph:first-child {
 	margin-top: 0px;
 }
+
+.shiji-workarea *::selection {
+	background: transparent;
+}

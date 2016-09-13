@@ -1,6 +1,5 @@
 import Offscreen from './offscreen';
 import Cursor from './cursor';
-import Caret from './caret';
 import Components from './Components';
 import Input from './input';
 
@@ -15,7 +14,6 @@ class Renderer {
 		this.offscreen = new Offscreen(this);
 
 		// Initializing caret
-//		this.caret = new Caret(this);
 		this.caret = new Cursor(this);
 		this.input = new Input(this);
 	}

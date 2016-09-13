@@ -63,6 +63,11 @@ class Caret {
 			this.$dom.toggle();
 		}.bind(this), 400);
 	}
+
+	hide() {
+		clearInterval(this.timer);
+		this.$dom.hide();
+	}
 }
 
 export default Caret;

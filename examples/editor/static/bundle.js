@@ -8243,7 +8243,7 @@
 				this.$layout = $('<div>').css({
 					position: 'relative'
 				});
-				this.$workarea = $('<div>').css({
+				this.$workarea = $('<div>').addClass('shiji-workarea').css({
 					position: 'absolute',
 					textAlign: 'initial'
 				});
@@ -8338,10 +8338,6 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _caret = __webpack_require__(302);
-
-		var _caret2 = _interopRequireDefault(_caret);
-
 		var _Components = __webpack_require__(303);
 
 		var _Components2 = _interopRequireDefault(_Components);
@@ -8366,7 +8362,6 @@
 				this.offscreen = new _offscreen2.default(this);
 
 				// Initializing caret
-				//		this.caret = new Caret(this);
 				this.caret = new _cursor2.default(this);
 				this.input = new _input2.default(this);
 			}
@@ -8731,7 +8726,6 @@
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
 
 				_this.renderer = renderer;
-				_this.timer = -1;
 				_this.startOffset = -1;
 				_this.startNode = null;
 				_this.endNode = null;
@@ -8881,7 +8875,6 @@
 
 					// Set position
 					this.setPositionByDOM(parentNode, offset);
-					this.show();
 				}
 			}, {
 				key: 'setPositionByAxis',
@@ -9103,10 +9096,28 @@
 					return this.move(leftOffset);
 				}
 			}, {
+				key: 'setEnd',
+				value: function setEnd(node, offset) {
+					this.endNode = node;
+					this.endOffset = offset;
+					this.emit('update', this);
+				}
+			}, {
 				key: 'show',
 				value: function show() {
+					// Range was selected
+					if (this.endNode != null && this.endOffset != null) {
+						console.log('RANGEEEE');
+						var astHandler = this.renderer.shiji.astHandler;
+						astHandler.getAncestorNode(this.startNode, this.endNode);
+					}
 
 					this.caret.show();
+				}
+			}, {
+				key: 'hide',
+				value: function hide() {
+					this.caret.hide();
 				}
 			}]);
 
@@ -9202,6 +9213,12 @@
 					this.timer = setInterval(function () {
 						this.$dom.toggle();
 					}.bind(this), 400);
+				}
+			}, {
+				key: 'hide',
+				value: function hide() {
+					clearInterval(this.timer);
+					this.$dom.hide();
 				}
 			}]);
 
@@ -10288,6 +10305,8 @@
 								return cursor.move(-1);
 							}
 						}
+
+						// TODO:
 					}
 				}
 			}]);
@@ -11079,6 +11098,10 @@
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
+		var _cursor = __webpack_require__(300);
+
+		var _cursor2 = _interopRequireDefault(_cursor);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -11108,8 +11131,11 @@
 				}.bind(_this));
 
 				// Set cursor position
+				var newCursor = new _cursor2.default(renderer);
 				renderer.shiji.$origin[0].addEventListener('mousedown', function (e) {
+					this.cursor.setEnd(null, null);
 					this.cursor.setPositionByAxis(e.clientX, e.clientY);
+					this.cursor.show();
 					this.mousedown = true;
 				}.bind(_this), false);
 
@@ -11117,12 +11143,16 @@
 					if (this.mousedown) {
 						this.dragging = true;
 						this.emit('dragging');
+						newCursor.setPositionByAxis(e.clientX, e.clientY);
+						this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
 					}
 				}.bind(_this), false);
 
 				renderer.shiji.$origin[0].addEventListener('mouseup', function (e) {
 					this.mousedown = false;
 					this.dragging = false;
+					console.log(newCursor.startNode, newCursor.startOffset);
+					this.cursor.show();
 				}.bind(_this), false);
 				return _this;
 			}
@@ -11577,6 +11607,41 @@
 					parentNode.childrens.splice(index, 1, newNode);
 				}
 			}, {
+				key: 'getPathSet',
+				value: function getPathSet(node) {
+
+					var pathSet = [];
+					var parentNode = this.getParentNode(node);
+					while (parentNode) {
+						pathSet.unshift(parentNode);
+						parentNode = this.getParentNode(parentNode);
+					}
+
+					// Put itself
+					pathSet.unshift(node);
+
+					return pathSet;
+				}
+			}, {
+				key: 'getAncestorNode',
+				value: function getAncestorNode(a, b) {
+
+					var aNode = this.getPathSet(a);
+					var bNode = this.getPathSet(b);
+
+					var index = 0;
+					while (aNode[index] == bNode[index]) {
+
+						index++;
+
+						if (index < aNode.length && index < bNode.length) continue;
+
+						break;
+					}
+
+					console.log(aNode[index - 1]);
+				}
+			}, {
 				key: 'insert',
 				value: function insert(node, offset, value) {
 
@@ -11799,7 +11864,7 @@
 
 
 		// module
-		exports.push([module.id, ".shiji-lineview {\n\tline-height: 1.15;\n}\n\n.shiji-paragraph {\n\tmargin-top: 1em;\n}\n\n.shiji-paragraph:first-child {\n\tmargin-top: 0px;\n}\n", ""]);
+		exports.push([module.id, ".shiji-lineview {\n\tline-height: 1.15;\n}\n\n.shiji-paragraph {\n\tmargin-top: 1em;\n}\n\n.shiji-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shiji-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
 
 		// exports
 

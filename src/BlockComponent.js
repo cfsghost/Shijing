@@ -234,6 +234,8 @@ class BlockComponent extends Component {
 					return cursor.move(-1);
 				}
 			}
+
+			// TODO:
 		}
 	}
 }

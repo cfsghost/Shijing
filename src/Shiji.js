@@ -23,6 +23,7 @@ class Shiji {
 				position: 'relative'
 			});
 		this.$workarea = $('<div>')
+			.addClass('shiji-workarea')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'

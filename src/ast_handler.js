@@ -144,6 +144,40 @@ class ASTHandler {
 		parentNode.childrens.splice(index, 1, newNode);
 	}
 
+	getPathSet(node) {
+
+		var pathSet = [];
+		var parentNode = this.getParentNode(node);
+		while(parentNode) {
+			pathSet.unshift(parentNode);
+			parentNode = this.getParentNode(parentNode);
+		}
+
+		// Put itself
+		pathSet.unshift(node);
+
+		return pathSet;
+	}
+
+	getAncestorNode(a, b) {
+
+		var aNode = this.getPathSet(a);
+		var bNode = this.getPathSet(b);
+
+		var index = 0;
+		while(aNode[index] == bNode[index]) {
+
+			index++;
+
+			if (index < aNode.length && index < bNode.length)
+				continue;
+			
+			break;
+		}
+
+		console.log(aNode[index - 1]);
+	}
+
 	insert(node, offset, value) {
 
 		// TODO: it should update sub nodes when it's not pure text
