@@ -35,8 +35,8 @@ class InputHandler {
 			.find('body');
 
 		/* Keyboard events */
-		var originContent = null;
-		var preeditMode = false;
+		this.originContent = null;
+		this.preeditMode = false;
 		this.$inputBody
 			.attr('contenteditable', true)
 			.attr('spellcheck', false)
@@ -51,51 +51,44 @@ class InputHandler {
 					display: ''
 				});
 
-				preeditMode = true;
-				originContent = null;
+				this.preeditMode = true;
+				this.originContent = null;
 
 //				console.log('COMP START');
 			}.bind(this))
 			.on('compositionupdate', function(e) {
-//				console.log('COMP UPDATE', e.originalEvent.data);
-				var cursor = this.ctx.ctx.caret;
-
-				if (!originContent) {
-					originContent = cursor.startNode.text.slice(0);
-				} else {
-					cursor.startNode.text = originContent.slice(0);
-				}
-
-				var str = e.originalEvent.data;
-				this.astHandler.insert(cursor.startNode, cursor.startOffset, str);
-
-				// done everything so we update now
-				var task = cursor.startNode.component.refresh();
+				console.log('COMP UPDATE', e.originalEvent.data);
+				var task = this.updateText(e.originalEvent.data);
 				task.then(function() {
 
-					// Update position of input handler
-					cursor.update();
+					// Update position of cursor and input handler
+					this.cursor.update();
 
 				}.bind(this));
 			}.bind(this))
 			.on('compositionend', function(e) {
+				this.preeditMode = false;
 
 				// Hide input box
 				this.$inputBox.css({
 					display: 'none'
 				});
 
-				preeditMode = false;
+				console.log('COMP END', e.originalEvent.data, e);
 
-//				console.log('COMP END', e.originalEvent.data, e);
+				var task = this.updateText(e.originalEvent.data);
+				task.then(function() {
 
-				var cursor = this.ctx.ctx.caret;
-				originContent = null;
+					// Update position of cursor and input handler
+					this.cursor.update();
+
+				}.bind(this));
+				this.originContent = null;
 
 				// Set new position to caret
-				cursor.move(this.$inputBody.text().length);
-				cursor.show();
-//				this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
+				this.cursor.move(e.originalEvent.data.length);
+				this.cursor.show();
+
 				this.$inputBody.empty();
 
 			}.bind(this))
@@ -104,9 +97,9 @@ class InputHandler {
 				if (e.metaKey)
 					return true;
 
-				var cursor = this.ctx.ctx.caret;
+				var cursor = this.cursor;
 //console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
-				if (preeditMode) {
+				if (this.preeditMode) {
 					return;
 				}
 
@@ -192,6 +185,22 @@ class InputHandler {
 
 				return false;
 			}.bind(this));
+	}
+
+	updateText(text) {
+
+		if (!this.originContent) {
+			// Store original content
+			this.originContent = this.cursor.startNode.text.slice(0);
+		} else {
+			// Clone original content back and set to node
+			this.cursor.startNode.text = this.originContent.slice(0);
+		}
+
+		this.astHandler.insert(this.cursor.startNode, this.cursor.startOffset, text);
+
+		// done everything so we update now
+		return this.cursor.startNode.component.refresh();
 	}
 
 	setCursorPosition(x, y) {

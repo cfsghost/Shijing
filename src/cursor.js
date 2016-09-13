@@ -196,52 +196,6 @@ class Cursor extends events.EventEmitter {
 		};
 	}
 
-	setCursor(node, offset) {
-
-		var astHandler = this.renderer.shiji.astHandler;
-		var target = node;
-		var lastOffset = offset;
-/*
-		// If target node has childrens, set the start point to the first node of it
-		if (node.childrens) {
-			target = astHandler.getChildrenNode(node, offset);
-			lastOffset = 1;
-		}
-*/
-		var parentNode = astHandler.getParentNode(target);
-		var parentComp = parentNode.component;
-
-		// call its parent node to set cursor
-		var newOffset = parentComp.setCursor(this, target, lastOffset);
-		if (newOffset < 0) {
-
-			// Trying to level up to get previous node
-			var prevNode = astHandler.getPrevNode(parentNode);
-			if (!prevNode)
-				return 0;
-
-			var lastNode = astHandler.getLastNode(prevNode);
-			var rootNode = astHandler.getParentNode(parentNode);
-
-			// TODO: it's not the right rule to call node directly.
-			return this.setCursor(lastNode, lastNode.component.getLength() + newOffset + 1);
-		} else if (newOffset > 0) {
-
-			// Trying to level up to get previous node
-			var nextNode = astHandler.getNextNode(parentNode);
-			if (!nextNode)
-				return 0;
-
-			var firstNode = astHandler.getFirstNode(nextNode);
-			var rootNode = astHandler.getParentNode(parentNode);
-
-			// TODO: it's not the right rule to call node directly.
-			return this.setCursor(firstNode, newOffset - 1);
-		}
-
-		return newOffset;
-	}
-
 	findLineViewManager(node) {
 
 		if (node.component.lineViews) {
