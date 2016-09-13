@@ -29,15 +29,13 @@ class Cursor extends events.EventEmitter {
 	figureCaretPoint(dom, offset) {
 
 		var $dom = $(dom);
-		var range = document.createRange();
 		var textNode = (dom.childNodes) ? dom.childNodes[0] : null;
 		var $container = this.renderer.shiji.$overlay;
 
 		var point = {
 			x: 0,
-			y: $dom.position().top,
+			y: 0,
 			height: $dom.height(),
-			lastChar: false,
 			DOM: dom,
 			offset: offset
 		};
@@ -48,7 +46,14 @@ class Cursor extends events.EventEmitter {
 			point.y = $dom.offset().top - $container.offset().top;
 			point.DOM = dom;
 			point.offset = 0;
-		} else if (offset >= textNode.length) {
+
+			return point;
+		}
+		
+		// The end of line
+		if (offset >= textNode.length) {
+
+			var range = document.createRange();
 
 			// Last character in a line
 			range.setStart(textNode, textNode.length - 1);
@@ -56,42 +61,59 @@ class Cursor extends events.EventEmitter {
 
 			// Getting rect information then figure out exact position
 			var rect = range.getBoundingClientRect();
+			range.detach();
+
 			point.x = rect.right - $container.offset().left;
 			point.y = rect.top - $container.offset().top;
-			point.lastChar = true;
 			point.DOM = textNode;
-			point.offset = textNode.length - 1;
-		} else if (textNode.nodeValue[offset] == '\n') {
+			point.offset = textNode.length;
 
+			return point;
+		}
+		
+		// If the last word of line is return character
+		if (textNode.nodeValue[offset] == '\n') {
+
+			// empty line
 			if (textNode.length == 1) {
 				point.x = $dom.offset().left - $container.offset().left;
 				point.y = $dom.offset().top - $container.offset().top;
 				point.DOM = dom;
 				point.offset = 0;
-			} else {
-				range.setStart(textNode, offset - 1);
-				range.setEnd(textNode, offset);
 
-				// Getting rect information then figure out exact position
-				var rect = range.getBoundingClientRect();
-				point.x = rect.right - $container.offset().left;
-				point.y = rect.top - $container.offset().top;
-				point.lastChar = true;
-				point.DOM = dom;
-				point.offset = offset - 1;
+				return point;
 			}
-		} else {
-			range.setStart(textNode, offset);
-			range.setEnd(textNode, offset + 1);
+
+			var range = document.createRange();
+
+			range.setStart(textNode, offset - 1);
+			range.setEnd(textNode, offset);
 
 			// Getting rect information then figure out exact position
 			var rect = range.getBoundingClientRect();
-			point.x = rect.left - $container.offset().left;
+			range.detach();
+
+			point.x = rect.right - $container.offset().left;
 			point.y = rect.top - $container.offset().top;
-			console.log(textNode, offset, rect);
 			point.DOM = dom;
 			point.offset = offset;
+
+			return point;
 		}
+
+		var range = document.createRange();
+
+		range.setStart(textNode, offset);
+		range.setEnd(textNode, offset + 1);
+
+		// Getting rect information then figure out exact position
+		var rect = range.getBoundingClientRect();
+		range.detach();
+
+		point.x = rect.left - $container.offset().left;
+		point.y = rect.top - $container.offset().top;
+		point.DOM = dom;
+		point.offset = offset;
 
 		return point;
 
@@ -198,9 +220,6 @@ class Cursor extends events.EventEmitter {
 
 		// Getting the correct offset by using DOM and offset of DOM
 		_offset = component.getOffset(point.DOM, point.offset);
-		if (point.lastChar) {
-			_offset++;
-		}
 
 		// Store it
 		this._setPosition(component.node, _offset);
