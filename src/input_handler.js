@@ -17,15 +17,17 @@ class InputHandler {
 		this.astHandler = this.ctx.astHandler;
 		this.$inputBox = $('<iframe>')
 			.css({
-				width: this.shiji.$origin.width(),
 				position: 'absolute',
 				top: 0,
 				left: 0,
 				border: '0px',
 //				border: '1px solid orange',
+				padding: 0,
+				margin: 0,
 				display: 'none',
 				pointerEvents: 'none'
-			});
+			})
+			.outerWidth(this.shiji.$layout.width());
 		this.cursor = this.ctx.cursor;
 
 		this.shiji.$overlay.append(this.$inputBox);

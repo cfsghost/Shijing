@@ -59,16 +59,22 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var shiji = new _2.default('#editor');
+	$(function () {
+		var $window = $(window);
 
-	shiji.loadAst({
-		root: {
-			childrens: [{
-				type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
-			}, {
-				type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'orange' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
-			}]
-		}
+		$('#editor').height($window.height()).width($window.width());
+
+		var shiji = new _2.default('#editor');
+
+		shiji.loadAst({
+			root: {
+				childrens: [{
+					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
+				}, {
+					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'orange' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
+				}]
+			}
+		});
 	});
 
 /***/ },
@@ -8238,19 +8244,27 @@
 				this.astHandler = new _ast_handler2.default();
 				this.$origin = $(el);
 				this.$container = $('<div>').css({
-					position: 'relative'
-				});
+					position: 'relative',
+					paddingTop: '60px',
+					paddingBottom: '60px',
+					background: '#eeeeee',
+					overflowY: 'auto'
+				}).outerHeight(this.$origin.height());
 				this.$layout = $('<div>').css({
-					position: 'relative'
-				});
+					display: 'inline-block',
+					position: 'relative',
+					background: '#ffffff',
+					boxShadow: '0 0 3px rgba(0,0,0,.1)',
+					padding: '80px'
+				}).outerHeight(this.$origin.height()).outerWidth(800);
 				this.$workarea = $('<div>').addClass('shiji-workarea').css({
 					position: 'absolute',
 					textAlign: 'initial'
-				});
+				}).outerWidth(this.$layout.width());
 				this.$overlay = $('<div>').css({
 					position: 'absolute',
 					textAlign: 'initial'
-				});
+				}).outerWidth(this.$layout.width());
 
 				this.$origin.append(this.$container);
 				this.$container.append(this.$layout);
@@ -8276,7 +8290,7 @@
 
 					// initializing default width to fit container size
 					this.astHandler.setStyle(root, {
-						width: this.$origin.width()
+						width: this.$layout.width()
 					});
 
 					return new Promise(function (resolve, reject) {
@@ -8731,7 +8745,7 @@
 				_this.endNode = null;
 				_this.endOffest = null;
 				_this.baseline = null;
-				_this.$dom = $('<div>').css({
+				_this.$dom = $('<div>').addClass('shiji-cursor').css({
 					position: 'absolute',
 					top: 0,
 					left: 0,
@@ -8964,8 +8978,8 @@
 					};
 				}
 			}, {
-				key: 'findLineViewManager',
-				value: function findLineViewManager(node) {
+				key: 'findLineViewOwner',
+				value: function findLineViewOwner(node) {
 
 					if (node.component.lineViews) {
 						return node;
@@ -8973,13 +8987,13 @@
 
 					var astHandler = this.renderer.shiji.astHandler;
 					var parentNode = astHandler.getParentNode(node);
-					if (parentNode) return this.findLineViewManager(parentNode);else return null;
+					if (parentNode) return this.findLineViewOwner(parentNode);else return null;
 				}
 			}, {
 				key: 'getLineView',
 				value: function getLineView() {
 
-					var node = this.findLineViewManager(this.startNode);
+					var node = this.findLineViewOwner(this.startNode);
 					if (node) {
 						// Getting DOM by using startNode and startOffset
 						var pos = this.startNode.component.getPosition(this.startOffset);
@@ -9013,7 +9027,7 @@
 						// Previous line
 						if (lineView.index > 0) {
 							var $lineView = lineView.arr[lineView.index - 1];
-							y = $lineView.offset().top;
+							y = $lineView.position().top;
 						}
 					}
 
@@ -9040,7 +9054,7 @@
 						// Next line
 						if (lineView.index + 1 <= lineView.arr.length) {
 							var $lineView = lineView.arr[lineView.index + 1];
-							y = $lineView.offset().top;
+							y = $lineView.position().top;
 						}
 					}
 
@@ -11170,15 +11184,16 @@
 				this.shiji = this.ctx.ctx.shiji;
 				this.astHandler = this.ctx.astHandler;
 				this.$inputBox = $('<iframe>').css({
-					width: this.shiji.$origin.width(),
 					position: 'absolute',
 					top: 0,
 					left: 0,
 					border: '0px',
 					//				border: '1px solid orange',
+					padding: 0,
+					margin: 0,
 					display: 'none',
 					pointerEvents: 'none'
-				});
+				}).outerWidth(this.shiji.$layout.width());
 				this.cursor = this.ctx.cursor;
 
 				this.shiji.$overlay.append(this.$inputBox);

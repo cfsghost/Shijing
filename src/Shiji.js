@@ -16,23 +16,36 @@ class Shiji {
 		this.$origin = $(el);
 		this.$container = $('<div>')
 			.css({
-				position: 'relative'
-			});
+				position: 'relative',
+				paddingTop: '60px',
+				paddingBottom: '60px',
+				background: '#eeeeee',
+				overflowY: 'auto'
+			})
+			.outerHeight(this.$origin.height());
 		this.$layout = $('<div>')
 			.css({
-				position: 'relative'
-			});
+				display: 'inline-block',
+				position: 'relative',
+				background: '#ffffff',
+				boxShadow: '0 0 3px rgba(0,0,0,.1)',
+				padding: '80px'
+			})
+			.outerHeight(this.$origin.height())
+			.outerWidth(800);
 		this.$workarea = $('<div>')
 			.addClass('shiji-workarea')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'
-			});
+			})
+			.outerWidth(this.$layout.width());
 		this.$overlay = $('<div>')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'
-			});
+			})
+			.outerWidth(this.$layout.width());
 		
 		this.$origin.append(this.$container)
 		this.$container
@@ -58,7 +71,7 @@ class Shiji {
 
 		// initializing default width to fit container size
 		this.astHandler.setStyle(root, {
-			width: this.$origin.width()
+			width: this.$layout.width()
 		});
 
 		return new Promise(function(resolve, reject) {

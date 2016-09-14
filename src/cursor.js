@@ -13,6 +13,7 @@ class Cursor extends events.EventEmitter {
 		this.endOffest = null;
 		this.baseline = null;
 		this.$dom = $('<div>')
+			.addClass('shiji-cursor')
 			.css({
 				position: 'absolute',
 				top: 0,
@@ -239,7 +240,7 @@ class Cursor extends events.EventEmitter {
 		};
 	}
 
-	findLineViewManager(node) {
+	findLineViewOwner(node) {
 
 		if (node.component.lineViews) {
 			return node;
@@ -248,14 +249,14 @@ class Cursor extends events.EventEmitter {
 		var astHandler = this.renderer.shiji.astHandler;
 		var parentNode = astHandler.getParentNode(node);
 		if (parentNode)
-			return this.findLineViewManager(parentNode);
+			return this.findLineViewOwner(parentNode);
 		else
 			return null;
 	}
 
 	getLineView() {
 
-		var node = this.findLineViewManager(this.startNode);
+		var node = this.findLineViewOwner(this.startNode);
 		if (node) {
 			// Getting DOM by using startNode and startOffset
 			var pos = this.startNode.component.getPosition(this.startOffset);
@@ -288,7 +289,7 @@ class Cursor extends events.EventEmitter {
 			// Previous line
 			if (lineView.index > 0) {
 				var $lineView = lineView.arr[lineView.index - 1];
-				y = $lineView.offset().top;
+				y = $lineView.position().top;
 			}
 		}
 
@@ -315,7 +316,7 @@ class Cursor extends events.EventEmitter {
 			// Next line
 			if (lineView.index + 1 <= lineView.arr.length) {
 				var $lineView = lineView.arr[lineView.index + 1];
-				y = $lineView.offset().top;
+				y = $lineView.position().top;
 			}
 		}
 
