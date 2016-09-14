@@ -34,7 +34,11 @@ class InputHandler {
 
 		this.$inputBody = this.$inputBox
 			.contents()
-			.find('body');
+			.find('body')
+			.css({
+				whiteSpace: 'pre-wrap',
+				wordBreak: 'break-all'
+			});
 
 		/* Keyboard events */
 		this.originContent = null;

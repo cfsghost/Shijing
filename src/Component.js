@@ -98,11 +98,11 @@ class Component extends events.EventEmitter {
 
 	getRects() {
 
-		var rects = []
-		this.subComponents.forEach(function(component) {
-			rects = rects.concat(component.getRects());
+		var sets = this.subComponents.map(function(component) {
+			return component.getRects();
 		});
-		return rects;
+
+		return Array.prototype.concat.apply([], sets);
 	}
 
 	getOffset(DOM, targetOffset) {

@@ -9701,11 +9701,11 @@
 				key: 'getRects',
 				value: function getRects() {
 
-					var rects = [];
-					this.subComponents.forEach(function (component) {
-						rects = rects.concat(component.getRects());
+					var sets = this.subComponents.map(function (component) {
+						return component.getRects();
 					});
-					return rects;
+
+					return Array.prototype.concat.apply([], sets);
 				}
 			}, {
 				key: 'getOffset',
@@ -10431,7 +10431,6 @@
 						// Loading image
 						var obj = imageLoader.load(this.node.src);
 						if (obj) {
-
 							this._loadImage(style, obj[0].src);
 							return resolve();
 						}
@@ -11198,7 +11197,10 @@
 
 				this.shiji.$overlay.append(this.$inputBox);
 
-				this.$inputBody = this.$inputBox.contents().find('body');
+				this.$inputBody = this.$inputBox.contents().find('body').css({
+					whiteSpace: 'pre-wrap',
+					wordBreak: 'break-all'
+				});
 
 				/* Keyboard events */
 				this.originContent = null;

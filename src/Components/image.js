@@ -94,7 +94,6 @@ export default class Image extends InlineComponent {
 			// Loading image
 			var obj = imageLoader.load(this.node.src);
 			if (obj) {
-
 				this._loadImage(style, obj[0].src);
 				return resolve();
 			}
