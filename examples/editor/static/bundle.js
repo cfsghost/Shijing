@@ -68,7 +68,14 @@
 
 		$('#editor').css('top', $toolbar.height()).height($layout.height() - $toolbar.height()).width($layout.width());
 
+		var paperSize = [{
+			name: 'A4 (21cm x 29.7 cm)',
+			width: 793.7,
+			height: 1122.5
+		}];
+
 		var shiji = new _2.default('#editor');
+		shiji.setPaperSize(paperSize[0].width, paperSize[0].height);
 
 		shiji.loadAst({
 			root: {
@@ -8214,6 +8221,10 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _events = __webpack_require__(301);
+
+		var _events2 = _interopRequireDefault(_events);
+
 		var _renderer = __webpack_require__(298);
 
 		var _renderer2 = _interopRequireDefault(_renderer);
@@ -8236,50 +8247,81 @@
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 		__webpack_require__(318);
 		__webpack_require__(322);
 
-		var Shiji = function () {
+		var Shiji = function (_events$EventEmitter) {
+			_inherits(Shiji, _events$EventEmitter);
+
 			function Shiji(el) {
 				_classCallCheck(this, Shiji);
 
-				this.actionDispatcher = new _action_dispatcher2.default();
-				this.actions = new _Actions2.default(this);
-				this.astHandler = new _ast_handler2.default();
-				this.$origin = $(el);
-				this.$container = $('<div>').css({
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Shiji).call(this));
+
+				_this.actionDispatcher = new _action_dispatcher2.default();
+				_this.actions = new _Actions2.default(_this);
+				_this.astHandler = new _ast_handler2.default();
+
+				// Paper
+				_this.paperSettings = {
+					width: 0,
+					height: 0
+				};
+
+				// DOMs
+				_this.$origin = $(el);
+				_this.$container = $('<div>').css({
 					paddingTop: '60px',
 					paddingBottom: '60px',
 					background: '#eeeeee',
 					overflowY: 'auto',
 					textAlign: 'center'
-				}).outerHeight(this.$origin.height());
-				this.$layout = $('<div>').css({
+				}).outerHeight(_this.$origin.height());
+				_this.$layout = $('<div>').css({
 					display: 'inline-block',
 					position: 'relative',
 					background: '#ffffff',
 					boxShadow: '0 0 3px rgba(0,0,0,.1)',
 					padding: '80px'
-				}).outerHeight(this.$origin.height()).outerWidth(800);
-				this.$workarea = $('<div>').addClass('shiji-workarea').css({
+				}).outerHeight(_this.$origin.height()).outerWidth(800);
+				_this.$overlay = $('<div>').css({
 					position: 'absolute',
 					textAlign: 'initial'
-				}).outerWidth(this.$layout.width());
-				this.$overlay = $('<div>').css({
+				}).outerWidth(_this.$layout.width());
+				_this.$workarea = $('<div>').addClass('shiji-workarea').css({
 					position: 'absolute',
 					textAlign: 'initial'
-				}).outerWidth(this.$layout.width());
+				}).outerWidth(_this.$layout.width());
 
-				this.$origin.append(this.$container);
-				this.$container.append(this.$layout);
-				this.$layout.append(this.$workarea).append(this.$overlay);
+				_this.$origin.append(_this.$container);
+				_this.$container.append(_this.$layout);
+				_this.$layout.append(_this.$overlay).append(_this.$workarea);
 
-				this.renderer = new _renderer2.default(this);
+				_this.renderer = new _renderer2.default(_this);
 
-				this.render();
+				_this.render();
+				return _this;
 			}
 
 			_createClass(Shiji, [{
+				key: 'setPaperSize',
+				value: function setPaperSize(width, height) {
+					this.paperSettings.width = width;
+					this.paperSettings.height = height;
+
+					this.$layout.outerHeight(height).outerWidth(width);
+
+					this.$workarea.outerHeight(this.$layout.height()).outerWidth(this.$layout.width());
+
+					this.$overlay.outerHeight(this.$layout.height()).outerWidth(this.$layout.width());
+
+					this.emit('pagerSizeChanged', width, height);
+				}
+			}, {
 				key: 'loadAst',
 				value: function loadAst(source) {
 					this.astHandler.load(source);
@@ -8332,7 +8374,7 @@
 			}]);
 
 			return Shiji;
-		}();
+		}(_events2.default.EventEmitter);
 
 		exports.default = Shiji;
 
@@ -8382,6 +8424,10 @@
 				// Initializing caret
 				this.caret = new _cursor2.default(this);
 				this.input = new _input2.default(this);
+				/*
+		  		this.shiji.on('paperSizeChanged', (width, height) => {
+		  		});
+		  */
 			}
 
 			_createClass(Renderer, [{
@@ -11378,6 +11424,8 @@
 				key: 'focus',
 				value: function focus() {
 					console.log('FOCUS');
+					this.$inputBox.outerWidth(this.shiji.$layout.width());
+
 					this.$inputBody.css({
 						lineHeight: 1.15,
 						height: this.cursor.caret.$dom.css('height'),

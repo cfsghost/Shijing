@@ -16,6 +16,10 @@ class Renderer {
 		// Initializing caret
 		this.caret = new Cursor(this);
 		this.input = new Input(this);
+/*
+		this.shiji.on('paperSizeChanged', (width, height) => {
+		});
+*/
 	}
 
 	removeComponent(component) {

@@ -14,7 +14,16 @@ $(function() {
 		.height($layout.height() - $toolbar.height())
 		.width($layout.width());
 
+	var paperSize = [
+		{
+			name: 'A4 (21cm x 29.7 cm)',
+			width: 793.7,
+			height: 1122.5
+		}
+	];
+
 	var shiji = new Shiji('#editor');
+	shiji.setPaperSize(paperSize[0].width, paperSize[0].height);
 
 	shiji.loadAst({
 		root: {

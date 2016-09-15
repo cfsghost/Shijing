@@ -227,6 +227,9 @@ class InputHandler {
 
 	focus() {
 		console.log('FOCUS');
+		this.$inputBox
+			.outerWidth(this.shiji.$layout.width());
+
 		this.$inputBody.css({
 			lineHeight: 1.15,
 			height: this.cursor.caret.$dom.css('height'),

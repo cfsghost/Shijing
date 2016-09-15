@@ -1,3 +1,4 @@
+import events from 'events';
 import Renderer from './renderer';
 import ActionDispatcher from './action_dispatcher';
 import ASTHandler from './ast_handler';
@@ -6,13 +7,22 @@ import Actions from './Actions';
 require('./css/main.css');
 require('./css/loader.css');
 
-class Shiji {
+class Shiji extends events.EventEmitter {
 
 	constructor(el) {
+		super();
 
 		this.actionDispatcher = new ActionDispatcher();
 		this.actions = new Actions(this);
 		this.astHandler = new ASTHandler();
+
+		// Paper
+		this.paperSettings = {
+			width: 0,
+			height: 0
+		};
+
+		// DOMs
 		this.$origin = $(el);
 		this.$container = $('<div>')
 			.css({
@@ -33,14 +43,14 @@ class Shiji {
 			})
 			.outerHeight(this.$origin.height())
 			.outerWidth(800);
-		this.$workarea = $('<div>')
-			.addClass('shiji-workarea')
+		this.$overlay = $('<div>')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'
 			})
 			.outerWidth(this.$layout.width());
-		this.$overlay = $('<div>')
+		this.$workarea = $('<div>')
+			.addClass('shiji-workarea')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'
@@ -51,12 +61,31 @@ class Shiji {
 		this.$container
 			.append(this.$layout);
 		this.$layout
-			.append(this.$workarea)
-			.append(this.$overlay);
+			.append(this.$overlay)
+			.append(this.$workarea);
 
 		this.renderer = new Renderer(this);
 
 		this.render();
+	}
+
+	setPaperSize(width, height) {
+		this.paperSettings.width = width;
+		this.paperSettings.height = height;
+
+		this.$layout
+			.outerHeight(height)
+			.outerWidth(width);
+
+		this.$workarea
+			.outerHeight(this.$layout.height())
+			.outerWidth(this.$layout.width());
+
+		this.$overlay
+			.outerHeight(this.$layout.height())
+			.outerWidth(this.$layout.width());
+
+		this.emit('pagerSizeChanged', width, height);
 	}
 
 	loadAst(source) {
