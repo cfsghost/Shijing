@@ -8278,8 +8278,8 @@
 				// DOMs
 				_this.$origin = $(el);
 				_this.$container = $('<div>').css({
-					paddingTop: '60px',
-					paddingBottom: '60px',
+					paddingTop: '20px',
+					paddingBottom: '20px',
 					background: '#eeeeee',
 					overflowY: 'auto',
 					textAlign: 'center'
