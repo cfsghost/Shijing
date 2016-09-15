@@ -20,21 +20,13 @@ class Inline {
 
 		console.time('grabLines');
 
+		// Getting rects from components
 		var rects = this.rootComponent.getRects();
-//		console.log(rects);
 
 		rects.forEach(function(rectSet) {
 			this._figureLineStates(rectSet.DOM, rectSet.rects);
 		}.bind(this));
-//		console.log(this.lineStates);
-		//this._figureLineStates(rects);
-/*
-		if (DOM.childNodes) {
-			for (var i = 0; i < DOM.childNodes.length; i++) {
-				this._grabRects(DOM.childNodes[i]);
-			}
-		}
-*/
+
 		this._grabLines();
 		this._packLineViews();
 
@@ -123,57 +115,6 @@ class Inline {
 			}
 		}
 
-	}
-
-	_grabRects(DOM) {
-
-		// traverse child nodes if node is not text node
-		if (DOM.nodeType != Node.TEXT_NODE) {
-
-			if (DOM.childNodes) {
-				for (var i = 0; i < DOM.childNodes.length; i++) {
-					this._grabRects(DOM.childNodes[i]);
-				}
-			}
-
-			return;
-		}
-
-		// Check this text node
-		this.checkRange.selectNode(DOM);
-		var rects = this.checkRange.getClientRects();
-
-		for (var index = 0; index < rects.length; index++) {
-			var rect = rects[index];
-
-			var existed = false;
-			if (this.lineStates.length) {
-				var state = this.lineStates[this.lineStates.length - 1];
-
-				// The same line
-				if ((rect.top >= state.rect.top && rect.bottom <= state.rect.bottom) ||
-					(state.rect.top >= rect.top && state.rect.bottom <= rect.bottom)) {
-
-					if (rect.bottom > state.rect.bottom)
-						state.rect.bottom = rect.bottom;
-
-					state.rect.right = rect.right;
-					existed = true;
-				}
-			}
-
-			if (!existed) {
-				this.lineStates.push({
-					DOM: DOM,
-					rect: {
-						top: rect.top,
-						bottom: rect.bottom,
-						left: rect.left,
-						right: rect.right
-					}
-				});
-			}
-		}
 	}
 
 	_grabLines() {
