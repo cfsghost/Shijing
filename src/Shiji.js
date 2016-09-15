@@ -88,6 +88,33 @@ class Shiji extends events.EventEmitter {
 		this.emit('pagerSizeChanged', width, height);
 	}
 
+	setPaperMargin(margin) {
+
+		if (!(margin instanceof Object)) {
+			this.paperSettings.margins = {
+				top: margin,
+				bottom: margin,
+				left: margin,
+				right: margin
+			};
+
+			this.$layout.css({
+				'padding': margin
+			});
+
+			return;
+		}
+
+		this.paperSettings.margins = margin;
+
+		this.$layout.css({
+			'padding-top': margin.top,
+			'padding-bottom': margin.bottom,
+			'padding-left': margin.left,
+			'padding-right': margin.right,
+		});
+	}
+
 	loadAst(source) {
 		this.astHandler.load(source);
 

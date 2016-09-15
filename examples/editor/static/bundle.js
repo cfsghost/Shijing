@@ -77,6 +77,9 @@
 		var shiji = new _2.default('#editor');
 		shiji.setPaperSize(paperSize[0].width, paperSize[0].height);
 
+		// margin is set to  2.54 cm
+		shiji.setPaperMargin(96);
+
 		shiji.loadAst({
 			root: {
 				childrens: [{
@@ -8320,6 +8323,34 @@
 					this.$overlay.outerHeight(this.$layout.height()).outerWidth(this.$layout.width());
 
 					this.emit('pagerSizeChanged', width, height);
+				}
+			}, {
+				key: 'setPaperMargin',
+				value: function setPaperMargin(margin) {
+
+					if (!(margin instanceof Object)) {
+						this.paperSettings.margins = {
+							top: margin,
+							bottom: margin,
+							left: margin,
+							right: margin
+						};
+
+						this.$layout.css({
+							'padding': margin
+						});
+
+						return;
+					}
+
+					this.paperSettings.margins = margin;
+
+					this.$layout.css({
+						'padding-top': margin.top,
+						'padding-bottom': margin.bottom,
+						'padding-left': margin.left,
+						'padding-right': margin.right
+					});
 				}
 			}, {
 				key: 'loadAst',
