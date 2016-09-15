@@ -2,10 +2,17 @@ import Shiji from '../../';
 
 $(function() {
 	var $window = $(window);
+	var $layout = $('.layout');
+	var $toolbar = $('.toolbar');
 
-	$('#editor')
+	$layout
 		.height($window.height())
 		.width($window.width());
+
+	$('#editor')
+		.css('top', $toolbar.height())
+		.height($layout.height() - $toolbar.height())
+		.width($layout.width());
 
 	var shiji = new Shiji('#editor');
 

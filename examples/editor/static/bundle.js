@@ -61,8 +61,12 @@
 
 	$(function () {
 		var $window = $(window);
+		var $layout = $('.layout');
+		var $toolbar = $('.toolbar');
 
-		$('#editor').height($window.height()).width($window.width());
+		$layout.height($window.height()).width($window.width());
+
+		$('#editor').css('top', $toolbar.height()).height($layout.height() - $toolbar.height()).width($layout.width());
 
 		var shiji = new _2.default('#editor');
 
@@ -8244,11 +8248,11 @@
 				this.astHandler = new _ast_handler2.default();
 				this.$origin = $(el);
 				this.$container = $('<div>').css({
-					position: 'relative',
 					paddingTop: '60px',
 					paddingBottom: '60px',
 					background: '#eeeeee',
-					overflowY: 'auto'
+					overflowY: 'auto',
+					textAlign: 'center'
 				}).outerHeight(this.$origin.height());
 				this.$layout = $('<div>').css({
 					display: 'inline-block',

@@ -16,11 +16,11 @@ class Shiji {
 		this.$origin = $(el);
 		this.$container = $('<div>')
 			.css({
-				position: 'relative',
 				paddingTop: '60px',
 				paddingBottom: '60px',
 				background: '#eeeeee',
-				overflowY: 'auto'
+				overflowY: 'auto',
+				textAlign: 'center'
 			})
 			.outerHeight(this.$origin.height());
 		this.$layout = $('<div>')

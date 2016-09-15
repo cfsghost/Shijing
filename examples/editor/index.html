@@ -3,27 +3,100 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Editor example</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<script src="jquery.min.js"></script>
 		<style>
 			html, body {
 				margin: 0px;
 				height: 100%;
-				background: #222222;
 			}
 
 			#editor {
+				position: absolute;
 				background: white;
+			}
+
+			.layout {
+				position: relative;
 				width: 100%;
 				height: 100%;
 			}
 
-			.layout {
+			.toolbar {
+				display: flex;
+				position: relative;
+				font-size: 14px;
+				background: #333333;
+				color: white;
+				box-shadow: 0 3px 3px rgba(0,0,0,.1);
+				z-index: 1;
+				padding: 1px;
+			}
+
+			.button {
+				display: inline-block;
+				line-height: 32px;
+				min-width: 32px;
 				text-align: center;
+			}
+
+			.button:hover {
+				background: rgba(255,255,255,.1);
+			}
+
+			.toolbar-group .button:first-child:hover {
+				border-top-left-radius: 5px;
+				border-bottom-left-radius: 5px;
+			}
+
+			.toolbar-group .button:last-child:hover {
+				border-top-right-radius: 5px;
+				border-bottom-right-radius: 5px;
+			}
+
+			.button.active {
+				background: #ddeaee;
+			}
+
+			.toolbar-group {
+				display: flex;
+				border-radius: 5px;
+				background: rgba(255,255,255,.1);
+			}
+
+			.toolbar-group + .toolbar-group {
+				margin-left: 1px;
 			}
 		</style>
 	</head>
 	<body>
 		<div class='layout'>
+			<div class="toolbar">
+
+				<div class="toolbar-group">
+					<div class="button">
+						<i class="fa fa-bold" aria-hidden="true"></i>
+					</div>
+					<div class="button">
+						<i class="fa fa-italic" aria-hidden="true"></i>
+					</div>
+					<div class="button">
+						<i class="fa fa-underline" aria-hidden="true"></i>
+					</div>
+				</div>
+
+				<div class="toolbar-group">
+					<div class="button">
+						<i class="fa fa-align-left" aria-hidden="true"></i>
+					</div>
+					<div class="button">
+						<i class="fa fa-align-center" aria-hidden="true"></i>
+					</div>
+					<div class="button">
+						<i class="fa fa-align-right" aria-hidden="true"></i>
+					</div>
+				</div>
+			</div>
 			<div id="editor"></div>
 		</div>
 		<script src="static/bundle.js"></script>
