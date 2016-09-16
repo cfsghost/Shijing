@@ -35,25 +35,7 @@ export default class Paragraph extends BlockComponent {
 
 		return offset;
 	}
-/*
-	getPosition(offset) {
 
-		var count = offset;
-		for (var index in this.lineViews) {
-			var dom = this.lineViews[index][0];
-			var textNode = dom.childNodes[0];
-
-			if (textNode.length < count) {
-				count -= textNode.length;
-			} else {
-				return {
-					DOM: dom,
-					offset: count
-				};
-			}
-		}
-	}
-*/
 	updateDOMs() {
 
 		// sync dom of all components because original dom might be splited by inline layout
