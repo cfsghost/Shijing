@@ -59,7 +59,7 @@ export default class Paragraph extends BlockComponent {
 	}
 
 	renderSelection() {
-		var cursors = this.renderer.cursors;
+		var cursors = this.renderer.selection;
 
 		cursors.getAllCursors().forEach((cursor) => {
 

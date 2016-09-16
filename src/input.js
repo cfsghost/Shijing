@@ -14,7 +14,7 @@ class Input extends events.EventEmitter {
 		this.mousedown = false;
 		this.dragging = false;
 
-		this.ctx.cursors.addCursor(this.cursor);
+		this.ctx.selection.addCursor(this.cursor);
 
 		this.cursor.on('update', function() {
 			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);

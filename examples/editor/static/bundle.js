@@ -8436,9 +8436,9 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _CursorManager = __webpack_require__(325);
+		var _Selection = __webpack_require__(327);
 
-		var _CursorManager2 = _interopRequireDefault(_CursorManager);
+		var _Selection2 = _interopRequireDefault(_Selection);
 
 		var _Components = __webpack_require__(303);
 
@@ -8459,7 +8459,7 @@
 				this.shiji = shiji;
 				this.astHandler = shiji.astHandler;
 				this.Components = _Components2.default;
-				this.cursors = new _CursorManager2.default(this);
+				this.selection = new _Selection2.default(this);
 
 				// Initializing offscreen buffer
 				this.offscreen = new _offscreen2.default(this);
@@ -10648,7 +10648,7 @@
 				value: function renderSelection() {
 					var _this2 = this;
 
-					var cursors = this.renderer.cursors;
+					var cursors = this.renderer.selection;
 
 					cursors.getAllCursors().forEach(function (cursor) {
 
@@ -11034,7 +11034,7 @@
 				_this.mousedown = false;
 				_this.dragging = false;
 
-				_this.ctx.cursors.addCursor(_this.cursor);
+				_this.ctx.selection.addCursor(_this.cursor);
 
 				_this.cursor.on('update', function () {
 					this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
@@ -12226,53 +12226,7 @@
 		exports.default = ImageLoader;
 
 	/***/ },
-	/* 325 */
-	/***/ function(module, exports) {
-
-		"use strict";
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var CursorManager = function () {
-			function CursorManager() {
-				_classCallCheck(this, CursorManager);
-
-				this.cursors = [];
-			}
-
-			_createClass(CursorManager, [{
-				key: "getAllCursors",
-				value: function getAllCursors() {
-					return this.cursors;
-				}
-			}, {
-				key: "addCursor",
-				value: function addCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
-					if (index != -1) return;
-
-					this.cursors.push(cursor);
-				}
-			}, {
-				key: "removeCursor",
-				value: function removeCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
-					if (index != -1) this.cursors.splice(index, 1);
-				}
-			}]);
-
-			return CursorManager;
-		}();
-
-		exports.default = CursorManager;
-
-	/***/ },
+	/* 325 */,
 	/* 326 */
 	/***/ function(module, exports) {
 
@@ -12445,6 +12399,53 @@
 		}();
 
 		exports.default = Misc;
+
+	/***/ },
+	/* 327 */
+	/***/ function(module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Selection = function () {
+			function Selection() {
+				_classCallCheck(this, Selection);
+
+				this.cursors = [];
+			}
+
+			_createClass(Selection, [{
+				key: "getAllCursors",
+				value: function getAllCursors() {
+					return this.cursors;
+				}
+			}, {
+				key: "addCursor",
+				value: function addCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) return;
+
+					this.cursors.push(cursor);
+				}
+			}, {
+				key: "removeCursor",
+				value: function removeCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) this.cursors.splice(index, 1);
+				}
+			}]);
+
+			return Selection;
+		}();
+
+		exports.default = Selection;
 
 	/***/ }
 	/******/ ]);
