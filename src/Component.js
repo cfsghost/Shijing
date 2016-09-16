@@ -6,6 +6,7 @@ class Component extends events.EventEmitter {
 		super();
 
 		this.blockType = true;
+		this.ctx = renderer.shiji;
 		this.renderer = renderer;
 		this.node = node;
 		this.dom = null;
@@ -336,7 +337,7 @@ class Component extends events.EventEmitter {
 
 		// Getting correct position
 		var pos = this.getPosition(offset);
-		var point = this.renderer.caret.figureCaretPoint(pos.DOM, pos.offset);
+		var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 		point.style = {
 			background: 'red',

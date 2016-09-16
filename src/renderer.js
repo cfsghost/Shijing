@@ -1,5 +1,6 @@
 import Offscreen from './offscreen';
 import Cursor from './cursor';
+import CursorManager from './CursorManager';
 import Components from './Components';
 import Input from './input';
 
@@ -9,6 +10,7 @@ class Renderer {
 		this.shiji = shiji;
 		this.astHandler = shiji.astHandler;
 		this.Components = Components;
+		this.cursors = new CursorManager(this);
 
 		// Initializing offscreen buffer
 		this.offscreen = new Offscreen(this);

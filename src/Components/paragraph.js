@@ -58,6 +58,20 @@ export default class Paragraph extends BlockComponent {
 		}.bind(this));
 	}
 
+	renderSelection() {
+		var cursors = this.renderer.cursors;
+
+		cursors.getAllCursors().forEach((cursor) => {
+			if (!cursor.startNode)
+				return;
+
+			var offset = cursor.startOffset;
+			var node = cursor.startNode;
+			var point = node.component.getCaret(offset);
+			console.log('renderSelection', node, point);
+		});
+	}
+
 	layout($DOM) {
 
 		var offscreen = this.renderer.offscreen;
@@ -76,7 +90,7 @@ export default class Paragraph extends BlockComponent {
 					});
 				offscreen.resize(this.style.width, this.style.height);
 
-				// Apply inline layout
+				// Apply inline layout, then we can get a lots of line views
 				var layout = new InlineLayout(this, offscreen);
 				try {
 					this.lineViews = layout.grabLines($DOM[0]);
@@ -85,6 +99,11 @@ export default class Paragraph extends BlockComponent {
 					console.log($DOM);
 				}
 
+				// To check all cursors to draw selection.
+				this.renderSelection();
+
+				// DOMs might be splited into multiple new DOMs by inline layout process, we need
+				// to update these DOMs to its component object.
 				this.updateDOMs();
 //return resolve();
 				// Clear all then re-append lines

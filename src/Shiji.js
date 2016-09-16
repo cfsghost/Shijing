@@ -2,6 +2,7 @@ import events from 'events';
 import Renderer from './renderer';
 import ActionDispatcher from './action_dispatcher';
 import ASTHandler from './ast_handler';
+import Misc from './Misc';
 import Actions from './Actions';
 
 require('./css/main.css');
@@ -15,6 +16,9 @@ class Shiji extends events.EventEmitter {
 		this.actionDispatcher = new ActionDispatcher();
 		this.actions = new Actions(this);
 		this.astHandler = new ASTHandler();
+
+		// APIs
+		this.Misc = new Misc();
 
 		// Paper
 		this.paperSettings = {

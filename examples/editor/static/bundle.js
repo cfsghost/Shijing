@@ -8240,6 +8240,10 @@
 
 		var _ast_handler2 = _interopRequireDefault(_ast_handler);
 
+		var _Misc = __webpack_require__(326);
+
+		var _Misc2 = _interopRequireDefault(_Misc);
+
 		var _Actions = __webpack_require__(316);
 
 		var _Actions2 = _interopRequireDefault(_Actions);
@@ -8268,6 +8272,9 @@
 				_this.actionDispatcher = new _action_dispatcher2.default();
 				_this.actions = new _Actions2.default(_this);
 				_this.astHandler = new _ast_handler2.default();
+
+				// APIs
+				_this.Misc = new _Misc2.default();
 
 				// Paper
 				_this.paperSettings = {
@@ -8429,6 +8436,10 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
+		var _CursorManager = __webpack_require__(325);
+
+		var _CursorManager2 = _interopRequireDefault(_CursorManager);
+
 		var _Components = __webpack_require__(303);
 
 		var _Components2 = _interopRequireDefault(_Components);
@@ -8448,6 +8459,7 @@
 				this.shiji = shiji;
 				this.astHandler = shiji.astHandler;
 				this.Components = _Components2.default;
+				this.cursors = new _CursorManager2.default(this);
 
 				// Initializing offscreen buffer
 				this.offscreen = new _offscreen2.default(this);
@@ -8712,6 +8724,7 @@
 					position: 'absolute',
 					top: 0,
 					left: 0,
+					border: '0px',
 					//			border: '1px solid black',
 					pointerEvents: 'none'
 				});
@@ -8820,11 +8833,12 @@
 
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
 
+				_this.ctx = renderer.shiji;
 				_this.renderer = renderer;
 				_this.startOffset = -1;
 				_this.startNode = null;
 				_this.endNode = null;
-				_this.endOffest = null;
+				_this.endOffset = null;
 				_this.baseline = null;
 				_this.$dom = $('<div>').addClass('shiji-cursor').css({
 					position: 'absolute',
@@ -8841,99 +8855,6 @@
 			}
 
 			_createClass(Cursor, [{
-				key: 'figureCaretPoint',
-				value: function figureCaretPoint(dom, offset) {
-
-					var $dom = $(dom);
-					var textNode = dom.childNodes ? dom.childNodes[0] : null;
-					var $container = this.renderer.shiji.$overlay;
-
-					var point = {
-						x: 0,
-						y: 0,
-						height: $dom.height(),
-						DOM: dom,
-						offset: offset
-					};
-
-					// Nothing left in this DOM
-					if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
-						point.x = $dom.offset().left - $container.offset().left;
-						point.y = $dom.offset().top - $container.offset().top;
-						point.DOM = dom;
-						point.offset = 0;
-
-						return point;
-					}
-
-					// The end of line
-					if (offset >= textNode.length) {
-
-						var range = document.createRange();
-
-						// Last character in a line
-						range.setStart(textNode, textNode.length - 1);
-						range.setEnd(textNode, textNode.length);
-
-						// Getting rect information then figure out exact position
-						var rect = range.getBoundingClientRect();
-						range.detach();
-
-						point.x = rect.right - $container.offset().left;
-						point.y = rect.top - $container.offset().top;
-						point.DOM = textNode;
-						point.offset = textNode.length;
-
-						return point;
-					}
-
-					// If the last word of line is return character
-					if (textNode.nodeValue[offset] == '\n') {
-
-						// empty line
-						if (textNode.length == 1) {
-							point.x = $dom.offset().left - $container.offset().left;
-							point.y = $dom.offset().top - $container.offset().top;
-							point.DOM = dom;
-							point.offset = 0;
-
-							return point;
-						}
-
-						var range = document.createRange();
-
-						range.setStart(textNode, offset - 1);
-						range.setEnd(textNode, offset);
-
-						// Getting rect information then figure out exact position
-						var rect = range.getBoundingClientRect();
-						range.detach();
-
-						point.x = rect.right - $container.offset().left;
-						point.y = rect.top - $container.offset().top;
-						point.DOM = dom;
-						point.offset = offset;
-
-						return point;
-					}
-
-					var range = document.createRange();
-
-					range.setStart(textNode, offset);
-					range.setEnd(textNode, offset + 1);
-
-					// Getting rect information then figure out exact position
-					var rect = range.getBoundingClientRect();
-					range.detach();
-
-					point.x = rect.left - $container.offset().left;
-					point.y = rect.top - $container.offset().top;
-					point.DOM = dom;
-					point.offset = offset;
-
-					return point;
-				}
-			}, {
 				key: 'update',
 				value: function update() {
 
@@ -8989,7 +8910,7 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-
+					console.log(caret);
 					this.caret.move(caret.x, caret.y);
 
 					this._setPosition(node, offset);
@@ -9029,7 +8950,7 @@
 
 					var _offset = offset;
 
-					var point = this.figureCaretPoint(dom, offset);
+					var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
 
 					this.caret.move(point.x, point.y);
 
@@ -9642,6 +9563,7 @@
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Component).call(this));
 
 				_this.blockType = true;
+				_this.ctx = renderer.shiji;
 				_this.renderer = renderer;
 				_this.node = node;
 				_this.dom = null;
@@ -10032,7 +9954,7 @@
 
 					// Getting correct position
 					var pos = this.getPosition(offset);
-					var point = this.renderer.caret.figureCaretPoint(pos.DOM, pos.offset);
+					var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 					point.style = {
 						background: 'red',
@@ -10565,7 +10487,7 @@
 
 					return new Promise(function () {
 						var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(resolve) {
-							var node, style, $DOM, $loader;
+							var node, style, $DOM, x, $loader;
 							return regeneratorRuntime.wrap(function _callee2$(_context2) {
 								while (1) {
 									switch (_context2.prev = _context2.next) {
@@ -10585,18 +10507,20 @@
 											// Loading directly if cache exists already
 
 											if (!imageLoader.exists(this.node.src)) {
-												_context2.next = 9;
+												_context2.next = 11;
 												break;
 											}
 
+											console.time('Load image');
 											this.loaded = true;
-											_context2.next = 8;
+											_context2.next = 9;
 											return this.loadImage();
 
-										case 8:
+										case 9:
+											x = console.timeEnd('Load image');
 											return _context2.abrupt('return', resolve());
 
-										case 9:
+										case 11:
 
 											// Setup background and border
 											$DOM.css({
@@ -10616,7 +10540,7 @@
 
 											resolve();
 
-										case 12:
+										case 14:
 										case 'end':
 											return _context2.stop();
 									}
@@ -10737,26 +10661,6 @@
 
 					return offset;
 				}
-				/*
-		  	getPosition(offset) {
-		  
-		  		var count = offset;
-		  		for (var index in this.lineViews) {
-		  			var dom = this.lineViews[index][0];
-		  			var textNode = dom.childNodes[0];
-		  
-		  			if (textNode.length < count) {
-		  				count -= textNode.length;
-		  			} else {
-		  				return {
-		  					DOM: dom,
-		  					offset: count
-		  				};
-		  			}
-		  		}
-		  	}
-		  */
-
 			}, {
 				key: 'updateDOMs',
 				value: function updateDOMs() {
@@ -10781,6 +10685,20 @@
 					}.bind(this));
 				}
 			}, {
+				key: 'renderSelection',
+				value: function renderSelection() {
+					var cursors = this.renderer.cursors;
+
+					cursors.getAllCursors().forEach(function (cursor) {
+						if (!cursor.startNode) return;
+
+						var offset = cursor.startOffset;
+						var node = cursor.startNode;
+						var point = node.component.getCaret(offset);
+						console.log('renderSelection', node, point);
+					});
+				}
+			}, {
 				key: 'layout',
 				value: function layout($DOM) {
 
@@ -10799,7 +10717,7 @@
 							});
 							offscreen.resize(this.style.width, this.style.height);
 
-							// Apply inline layout
+							// Apply inline layout, then we can get a lots of line views
 							var layout = new _inline2.default(this, offscreen);
 							try {
 								this.lineViews = layout.grabLines($DOM[0]);
@@ -10808,6 +10726,11 @@
 								console.log($DOM);
 							}
 
+							// To check all cursors to draw selection.
+							this.renderSelection();
+
+							// DOMs might be splited into multiple new DOMs by inline layout process, we need
+							// to update these DOMs to its component object.
 							this.updateDOMs();
 							//return resolve();
 							// Clear all then re-append lines
@@ -11136,6 +11059,8 @@
 				_this.inputHandler = new _input_handler2.default(_this);
 				_this.mousedown = false;
 				_this.dragging = false;
+
+				_this.ctx.cursors.addCursor(_this.cursor);
 
 				_this.cursor.on('update', function () {
 					this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
@@ -12325,6 +12250,176 @@
 		}(_events2.default.EventEmitter);
 
 		exports.default = ImageLoader;
+
+	/***/ },
+	/* 325 */
+	/***/ function(module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var CursorManager = function () {
+			function CursorManager() {
+				_classCallCheck(this, CursorManager);
+
+				this.cursors = [];
+			}
+
+			_createClass(CursorManager, [{
+				key: "getAllCursors",
+				value: function getAllCursors() {
+					return this.cursors;
+				}
+			}, {
+				key: "addCursor",
+				value: function addCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) return;
+
+					this.cursors.push(cursor);
+				}
+			}, {
+				key: "removeCursor",
+				value: function removeCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) this.cursors.splice(index, 1);
+				}
+			}]);
+
+			return CursorManager;
+		}();
+
+		exports.default = CursorManager;
+
+	/***/ },
+	/* 326 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Misc = function () {
+			function Misc() {
+				_classCallCheck(this, Misc);
+			}
+
+			_createClass(Misc, [{
+				key: 'figurePosition',
+				value: function figurePosition(dom, offset, base) {
+
+					var $dom = $(dom);
+					var textNode = dom.childNodes ? dom.childNodes[0] : null;
+					var $container = $(base);
+
+					var point = {
+						x: 0,
+						y: 0,
+						height: $dom.height(),
+						DOM: dom,
+						offset: offset
+					};
+
+					// Nothing left in this DOM
+					if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
+						//point.x = $dom.offset().left - $container.offset().left;
+						//point.y = $dom.offset().top - $container.offset().top;
+						point.x = $dom.position().left;
+						point.y = $dom.position().top;
+						point.DOM = dom;
+						point.offset = 0;
+
+						return point;
+					}
+
+					// The end of line
+					if (offset >= textNode.length) {
+
+						var range = document.createRange();
+
+						// Last character in a line
+						range.setStart(textNode, textNode.length - 1);
+						range.setEnd(textNode, textNode.length);
+
+						// Getting rect information then figure out exact position
+						var rect = range.getBoundingClientRect();
+						range.detach();
+
+						point.x = rect.right - $container.offset().left;
+						point.y = rect.top - $container.offset().top;
+						point.DOM = textNode;
+						point.offset = textNode.length;
+
+						return point;
+					}
+
+					// If the last word of line is return character
+					if (textNode.nodeValue[offset] == '\n') {
+
+						// empty line
+						if (textNode.length == 1) {
+							//point.x = $dom.offset().left - $container.offset().left;
+							//point.y = $dom.offset().top - $container.offset().top;
+							point.x = $dom.position().left;
+							point.y = $dom.position().top;
+							point.DOM = dom;
+							point.offset = 0;
+
+							return point;
+						}
+
+						var range = document.createRange();
+
+						range.setStart(textNode, offset - 1);
+						range.setEnd(textNode, offset);
+
+						// Getting rect information then figure out exact position
+						var rect = range.getBoundingClientRect();
+						range.detach();
+
+						point.x = rect.right - $container.offset().left;
+						point.y = rect.top - $container.offset().top;
+						point.DOM = dom;
+						point.offset = offset;
+
+						return point;
+					}
+
+					var range = document.createRange();
+
+					range.setStart(textNode, offset);
+					range.setEnd(textNode, offset + 1);
+
+					// Getting rect information then figure out exact position
+					var rect = range.getBoundingClientRect();
+					range.detach();
+
+					point.x = rect.left - $container.offset().left;
+					point.y = rect.top - $container.offset().top;
+					point.DOM = dom;
+					point.offset = offset;
+
+					return point;
+				}
+			}]);
+
+			return Misc;
+		}();
+
+		exports.default = Misc;
 
 	/***/ }
 	/******/ ]);

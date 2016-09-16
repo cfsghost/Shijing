@@ -6,11 +6,12 @@ class Cursor extends events.EventEmitter {
 	constructor(renderer) {
 		super();
 
+		this.ctx = renderer.shiji;
 		this.renderer = renderer;
 		this.startOffset = -1;
 		this.startNode = null;
 		this.endNode = null;
-		this.endOffest = null;
+		this.endOffset = null;
 		this.baseline = null;
 		this.$dom = $('<div>')
 			.addClass('shiji-cursor')
@@ -25,99 +26,6 @@ class Cursor extends events.EventEmitter {
 		this.caret.$dom.appendTo(this.$dom);
 
 		renderer.shiji.$overlay.append(this.$dom);
-	}
-
-	figureCaretPoint(dom, offset) {
-
-		var $dom = $(dom);
-		var textNode = (dom.childNodes) ? dom.childNodes[0] : null;
-		var $container = this.renderer.shiji.$overlay;
-
-		var point = {
-			x: 0,
-			y: 0,
-			height: $dom.height(),
-			DOM: dom,
-			offset: offset
-		};
-
-		// Nothing left in this DOM
-		if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
-			point.x = $dom.offset().left - $container.offset().left;
-			point.y = $dom.offset().top - $container.offset().top;
-			point.DOM = dom;
-			point.offset = 0;
-
-			return point;
-		}
-		
-		// The end of line
-		if (offset >= textNode.length) {
-
-			var range = document.createRange();
-
-			// Last character in a line
-			range.setStart(textNode, textNode.length - 1);
-			range.setEnd(textNode, textNode.length);
-
-			// Getting rect information then figure out exact position
-			var rect = range.getBoundingClientRect();
-			range.detach();
-
-			point.x = rect.right - $container.offset().left;
-			point.y = rect.top - $container.offset().top;
-			point.DOM = textNode;
-			point.offset = textNode.length;
-
-			return point;
-		}
-		
-		// If the last word of line is return character
-		if (textNode.nodeValue[offset] == '\n') {
-
-			// empty line
-			if (textNode.length == 1) {
-				point.x = $dom.offset().left - $container.offset().left;
-				point.y = $dom.offset().top - $container.offset().top;
-				point.DOM = dom;
-				point.offset = 0;
-
-				return point;
-			}
-
-			var range = document.createRange();
-
-			range.setStart(textNode, offset - 1);
-			range.setEnd(textNode, offset);
-
-			// Getting rect information then figure out exact position
-			var rect = range.getBoundingClientRect();
-			range.detach();
-
-			point.x = rect.right - $container.offset().left;
-			point.y = rect.top - $container.offset().top;
-			point.DOM = dom;
-			point.offset = offset;
-
-			return point;
-		}
-
-		var range = document.createRange();
-
-		range.setStart(textNode, offset);
-		range.setEnd(textNode, offset + 1);
-
-		// Getting rect information then figure out exact position
-		var rect = range.getBoundingClientRect();
-		range.detach();
-
-		point.x = rect.left - $container.offset().left;
-		point.y = rect.top - $container.offset().top;
-		point.DOM = dom;
-		point.offset = offset;
-
-		return point;
-
 	}
 
 	update() {
@@ -173,7 +81,7 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-
+console.log(caret);
 		this.caret.move(caret.x, caret.y);
 
 		this._setPosition(node, offset);
@@ -210,7 +118,7 @@ class Cursor extends events.EventEmitter {
 
 		var _offset = offset;
 
-		var point = this.figureCaretPoint(dom, offset);
+		var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
 
 		this.caret.move(point.x, point.y);
 
