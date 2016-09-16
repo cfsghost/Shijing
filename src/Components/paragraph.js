@@ -62,13 +62,26 @@ export default class Paragraph extends BlockComponent {
 		var cursors = this.renderer.cursors;
 
 		cursors.getAllCursors().forEach((cursor) => {
+
 			if (!cursor.startNode)
 				return;
 
+			var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+
+			console.log(lineView);
+
+			lineView.lineView.css('background', 'green');
+/*
+			// Figure out start point
 			var offset = cursor.startOffset;
 			var node = cursor.startNode;
-			var point = node.component.getCaret(offset);
+			var pos = node.component.getPosition(offset);
+			var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
 			console.log('renderSelection', node, point);
+
+			var lineview = cursor.getLineView();
+//			console.log(lineview);
+*/
 		});
 	}
 
@@ -99,9 +112,6 @@ export default class Paragraph extends BlockComponent {
 					console.log($DOM);
 				}
 
-				// To check all cursors to draw selection.
-				this.renderSelection();
-
 				// DOMs might be splited into multiple new DOMs by inline layout process, we need
 				// to update these DOMs to its component object.
 				this.updateDOMs();
@@ -110,6 +120,9 @@ export default class Paragraph extends BlockComponent {
 				$DOM
 					.empty()
 					.append(this.lineViews);
+
+				// To check all cursors to draw selection.
+				this.renderSelection();
 				
 				// Clear offscreen buffer
 				offscreen.empty();

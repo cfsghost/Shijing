@@ -1,10 +1,23 @@
 class Misc {
 
+	constructor(ctx) {
+		this.ctx = ctx;
+		this.astHandler = ctx.astHandler;
+	}
+
 	figurePosition(dom, offset, base) {
 
 		var $dom = $(dom);
 		var textNode = (dom.childNodes) ? dom.childNodes[0] : null;
-		var $container = $(base);
+		var $container = base ? $(base) : null;
+
+		var baseX = 0;
+		var baseY = 0;
+
+		if ($container) {
+			baseX = $container.offset().left;
+			baseY = $container.offset().top;
+		}
 
 		var point = {
 			x: 0,
@@ -39,8 +52,8 @@ class Misc {
 			var rect = range.getBoundingClientRect();
 			range.detach();
 
-			point.x = rect.right - $container.offset().left;
-			point.y = rect.top - $container.offset().top;
+			point.x = rect.right - baseX;
+			point.y = rect.top - baseY;
 			point.DOM = textNode;
 			point.offset = textNode.length;
 
@@ -71,8 +84,8 @@ class Misc {
 			var rect = range.getBoundingClientRect();
 			range.detach();
 
-			point.x = rect.right - $container.offset().left;
-			point.y = rect.top - $container.offset().top;
+			point.x = rect.right - baseX;
+			point.y = rect.top - baseY;
 			point.DOM = dom;
 			point.offset = offset;
 
@@ -88,13 +101,54 @@ class Misc {
 		var rect = range.getBoundingClientRect();
 		range.detach();
 
-		point.x = rect.left - $container.offset().left;
-		point.y = rect.top - $container.offset().top;
+		point.x = rect.left - baseX;
+		point.y = rect.top - baseY;
 		point.DOM = dom;
 		point.offset = offset;
 
 		return point;
 
+	}
+
+	findLineViewOwner(node) {
+
+		if (node.component.lineViews) {
+			return node;
+		}
+
+		var astHandler = this.astHandler;
+		var parentNode = astHandler.getParentNode(node);
+		if (parentNode)
+			return this.findLineViewOwner(parentNode);
+		else
+			return null;
+	}
+
+	getLineView(targetNode, offset) {
+
+		var node = this.findLineViewOwner(targetNode);
+		if (node) {
+			// Getting DOM by using startNode and startOffset
+			var pos = targetNode.component.getPosition(offset);
+			var range = document.createRange();
+
+			// Figure line which contains such DOM
+			for (var index in node.component.lineViews) {
+				var lineView = node.component.lineViews[index];
+				range.selectNode(lineView[0]);
+
+				// Found
+				if (range.isPointInRange(pos.DOM)) {
+					return {
+						arr: node.component.lineViews,
+						lineView: lineView,
+						index: parseInt(index)
+					};
+				}
+			}
+		}
+
+		return null;
 	}
 }
 

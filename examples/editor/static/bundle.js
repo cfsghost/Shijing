@@ -8274,7 +8274,7 @@
 				_this.astHandler = new _ast_handler2.default();
 
 				// APIs
-				_this.Misc = new _Misc2.default();
+				_this.Misc = new _Misc2.default(_this);
 
 				// Paper
 				_this.paperSettings = {
@@ -8910,9 +8910,8 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-					console.log(caret);
-					this.caret.move(caret.x, caret.y);
 
+					this.caret.move(caret.x, caret.y);
 					this._setPosition(node, offset);
 
 					this.caret.setStyle(Object.assign({
@@ -8980,51 +8979,11 @@
 					};
 				}
 			}, {
-				key: 'findLineViewOwner',
-				value: function findLineViewOwner(node) {
-
-					if (node.component.lineViews) {
-						return node;
-					}
-
-					var astHandler = this.renderer.shiji.astHandler;
-					var parentNode = astHandler.getParentNode(node);
-					if (parentNode) return this.findLineViewOwner(parentNode);else return null;
-				}
-			}, {
-				key: 'getLineView',
-				value: function getLineView() {
-
-					var node = this.findLineViewOwner(this.startNode);
-					if (node) {
-						// Getting DOM by using startNode and startOffset
-						var pos = this.startNode.component.getPosition(this.startOffset);
-						var range = document.createRange();
-
-						// Figure line which contains such DOM
-						for (var index in node.component.lineViews) {
-							var lineView = node.component.lineViews[index];
-							range.selectNode(lineView[0]);
-
-							// Found
-							if (range.isPointInRange(pos.DOM)) {
-								return {
-									arr: node.component.lineViews,
-									lineView: lineView,
-									index: parseInt(index)
-								};
-							}
-						}
-					}
-
-					return null;
-				}
-			}, {
 				key: 'moveUp',
 				value: function moveUp() {
 
 					var y;
-					var lineView = this.getLineView();
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
 					if (lineView) {
 						// Previous line
 						if (lineView.index > 0) {
@@ -9051,7 +9010,7 @@
 				value: function moveDown() {
 
 					var y;
-					var lineView = this.getLineView();
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
 					if (lineView) {
 						// Next line
 						if (lineView.index + 1 <= lineView.arr.length) {
@@ -10687,15 +10646,30 @@
 			}, {
 				key: 'renderSelection',
 				value: function renderSelection() {
+					var _this2 = this;
+
 					var cursors = this.renderer.cursors;
 
 					cursors.getAllCursors().forEach(function (cursor) {
+
 						if (!cursor.startNode) return;
 
-						var offset = cursor.startOffset;
-						var node = cursor.startNode;
-						var point = node.component.getCaret(offset);
-						console.log('renderSelection', node, point);
+						var lineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+
+						console.log(lineView);
+
+						lineView.lineView.css('background', 'green');
+						/*
+		    			// Figure out start point
+		    			var offset = cursor.startOffset;
+		    			var node = cursor.startNode;
+		    			var pos = node.component.getPosition(offset);
+		    			var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+		    			console.log('renderSelection', node, point);
+		    
+		    			var lineview = cursor.getLineView();
+		    //			console.log(lineview);
+		    */
 					});
 				}
 			}, {
@@ -10726,15 +10700,15 @@
 								console.log($DOM);
 							}
 
-							// To check all cursors to draw selection.
-							this.renderSelection();
-
 							// DOMs might be splited into multiple new DOMs by inline layout process, we need
 							// to update these DOMs to its component object.
 							this.updateDOMs();
 							//return resolve();
 							// Clear all then re-append lines
 							$DOM.empty().append(this.lineViews);
+
+							// To check all cursors to draw selection.
+							this.renderSelection();
 
 							// Clear offscreen buffer
 							offscreen.empty();
@@ -12313,8 +12287,11 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var Misc = function () {
-			function Misc() {
+			function Misc(ctx) {
 				_classCallCheck(this, Misc);
+
+				this.ctx = ctx;
+				this.astHandler = ctx.astHandler;
 			}
 
 			_createClass(Misc, [{
@@ -12323,7 +12300,15 @@
 
 					var $dom = $(dom);
 					var textNode = dom.childNodes ? dom.childNodes[0] : null;
-					var $container = $(base);
+					var $container = base ? $(base) : null;
+
+					var baseX = 0;
+					var baseY = 0;
+
+					if ($container) {
+						baseX = $container.offset().left;
+						baseY = $container.offset().top;
+					}
 
 					var point = {
 						x: 0,
@@ -12358,8 +12343,8 @@
 						var rect = range.getBoundingClientRect();
 						range.detach();
 
-						point.x = rect.right - $container.offset().left;
-						point.y = rect.top - $container.offset().top;
+						point.x = rect.right - baseX;
+						point.y = rect.top - baseY;
 						point.DOM = textNode;
 						point.offset = textNode.length;
 
@@ -12390,8 +12375,8 @@
 						var rect = range.getBoundingClientRect();
 						range.detach();
 
-						point.x = rect.right - $container.offset().left;
-						point.y = rect.top - $container.offset().top;
+						point.x = rect.right - baseX;
+						point.y = rect.top - baseY;
 						point.DOM = dom;
 						point.offset = offset;
 
@@ -12407,12 +12392,52 @@
 					var rect = range.getBoundingClientRect();
 					range.detach();
 
-					point.x = rect.left - $container.offset().left;
-					point.y = rect.top - $container.offset().top;
+					point.x = rect.left - baseX;
+					point.y = rect.top - baseY;
 					point.DOM = dom;
 					point.offset = offset;
 
 					return point;
+				}
+			}, {
+				key: 'findLineViewOwner',
+				value: function findLineViewOwner(node) {
+
+					if (node.component.lineViews) {
+						return node;
+					}
+
+					var astHandler = this.astHandler;
+					var parentNode = astHandler.getParentNode(node);
+					if (parentNode) return this.findLineViewOwner(parentNode);else return null;
+				}
+			}, {
+				key: 'getLineView',
+				value: function getLineView(targetNode, offset) {
+
+					var node = this.findLineViewOwner(targetNode);
+					if (node) {
+						// Getting DOM by using startNode and startOffset
+						var pos = targetNode.component.getPosition(offset);
+						var range = document.createRange();
+
+						// Figure line which contains such DOM
+						for (var index in node.component.lineViews) {
+							var lineView = node.component.lineViews[index];
+							range.selectNode(lineView[0]);
+
+							// Found
+							if (range.isPointInRange(pos.DOM)) {
+								return {
+									arr: node.component.lineViews,
+									lineView: lineView,
+									index: parseInt(index)
+								};
+							}
+						}
+					}
+
+					return null;
 				}
 			}]);
 

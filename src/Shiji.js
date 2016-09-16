@@ -18,7 +18,7 @@ class Shiji extends events.EventEmitter {
 		this.astHandler = new ASTHandler();
 
 		// APIs
-		this.Misc = new Misc();
+		this.Misc = new Misc(this);
 
 		// Paper
 		this.paperSettings = {

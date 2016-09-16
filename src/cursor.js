@@ -81,9 +81,8 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-console.log(caret);
-		this.caret.move(caret.x, caret.y);
 
+		this.caret.move(caret.x, caret.y);
 		this._setPosition(node, offset);
 
 		this.caret.setStyle(Object.assign({
@@ -148,51 +147,10 @@ console.log(caret);
 		};
 	}
 
-	findLineViewOwner(node) {
-
-		if (node.component.lineViews) {
-			return node;
-		}
-
-		var astHandler = this.renderer.shiji.astHandler;
-		var parentNode = astHandler.getParentNode(node);
-		if (parentNode)
-			return this.findLineViewOwner(parentNode);
-		else
-			return null;
-	}
-
-	getLineView() {
-
-		var node = this.findLineViewOwner(this.startNode);
-		if (node) {
-			// Getting DOM by using startNode and startOffset
-			var pos = this.startNode.component.getPosition(this.startOffset);
-			var range = document.createRange();
-
-			// Figure line which contains such DOM
-			for (var index in node.component.lineViews) {
-				var lineView = node.component.lineViews[index];
-				range.selectNode(lineView[0]);
-
-				// Found
-				if (range.isPointInRange(pos.DOM)) {
-					return {
-						arr: node.component.lineViews,
-						lineView: lineView,
-						index: parseInt(index)
-					};
-				}
-			}
-		}
-
-		return null;
-	}
-
 	moveUp() {
 
 		var y;
-		var lineView = this.getLineView();
+		var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
 		if (lineView) {
 			// Previous line
 			if (lineView.index > 0) {
@@ -219,7 +177,7 @@ console.log(caret);
 	moveDown() {
 
 		var y;
-		var lineView = this.getLineView();
+		var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
 		if (lineView) {
 			// Next line
 			if (lineView.index + 1 <= lineView.arr.length) {
