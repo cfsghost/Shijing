@@ -50,7 +50,8 @@ class Shiji extends events.EventEmitter {
 		this.$overlay = $('<div>')
 			.css({
 				position: 'absolute',
-				textAlign: 'initial'
+				textAlign: 'initial',
+				pointerEvents: 'none'
 			})
 			.outerWidth(this.$layout.width());
 		this.$workarea = $('<div>')
@@ -65,8 +66,8 @@ class Shiji extends events.EventEmitter {
 		this.$container
 			.append(this.$layout);
 		this.$layout
+			.append(this.$workarea)
 			.append(this.$overlay)
-			.append(this.$workarea);
 
 		this.renderer = new Renderer(this);
 
