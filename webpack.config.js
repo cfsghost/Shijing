@@ -2,14 +2,14 @@ var configs = module.exports = {
 	entry: {
 		app: [
 			'babel-polyfill',
-			'./src/Shiji.js'
+			'./src/Shijing.js'
 		]
 	},
 	output: {
 		libraryTarget: 'commonjs2',
 		path: __dirname + '/lib',
 		publicPath: '/lib',
-		filename: 'Shiji.js'
+		filename: 'Shijing.js'
 	},
 	target: 'node',
 	module: {

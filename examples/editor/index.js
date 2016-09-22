@@ -1,4 +1,4 @@
-import Shiji from '../../';
+import Shijing from '../../';
 
 $(function() {
 	var $window = $(window);
@@ -22,13 +22,13 @@ $(function() {
 		}
 	];
 
-	var shiji = new Shiji('#editor');
-	shiji.setPaperSize(paperSize[0].width, paperSize[0].height);
+	var shijing = new Shijing('#editor');
+	shijing.setPaperSize(paperSize[0].width, paperSize[0].height);
 	
 	// margin is set to  2.54 cm
-	shiji.setPaperMargin(96);
+	shijing.setPaperMargin(96);
 
-	shiji.loadAst({
+	shijing.loadAst({
 		root: {
 			childrens: [
 				{

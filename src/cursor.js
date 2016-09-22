@@ -7,7 +7,7 @@ class Cursor extends events.EventEmitter {
 	constructor(renderer) {
 		super();
 
-		this.ctx = renderer.shiji;
+		this.ctx = renderer.ctx;
 		this.renderer = renderer;
 		this.startOffset = -1;
 		this.startNode = null;
@@ -15,7 +15,7 @@ class Cursor extends events.EventEmitter {
 		this.endOffset = null;
 		this.baseline = null;
 		this.$dom = $('<div>')
-			.addClass('shiji-cursor')
+			.addClass('shijing-cursor')
 			.css({
 				position: 'absolute',
 				top: 0,
@@ -26,7 +26,7 @@ class Cursor extends events.EventEmitter {
 		this.caret = new Caret();
 		this.caret.$dom.appendTo(this.$dom);
 
-		renderer.shiji.$overlay.append(this.$dom);
+		renderer.ctx.$overlay.append(this.$dom);
 	}
 
 	update() {
@@ -160,7 +160,7 @@ console.log('setPosition', caret);
 			}
 		}
 
-		var $container = this.renderer.shiji.$overlay;
+		var $container = this.ctx.$overlay;
 
 		if (this.baseline == null)
 			this.baseline = this.caret.x;
@@ -187,7 +187,7 @@ console.log('setPosition', caret);
 			}
 		}
 
-		var $container = this.renderer.shiji.$overlay;
+		var $container = this.ctx.$overlay;
 
 		if (this.baseline == null)
 			this.baseline = this.caret.x;

@@ -7,7 +7,7 @@ class Component extends events.EventEmitter {
 		super();
 
 		this.blockType = true;
-		this.ctx = renderer.shiji;
+		this.ctx = renderer.ctx;
 		this.renderer = renderer;
 		this.node = node;
 		this.dom = null;

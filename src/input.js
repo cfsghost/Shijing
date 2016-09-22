@@ -7,13 +7,14 @@ class Input extends events.EventEmitter {
 	constructor(renderer) {
 		super();
 
-		this.ctx = renderer;
-		this.cursor = this.ctx.caret;
+		this.ctx = renderer.ctx;
+		this.renderer = renderer;
+		this.cursor = renderer.caret;
 		this.inputHandler = new InputHandler(this);
 		this.mousedown = false;
 		this.dragging = false;
 
-		this.ctx.selection.addCursor(this.cursor);
+		renderer.selection.addCursor(this.cursor);
 
 		this.cursor.on('update', function() {
 			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
@@ -22,14 +23,14 @@ class Input extends events.EventEmitter {
 
 		// Set cursor position
 		var newCursor = new Cursor(renderer);
-		renderer.shiji.$origin[0].addEventListener('mousedown', function(e) {
+		this.ctx.$origin[0].addEventListener('mousedown', function(e) {
 			this.cursor.setEnd(null, null);
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			this.cursor.show();
 			this.mousedown = true;
 		}.bind(this), false);
 
-		renderer.shiji.$origin[0].addEventListener('mousemove', function(e) {
+		this.ctx.$origin[0].addEventListener('mousemove', function(e) {
 			if (this.mousedown) {
 				this.dragging = true;
 				this.emit('dragging');
@@ -38,7 +39,7 @@ class Input extends events.EventEmitter {
 			}
 		}.bind(this), false);
 
-		renderer.shiji.$origin[0].addEventListener('mouseup', function(e) {
+		this.ctx.$origin[0].addEventListener('mouseup', function(e) {
 			this.mousedown = false;
 			this.dragging = false;
 			console.log(newCursor.startNode, newCursor.startOffset);

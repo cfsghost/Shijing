@@ -1,8 +1,8 @@
 {
-  "name": "Shiji",
+  "name": "Shijing",
   "version": "0.0.1",
   "description": "Powerful engine for document editing",
-  "main": "./lib/Shiji.js",
+  "main": "./lib/Shijing.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

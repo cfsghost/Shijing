@@ -9,7 +9,7 @@ import DocumentTree from './DocumentTree';
 require('./css/main.css');
 require('./css/loader.css');
 
-class Shiji extends events.EventEmitter {
+class Shijing extends events.EventEmitter {
 
 	constructor(el) {
 		super();
@@ -56,7 +56,7 @@ class Shiji extends events.EventEmitter {
 			})
 			.outerWidth(this.$layout.width());
 		this.$workarea = $('<div>')
-			.addClass('shiji-workarea')
+			.addClass('shijing-workarea')
 			.css({
 				position: 'absolute',
 				textAlign: 'initial'
@@ -153,4 +153,4 @@ class Shiji extends events.EventEmitter {
 	}
 }
 
-export default Shiji;
+export default Shijing;

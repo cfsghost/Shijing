@@ -45,7 +45,7 @@ export default class Paragraph extends BlockComponent {
 			var doms = [];
 			for (var index in this.lineViews) {
 				var lineView = this.lineViews[index];
-				var dom = $(lineView).find('[shijiref=' + component.node.id + ']').first();
+				var dom = $(lineView).find('[shijingref=' + component.node.id + ']').first();
 
 				if (dom.length) {
 					doms.push(dom[0]);
@@ -176,7 +176,7 @@ console.log('renderSelection');
 
 		// Create DOM
 		var $DOM = $('<div>')
-			.addClass('shiji-paragraph')
+			.addClass('shijing-paragraph')
 			.html(text.replace(/ /g, '&nbsp'))
 			.css(style);
 		

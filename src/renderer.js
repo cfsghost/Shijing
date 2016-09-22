@@ -7,8 +7,8 @@ import Input from './input';
 
 class Renderer {
 
-	constructor(shiji) {
-		this.shiji = shiji;
+	constructor(context) {
+		this.ctx = context;
 		this.Components = Components;
 		this.selection = new Selection(this);
 
@@ -19,7 +19,7 @@ class Renderer {
 		this.caret = new Cursor(this);
 		this.input = new Input(this);
 /*
-		this.shiji.on('paperSizeChanged', (width, height) => {
+		this.ctx.on('paperSizeChanged', (width, height) => {
 		});
 */
 	}
@@ -63,7 +63,7 @@ class Renderer {
 
 	getParentComponentDOM(dom) {
 
-		if ($(dom).hasClass('shiji-component')) {
+		if ($(dom).hasClass('shijing-component')) {
 			return dom;
 		}
 
@@ -80,7 +80,7 @@ class Renderer {
 			var $dom = $(dom);
 
 			// Check whether it is a component
-			if ($dom.hasClass('shiji-component')) {
+			if ($dom.hasClass('shijing-component')) {
 				return dom;
 			}
 
@@ -96,10 +96,10 @@ class Renderer {
 			return null;
 
 		// Getting component ID
-		var id = DOM.getAttribute('shijiref');
+		var id = DOM.getAttribute('shijingref');
 
 		// Getting node by using component ID
-		var node = this.shiji.documentTree.getNodeById(id);
+		var node = this.ctx.documentTree.getNodeById(id);
 
 		return node ? node.component : null;
 	}
@@ -109,7 +109,7 @@ class Renderer {
 		if (!DOM)
 			return null;
 
-		var id = DOM.getAttribute('shijiref');
+		var id = DOM.getAttribute('shijingref');
 
 		var node = treeOperator.getNodeById(id);
 
@@ -186,8 +186,8 @@ class Renderer {
 
 				$(component.dom)
 //				$(component.node.dom)
-					.attr('shijiref', component.node.id)
-					.addClass('shiji-component');
+					.attr('shijingref', component.node.id)
+					.addClass('shijing-component');
 
 				resolve();
 			});

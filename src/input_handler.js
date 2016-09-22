@@ -14,8 +14,8 @@ class InputHandler {
 
 	constructor(input) {
 
-		this.ctx = input;
-		this.shiji = this.ctx.ctx.shiji;
+		this.ctx = input.ctx;
+		this.input = input;
 		this.$inputBox = $('<iframe>')
 			.addClass('shiji-inputhandler')
 			.css({
@@ -29,10 +29,10 @@ class InputHandler {
 				display: 'none',
 				pointerEvents: 'none'
 			})
-			.outerWidth(this.shiji.$layout.width());
-		this.cursor = this.ctx.cursor;
+			.outerWidth(this.ctx.$layout.width());
+		this.cursor = this.input.cursor;
 
-		this.shiji.$overlay.append(this.$inputBox);
+		this.ctx.$overlay.append(this.$inputBox);
 
 		this.$inputBody = this.$inputBox
 			.contents()
@@ -179,7 +179,7 @@ class InputHandler {
 				if (e.metaKey)
 					return true;
 
-				var cursor = this.ctx.ctx.caret;
+				var cursor = this.input.renderer.caret;
 
 				treeOperator.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
 
@@ -231,7 +231,7 @@ class InputHandler {
 	focus() {
 		console.log('FOCUS');
 		this.$inputBox
-			.outerWidth(this.shiji.$layout.width());
+			.outerWidth(this.ctx.$layout.width());
 
 		this.$inputBody.css({
 			lineHeight: 1.15,

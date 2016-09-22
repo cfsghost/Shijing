@@ -1,15 +1,15 @@
-.shiji-lineview {
+.shijing-lineview {
 	line-height: 1.15;
 }
 
-.shiji-paragraph {
+.shijing-paragraph {
 	margin-top: 1em;
 }
 
-.shiji-paragraph:first-child {
+.shijing-paragraph:first-child {
 	margin-top: 0px;
 }
 
-.shiji-workarea *::selection {
+.shijing-workarea *::selection {
 	background: transparent;
 }

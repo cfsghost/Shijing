@@ -1,2 +1,4 @@
-# Shiji
-Powerful Engine for Document Editing
+# Shijing （詩經）
+
+Powerful Engine for Document Editing.
+

@@ -2,6 +2,7 @@
 class Offscreen {
 
 	constructor(renderer) {
+		this.ctx = renderer.ctx;
 		this.renderer = renderer;
 		this.$dom = $('<iframe>').css({
 			opacity: 0,
@@ -13,7 +14,7 @@ class Offscreen {
 			pointerEvents: 'none'
 		});
 
-		renderer.shiji.$overlay
+		this.ctx.$overlay
 			.append(this.$dom);
 
 		this.$body = this.$dom.contents().find('body');
