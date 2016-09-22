@@ -1,3 +1,5 @@
+import treeOperator from './TreeOperator';
+
 var Key = {
 	Enter: 13,
 	ESC: 27,
@@ -14,8 +16,8 @@ class InputHandler {
 
 		this.ctx = input;
 		this.shiji = this.ctx.ctx.shiji;
-		this.astHandler = this.ctx.astHandler;
 		this.$inputBox = $('<iframe>')
+			.addClass('shiji-inputhandler')
 			.css({
 				position: 'absolute',
 				top: 0,
@@ -52,6 +54,7 @@ class InputHandler {
 				this.$inputBody.empty();
 			}.bind(this))
 			.on('compositionstart', function(e) {
+				console.log('SADJLJSDLSJDLAJLSDJALJJD:');
 				// Display input box
 				this.$inputBox.css({
 					display: ''
@@ -145,10 +148,10 @@ class InputHandler {
 				case Key.Backspace:
 
 					// Getting text
-					var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
+					var sets = treeOperator.getTextSets(cursor.startNode, cursor.startOffset);
 
 					// Replace old text with new text
-					this.astHandler.setText(cursor.startNode, [
+					treeOperator.setText(cursor.startNode, [
 						sets.before.substr(0, cursor.startOffset - 1),
 						sets.after
 					].join(''));
@@ -178,7 +181,7 @@ class InputHandler {
 
 				var cursor = this.ctx.ctx.caret;
 
-				this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
+				treeOperator.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
 
 				// done everything so we update now
 				var task = cursor.startNode.component.refresh();
@@ -206,7 +209,7 @@ class InputHandler {
 			this.cursor.startNode.text = this.originContent.slice(0);
 		}
 
-		this.astHandler.insert(this.cursor.startNode, this.cursor.startOffset, text);
+		treeOperator.insert(this.cursor.startNode, this.cursor.startOffset, text);
 
 		// done everything so we update now
 		return this.cursor.startNode.component.refresh();

@@ -1,8 +1,10 @@
+import treeOperator from './TreeOperator';
+
 class Misc {
 
 	constructor(ctx) {
 		this.ctx = ctx;
-		this.astHandler = ctx.astHandler;
+		this.treeOperator = ctx.treeOperator;
 	}
 
 	figurePosition(dom, offset, base) {
@@ -100,7 +102,7 @@ class Misc {
 		// Getting rect information then figure out exact position
 		var rect = range.getBoundingClientRect();
 		range.detach();
-
+console.log('FFFFFF', rect.left, baseX, rect.top, baseY);
 		point.x = rect.left - baseX;
 		point.y = rect.top - baseY;
 		point.DOM = dom;
@@ -116,8 +118,7 @@ class Misc {
 			return node;
 		}
 
-		var astHandler = this.astHandler;
-		var parentNode = astHandler.getParentNode(node);
+		var parentNode = treeOperator.getParentNode(node);
 		if (parentNode)
 			return this.findLineViewOwner(parentNode);
 		else
@@ -149,6 +150,51 @@ class Misc {
 		}
 
 		return null;
+	}
+
+	getLineViewByNode(startNode, endNode, cb) {
+
+		if (!startNode)
+			return true;
+
+		if (startNode.component.lineViews)
+			cb(startNode);
+
+		// Traverse childrens
+		if (startNode.childrens) {
+			for (var index in startNode.childrens) {
+				var node = startNode.childrens[index];
+
+				if (this.getLineViewByNode(node, endNode, cb))
+					return true;
+			}
+		}
+
+		if (startNode == endNode) {
+			return true;
+		}
+
+		// Process next node
+		var nextNode = treeOperator.getNextNode(startNode);
+		while(nextNode) {
+
+			if (this.getLineViewByNode(nextNode, endNode, cb))
+				return true;
+
+			nextNode = treeOperator.getNextNode(startNode);
+		}
+
+		// It's in the end of this level, go to parent level to continue
+		var parentNode = treeOperator.getParentNode(startNode);
+		nextNode = treeOperator.getNextNode(parentNode);
+
+		return this.getLineViewByNode(nextNode, endNode, cb);
+	}
+
+	getLineViews(startNode, startOffset, endNode, endOffset) {
+console.log('getLineViews', startNode, endNode);
+		this.getLineViewByNode(startNode, endNode, () => {
+		});
 	}
 }
 

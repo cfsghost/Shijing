@@ -1,4 +1,5 @@
 import events from 'events';
+import treeOperator from './TreeOperator';
 
 class Component extends events.EventEmitter {
 
@@ -36,8 +37,6 @@ class Component extends events.EventEmitter {
 
 	onBlur() {
 
-		var astHandler = this.renderer.shiji.astHandler;
-
 		return new Promise(function(resolve) {
 /*
 			// Remove itself if it's empty
@@ -53,10 +52,10 @@ class Component extends events.EventEmitter {
 			if (killself) {
 
 				// remove node then update
-				astHandler.removeNode(this.node);
+				treeOperator.removeNode(this.node);
 
 				// Update it
-				var task = astHandler.getParentNode(this.node).component.refresh();
+				var task = treeOperator.getParentNode(this.node).component.refresh();
 				task.then(function() {
 					resolve();
 				});
@@ -138,7 +137,7 @@ class Component extends events.EventEmitter {
 
 	getParentComponent() {
 
-		var parentNode = this.renderer.shiji.astHandler.getParentNode(this.node);
+		var parentNode = treeOperator.getParentNode(this.node);
 
 		if (parentNode)
 			return parentNode.component;
@@ -191,8 +190,6 @@ class Component extends events.EventEmitter {
 
 	backspace(target, from) {
 
-		var astHandler = this.renderer.shiji.astHandler;
-
 		if (from == 0) {
 
 			// Find previous component for backspace
@@ -203,15 +200,15 @@ class Component extends events.EventEmitter {
 				if (target.getLength() == 0) {
 
 					// They cannot be merged, going to previous node to delete
-					var lastNode = astHandler.getLastNode(prevComponent.node);
+					var lastNode = treeOperator.getLastNode(prevComponent.node);
 					return this.backspace(lastNode.component, lastNode.component.getLength());
 				}
 
 				// Compare previous node and current node
-				if (!astHandler.compareNodes(prevComponent.node, target.node)) {
+				if (!treeOperator.compareNodes(prevComponent.node, target.node)) {
 
 					// They cannot be merged, going to previous node to delete
-					var lastNode = astHandler.getLastNode(prevComponent.node);
+					var lastNode = treeOperator.getLastNode(prevComponent.node);
 					return this.backspace(lastNode.component, lastNode.component.getLength());
 				}
 
@@ -230,7 +227,7 @@ class Component extends events.EventEmitter {
 			}
 
 			// Ask parent to apply backspace
-			var parentNode = astHandler.getParentNode(this.node);
+			var parentNode = treeOperator.getParentNode(this.node);
 			if (!parentNode) {
 				return Promise.resolve();
 			}
@@ -242,10 +239,10 @@ class Component extends events.EventEmitter {
 		return new Promise(function(resolve) {
 
 			// Getting text
-			var sets = astHandler.getTextSets(target.node, from);
+			var sets = treeOperator.getTextSets(target.node, from);
 
 			// Replace old text with new text
-			astHandler.setText(target.node, [
+			treeOperator.setText(target.node, [
 				sets.before.substr(0, from - 1),
 				sets.after
 			].join(''));
@@ -262,7 +259,7 @@ class Component extends events.EventEmitter {
 	}
 
 	getPrevComponent() {
-		var prevNode = this.renderer.shiji.astHandler.getPrevNode(this.node);
+		var prevNode = treeOperator.getPrevNode(this.node);
 		if (prevNode)
 			return prevNode.component;
 
@@ -275,13 +272,11 @@ class Component extends events.EventEmitter {
 			this.subComponents.indexOf(component) == -1)
 			return Promise.all([]);
 
-		var astHandler = this.renderer.shiji.astHandler;
-
 		// Getting the node which is the point where two parts combined
-		var lastNode = astHandler.getLastNode(target.node);
+		var lastNode = treeOperator.getLastNode(target.node);
 
 		// Merge AST
-		astHandler.merge(target.node, component.node);
+		treeOperator.merge(target.node, component.node);
 
 		// done everything so we update parent component now
 		var parentComponent = this.findBlockParent(true);
@@ -300,17 +295,16 @@ class Component extends events.EventEmitter {
 
 	mergePrevComponent() {
 
-		var astHandler = this.renderer.shiji.astHandler;
 		var prevComponent = this.getPrevComponent();
 		if (prevComponent) {
 
 			// Telling parent component to merge us
-			var parentNode = astHandler.getParentNode(this.node);
+			var parentNode = treeOperator.getParentNode(this.node);
 			return parentNode.component.merge(prevComponent, this);
 		}
 
 		// No previous component, we need to go to parent level
-		var parentNode = astHandler.getParentNode(this.node);
+		var parentNode = treeOperator.getParentNode(this.node);
 		return parentNode.component.mergePrevComponent();
 	}
 

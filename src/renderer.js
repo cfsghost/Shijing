@@ -1,3 +1,4 @@
+import treeOperator from './TreeOperator';
 import Offscreen from './offscreen';
 import Cursor from './cursor';
 import Selection from './Selection';
@@ -8,7 +9,6 @@ class Renderer {
 
 	constructor(shiji) {
 		this.shiji = shiji;
-		this.astHandler = shiji.astHandler;
 		this.Components = Components;
 		this.selection = new Selection(this);
 
@@ -99,8 +99,7 @@ class Renderer {
 		var id = DOM.getAttribute('shijiref');
 
 		// Getting node by using component ID
-		var astHandler = this.shiji.astHandler;
-		var node = astHandler.getNodeById(id);
+		var node = this.shiji.documentTree.getNodeById(id);
 
 		return node ? node.component : null;
 	}
@@ -112,8 +111,7 @@ class Renderer {
 
 		var id = DOM.getAttribute('shijiref');
 
-		var astHandler = this.shiji.astHandler;
-		var node = astHandler.getNodeById(id);
+		var node = treeOperator.getNodeById(id);
 
 		return node ? node.component : null;
 	}

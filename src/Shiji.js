@@ -1,9 +1,10 @@
 import events from 'events';
 import Renderer from './renderer';
 import ActionDispatcher from './action_dispatcher';
-import ASTHandler from './ast_handler';
 import Misc from './Misc';
 import Actions from './Actions';
+import treeOperator from './TreeOperator';
+import DocumentTree from './DocumentTree';
 
 require('./css/main.css');
 require('./css/loader.css');
@@ -15,7 +16,7 @@ class Shiji extends events.EventEmitter {
 
 		this.actionDispatcher = new ActionDispatcher();
 		this.actions = new Actions(this);
-		this.astHandler = new ASTHandler();
+		this.documentTree = new DocumentTree();
 
 		// APIs
 		this.Misc = new Misc(this);
@@ -121,17 +122,17 @@ class Shiji extends events.EventEmitter {
 	}
 
 	loadAst(source) {
-		this.astHandler.load(source);
+		this.documentTree.load(source);
 
 		return this.render();
 	}
 
 	render() {
 
-		var root = this.astHandler.getRoot();
+		var root = this.documentTree.getRoot();
 
 		// initializing default width to fit container size
-		this.astHandler.setStyle(root, {
+		treeOperator.setStyle(root, {
 			width: this.$layout.width()
 		});
 

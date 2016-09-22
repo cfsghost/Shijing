@@ -1,3 +1,4 @@
+import treeOperator from './TreeOperator';
 import Component from './Component';
 
 class BlockComponent extends Component {
@@ -62,12 +63,11 @@ class BlockComponent extends Component {
 	getPosition(offset) {
 
 		if (!this.node.text && this.node.childrens) {
-			var astHandler = this.renderer.shiji.astHandler;
-			var node = astHandler.getChildrenNode(this.node, offset);
+			var node = treeOperator.getChildrenNode(this.node, offset);
 
 			// No such node
 			if (!node) {
-				node = astHandler.getLastNode(this.node);
+				node = treeOperator.getLastNode(this.node);
 				return node.component.getPosition(node.component.getLength());
 			}
 
@@ -141,8 +141,7 @@ class BlockComponent extends Component {
 
 		// Traverse node tree
 		var index = 0;
-		var astHandler = this.renderer.shiji.astHandler;
-		var target = astHandler.getChildrenNode(this.node, index);
+		var target = treeOperator.getChildrenNode(this.node, index);
 		while(target) {
 
 			var len = target.component.getCaretLength();
@@ -159,7 +158,7 @@ class BlockComponent extends Component {
 				return 0;
 			}
 			
-			target = astHandler.getNextNode(target);
+			target = treeOperator.getNextNode(target);
 			index++;
 		}
 
@@ -184,11 +183,9 @@ class BlockComponent extends Component {
 
 		console.log('ADJUST CURSOR');
 
-		var astHandler = this.renderer.shiji.astHandler;
-
 		// Check nodes
-		var prevNode = astHandler.getChildrenNode(this.node, cursor.startOffset - 1);
-		var nextNode = astHandler.getChildrenNode(this.node, cursor.startOffset);
+		var prevNode = treeOperator.getChildrenNode(this.node, cursor.startOffset - 1);
+		var nextNode = treeOperator.getChildrenNode(this.node, cursor.startOffset);
 
 		if (prevNode && nextNode) {
 

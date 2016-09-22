@@ -1,3 +1,4 @@
+import treeOperator from '../TreeOperator';
 import BlockComponent from '../BlockComponent';
 import InlineLayout from '../Layouts/inline';
 
@@ -63,14 +64,44 @@ export default class Paragraph extends BlockComponent {
 
 		cursors.getAllCursors().forEach((cursor) => {
 
-			if (!cursor.startNode)
+			if (!cursor.startNode || !cursor.endNode)
 				return;
+
+console.log('renderSelection');
+
+			var startPoint = null;
+			var endPoint = null;
+
+			// if start node is in this node of component
+			if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
+				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
+			}
+
+			if (treeOperator.intersectsNode(this.node, cursor.endNode)) {
+				endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+			}
+
+			// Using the end of line view to be end point
+			console.log('QQ', startPoint, endPoint);
+			if (!endPoint) {
+				var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+				console.log(lineView);
+			}
+
+/*
+			this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
 
 			var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
 
 			console.log(lineView);
 
 			lineView.lineView.css('background', 'green');
+			*/
+/*
+			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+				console.log(node);
+			});
+*/
 /*
 			// Figure out start point
 			var offset = cursor.startOffset;

@@ -8,7 +8,6 @@ class Input extends events.EventEmitter {
 		super();
 
 		this.ctx = renderer;
-		this.astHandler = this.ctx.shiji.astHandler;
 		this.cursor = this.ctx.caret;
 		this.inputHandler = new InputHandler(this);
 		this.mousedown = false;

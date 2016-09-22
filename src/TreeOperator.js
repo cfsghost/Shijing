@@ -1,12 +1,5 @@
 
-class ASTHandler {
-
-	constructor() {
-		this.ast = {
-			root: {}
-		};
-		this.nodes = {};
-	}
+class TreeOperator {
 
 	setInternalProperty(node, name, value) {
 		node[name] = value;
@@ -18,59 +11,8 @@ class ASTHandler {
 		});
 	}
 
-	load(ast) {
-		this.ast = ast;
-		this.ast.root.id = this.generateId();
-		this.initializeNodes(this.ast.root);
-	}
-
 	generateId() {
 		return Math.random().toString().substr(2) + Date.now();
-	}
-
-	initializeNodes(node) {
-
-		this.registerNode(node);
-
-		if (!node.childrens)
-			return;
-
-		// Initializing dependencies
-		var prevNode = null;
-		node.childrens.forEach(function(subNode, index) {
-
-			if (!subNode.id)
-				subNode.id = this.generateId();
-
-			this.setInternalProperty(subNode, 'parent', node);
-			this.setInternalProperty(subNode, 'prevNode', prevNode);
-
-			if (index + 1 < node.childrens.length) {
-				this.setInternalProperty(subNode, 'nextNode', node.childrens[index + 1]);
-			} else {
-				this.setInternalProperty(subNode, 'nextNode', null);
-			}
-
-			prevNode = subNode;
-
-			this.initializeNodes(subNode);
-		}.bind(this));
-	}
-
-	registerNode(node) {
-		this.nodes[node.id] = node;
-	}
-
-	unregisterNode(node) {
-		delete this.nodes[node.id];
-	}
-
-	getNodeById(id) {
-		return this.nodes[id] || null;
-	}
-
-	getRoot() {
-		return this.ast.root;
 	}
 
 	getParentNode(node) {
@@ -210,6 +152,44 @@ class ASTHandler {
 		return parentNode.childrens.indexOf(node);
 	}
 
+	traverse(startNode, endNode, cb) {
+
+		if (!startNode)
+			return true;
+
+		cb(startNode);
+
+		// Traverse childrens
+		if (startNode.childrens) {
+			for (var index in startNode.childrens) {
+				var node = startNode.childrens[index];
+
+				if (this.traverse(node, endNode, cb))
+					return true;
+			}
+		}
+
+		if (startNode == endNode) {
+			return true;
+		}
+
+		// Process next node
+		var nextNode = this.getNextNode(startNode);
+		while(nextNode) {
+
+			if (this.traverse(nextNode, endNode, cb))
+				return true;
+
+			nextNode = this.getNextNode(startNode);
+		}
+
+		// It's in the end of this level, go to parent level to continue
+		var parentNode = this.getParentNode(startNode);
+		nextNode = this.getNextNode(parentNode);
+
+		return this.traverse(nextNode, endNode, cb);
+	}
+
 	merge(target, node) {
 
 		// Move text to children
@@ -304,6 +284,18 @@ class ASTHandler {
 
 		this.unregisterNode(node);
 	}
+
+	intersectsNode(containerNode, node) {
+
+		if (containerNode == node)
+			return true;
+
+		var parentNode = this.getParentNode(node);
+		if (!parentNode)
+			return false;
+
+		return this.intersectsNode(containerNode, parentNode);
+	}
 }
 
-export default ASTHandler;
+export default new TreeOperator;

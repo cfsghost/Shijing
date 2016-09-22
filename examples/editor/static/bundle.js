@@ -8224,29 +8224,33 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(301);
+		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _renderer = __webpack_require__(298);
+		var _renderer = __webpack_require__(299);
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
-		var _action_dispatcher = __webpack_require__(314);
+		var _action_dispatcher = __webpack_require__(316);
 
 		var _action_dispatcher2 = _interopRequireDefault(_action_dispatcher);
 
-		var _ast_handler = __webpack_require__(315);
-
-		var _ast_handler2 = _interopRequireDefault(_ast_handler);
-
-		var _Misc = __webpack_require__(326);
+		var _Misc = __webpack_require__(317);
 
 		var _Misc2 = _interopRequireDefault(_Misc);
 
-		var _Actions = __webpack_require__(316);
+		var _Actions = __webpack_require__(319);
 
 		var _Actions2 = _interopRequireDefault(_Actions);
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _DocumentTree = __webpack_require__(321);
+
+		var _DocumentTree2 = _interopRequireDefault(_DocumentTree);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8258,8 +8262,8 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		__webpack_require__(318);
 		__webpack_require__(322);
+		__webpack_require__(326);
 
 		var Shiji = function (_events$EventEmitter) {
 			_inherits(Shiji, _events$EventEmitter);
@@ -8271,7 +8275,7 @@
 
 				_this.actionDispatcher = new _action_dispatcher2.default();
 				_this.actions = new _Actions2.default(_this);
-				_this.astHandler = new _ast_handler2.default();
+				_this.documentTree = new _DocumentTree2.default();
 
 				// APIs
 				_this.Misc = new _Misc2.default(_this);
@@ -8300,7 +8304,8 @@
 				}).outerHeight(_this.$origin.height()).outerWidth(800);
 				_this.$overlay = $('<div>').css({
 					position: 'absolute',
-					textAlign: 'initial'
+					textAlign: 'initial',
+					pointerEvents: 'none'
 				}).outerWidth(_this.$layout.width());
 				_this.$workarea = $('<div>').addClass('shiji-workarea').css({
 					position: 'absolute',
@@ -8309,7 +8314,7 @@
 
 				_this.$origin.append(_this.$container);
 				_this.$container.append(_this.$layout);
-				_this.$layout.append(_this.$overlay).append(_this.$workarea);
+				_this.$layout.append(_this.$workarea).append(_this.$overlay);
 
 				_this.renderer = new _renderer2.default(_this);
 
@@ -8362,7 +8367,7 @@
 			}, {
 				key: 'loadAst',
 				value: function loadAst(source) {
-					this.astHandler.load(source);
+					this.documentTree.load(source);
 
 					return this.render();
 				}
@@ -8370,10 +8375,10 @@
 				key: 'render',
 				value: function render() {
 
-					var root = this.astHandler.getRoot();
+					var root = this.documentTree.getRoot();
 
 					// initializing default width to fit container size
-					this.astHandler.setStyle(root, {
+					_TreeOperator2.default.setStyle(root, {
 						width: this.$layout.width()
 					});
 
@@ -8418,6 +8423,12 @@
 
 	/***/ },
 	/* 298 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(4);
+
+	/***/ },
+	/* 299 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -8428,23 +8439,27 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _offscreen = __webpack_require__(299);
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _offscreen = __webpack_require__(300);
 
 		var _offscreen2 = _interopRequireDefault(_offscreen);
 
-		var _cursor = __webpack_require__(300);
+		var _cursor = __webpack_require__(301);
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _Selection = __webpack_require__(327);
+		var _Selection = __webpack_require__(303);
 
 		var _Selection2 = _interopRequireDefault(_Selection);
 
-		var _Components = __webpack_require__(303);
+		var _Components = __webpack_require__(304);
 
 		var _Components2 = _interopRequireDefault(_Components);
 
-		var _input = __webpack_require__(312);
+		var _input = __webpack_require__(314);
 
 		var _input2 = _interopRequireDefault(_input);
 
@@ -8457,7 +8472,6 @@
 				_classCallCheck(this, Renderer);
 
 				this.shiji = shiji;
-				this.astHandler = shiji.astHandler;
 				this.Components = _Components2.default;
 				this.selection = new _Selection2.default(this);
 
@@ -8548,8 +8562,7 @@
 					var id = DOM.getAttribute('shijiref');
 
 					// Getting node by using component ID
-					var astHandler = this.shiji.astHandler;
-					var node = astHandler.getNodeById(id);
+					var node = this.shiji.documentTree.getNodeById(id);
 
 					return node ? node.component : null;
 				}
@@ -8561,8 +8574,7 @@
 
 					var id = DOM.getAttribute('shijiref');
 
-					var astHandler = this.shiji.astHandler;
-					var node = astHandler.getNodeById(id);
+					var node = _TreeOperator2.default.getNodeById(id);
 
 					return node ? node.component : null;
 				}
@@ -8701,7 +8713,7 @@
 		exports.default = Renderer;
 
 	/***/ },
-	/* 299 */
+	/* 300 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -8798,7 +8810,7 @@
 		exports.default = Offscreen;
 
 	/***/ },
-	/* 300 */
+	/* 301 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -8809,9 +8821,13 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(301);
+		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
 		var _caret = __webpack_require__(302);
 
@@ -8910,7 +8926,7 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-
+					console.log('setPosition', caret);
 					this.caret.move(caret.x, caret.y);
 					this._setPosition(node, offset);
 
@@ -9044,14 +9060,13 @@
 					}
 					console.log('Cursor2', this.startNode, leftOffset);
 					// Getting target index of childrens
-					var astHandler = this.renderer.shiji.astHandler;
-					var index = astHandler.getIndex(this.startNode);
+					var index = _TreeOperator2.default.getIndex(this.startNode);
 					if (index == -1) {
 						return 0;
 					}
 
 					// Put curosr on parent
-					var parentNode = astHandler.getParentNode(this.startNode);
+					var parentNode = _TreeOperator2.default.getParentNode(this.startNode);
 					if (!parentNode) return 0;
 
 					console.log('PARENT', parentNode, index, leftOffset);
@@ -9080,8 +9095,7 @@
 					// Range was selected
 					if (this.endNode != null && this.endOffset != null) {
 						console.log('RANGEEEE');
-						var astHandler = this.renderer.shiji.astHandler;
-						astHandler.getAncestorNode(this.startNode, this.endNode);
+						_TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
 					}
 
 					this.caret.show();
@@ -9097,12 +9111,6 @@
 		}(_events2.default.EventEmitter);
 
 		exports.default = Cursor;
-
-	/***/ },
-	/* 301 */
-	/***/ function(module, exports) {
-
-		module.exports = __webpack_require__(4);
 
 	/***/ },
 	/* 302 */
@@ -9219,12 +9227,58 @@
 		Object.defineProperty(exports, "__esModule", {
 			value: true
 		});
-		exports.default = {
-			inline: __webpack_require__(304).default,
-			hiddenNode: __webpack_require__(307).default,
-			image: __webpack_require__(309).default,
-			paragraph: __webpack_require__(310).default
-		};
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Selection = function () {
+			function Selection() {
+				_classCallCheck(this, Selection);
+
+				this.cursors = [];
+			}
+
+			_createClass(Selection, [{
+				key: 'getAllCursors',
+				value: function getAllCursors() {
+					return this.cursors;
+				}
+			}, {
+				key: 'addCursor',
+				value: function addCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) return;
+
+					this.cursors.push(cursor);
+				}
+			}, {
+				key: 'removeCursor',
+				value: function removeCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) this.cursors.splice(index, 1);
+				}
+			}, {
+				key: 'update',
+				value: function update() {
+					this.cursors.forEach(function (cursor) {
+						_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
+							console.log(node);
+						});
+					});
+				}
+			}]);
+
+			return Selection;
+		}();
+
+		exports.default = Selection;
 
 	/***/ },
 	/* 304 */
@@ -9235,10 +9289,26 @@
 		Object.defineProperty(exports, "__esModule", {
 			value: true
 		});
+		exports.default = {
+			inline: __webpack_require__(305).default,
+			hiddenNode: __webpack_require__(308).default,
+			image: __webpack_require__(310).default,
+			paragraph: __webpack_require__(312).default
+		};
+
+	/***/ },
+	/* 305 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(305);
+		var _InlineComponent2 = __webpack_require__(306);
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
@@ -9292,7 +9362,7 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 305 */
+	/* 306 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9303,7 +9373,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _Component2 = __webpack_require__(306);
+		var _Component2 = __webpack_require__(307);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -9488,7 +9558,7 @@
 		exports.default = InlineComponent;
 
 	/***/ },
-	/* 306 */
+	/* 307 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9499,9 +9569,13 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(301);
+		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9599,8 +9673,6 @@
 				key: 'onBlur',
 				value: function onBlur() {
 
-					var astHandler = this.renderer.shiji.astHandler;
-
 					return new Promise(function (resolve) {
 						/*
 		    			// Remove itself if it's empty
@@ -9616,10 +9688,10 @@
 		    			if (killself) {
 		    
 		    				// remove node then update
-		    				astHandler.removeNode(this.node);
+		    				treeOperator.removeNode(this.node);
 		    
 		    				// Update it
-		    				var task = astHandler.getParentNode(this.node).component.refresh();
+		    				var task = treeOperator.getParentNode(this.node).component.refresh();
 		    				task.then(function() {
 		    					resolve();
 		    				});
@@ -9703,7 +9775,7 @@
 				key: 'getParentComponent',
 				value: function getParentComponent() {
 
-					var parentNode = this.renderer.shiji.astHandler.getParentNode(this.node);
+					var parentNode = _TreeOperator2.default.getParentNode(this.node);
 
 					if (parentNode) return parentNode.component;
 
@@ -9770,8 +9842,6 @@
 				key: 'backspace',
 				value: function backspace(target, from) {
 
-					var astHandler = this.renderer.shiji.astHandler;
-
 					if (from == 0) {
 
 						// Find previous component for backspace
@@ -9782,15 +9852,15 @@
 							if (target.getLength() == 0) {
 
 								// They cannot be merged, going to previous node to delete
-								var lastNode = astHandler.getLastNode(prevComponent.node);
+								var lastNode = _TreeOperator2.default.getLastNode(prevComponent.node);
 								return this.backspace(lastNode.component, lastNode.component.getLength());
 							}
 
 							// Compare previous node and current node
-							if (!astHandler.compareNodes(prevComponent.node, target.node)) {
+							if (!_TreeOperator2.default.compareNodes(prevComponent.node, target.node)) {
 
 								// They cannot be merged, going to previous node to delete
-								var lastNode = astHandler.getLastNode(prevComponent.node);
+								var lastNode = _TreeOperator2.default.getLastNode(prevComponent.node);
 								return this.backspace(lastNode.component, lastNode.component.getLength());
 							}
 
@@ -9809,7 +9879,7 @@
 						}
 
 						// Ask parent to apply backspace
-						var parentNode = astHandler.getParentNode(this.node);
+						var parentNode = _TreeOperator2.default.getParentNode(this.node);
 						if (!parentNode) {
 							return Promise.resolve();
 						}
@@ -9820,10 +9890,10 @@
 					return new Promise(function (resolve) {
 
 						// Getting text
-						var sets = astHandler.getTextSets(target.node, from);
+						var sets = _TreeOperator2.default.getTextSets(target.node, from);
 
 						// Replace old text with new text
-						astHandler.setText(target.node, [sets.before.substr(0, from - 1), sets.after].join(''));
+						_TreeOperator2.default.setText(target.node, [sets.before.substr(0, from - 1), sets.after].join(''));
 
 						var task = target.node.component.refresh();
 						task.then(function () {
@@ -9837,7 +9907,7 @@
 			}, {
 				key: 'getPrevComponent',
 				value: function getPrevComponent() {
-					var prevNode = this.renderer.shiji.astHandler.getPrevNode(this.node);
+					var prevNode = _TreeOperator2.default.getPrevNode(this.node);
 					if (prevNode) return prevNode.component;
 
 					return null;
@@ -9848,13 +9918,11 @@
 
 					if (this.subComponents.indexOf(target) == -1 || this.subComponents.indexOf(component) == -1) return Promise.all([]);
 
-					var astHandler = this.renderer.shiji.astHandler;
-
 					// Getting the node which is the point where two parts combined
-					var lastNode = astHandler.getLastNode(target.node);
+					var lastNode = _TreeOperator2.default.getLastNode(target.node);
 
 					// Merge AST
-					astHandler.merge(target.node, component.node);
+					_TreeOperator2.default.merge(target.node, component.node);
 
 					// done everything so we update parent component now
 					var parentComponent = this.findBlockParent(true);
@@ -9874,17 +9942,16 @@
 				key: 'mergePrevComponent',
 				value: function mergePrevComponent() {
 
-					var astHandler = this.renderer.shiji.astHandler;
 					var prevComponent = this.getPrevComponent();
 					if (prevComponent) {
 
 						// Telling parent component to merge us
-						var parentNode = astHandler.getParentNode(this.node);
+						var parentNode = _TreeOperator2.default.getParentNode(this.node);
 						return parentNode.component.merge(prevComponent, this);
 					}
 
 					// No previous component, we need to go to parent level
-					var parentNode = astHandler.getParentNode(this.node);
+					var parentNode = _TreeOperator2.default.getParentNode(this.node);
 					return parentNode.component.mergePrevComponent();
 				}
 			}, {
@@ -9958,7 +10025,7 @@
 		exports.default = Component;
 
 	/***/ },
-	/* 307 */
+	/* 308 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9969,7 +10036,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _BlockComponent2 = __webpack_require__(308);
+		var _BlockComponent2 = __webpack_require__(309);
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
@@ -10024,7 +10091,7 @@
 		exports.default = HiddenNode;
 
 	/***/ },
-	/* 308 */
+	/* 309 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10035,7 +10102,11 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _Component2 = __webpack_require__(306);
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _Component2 = __webpack_require__(307);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -10116,12 +10187,11 @@
 				value: function getPosition(offset) {
 
 					if (!this.node.text && this.node.childrens) {
-						var astHandler = this.renderer.shiji.astHandler;
-						var node = astHandler.getChildrenNode(this.node, offset);
+						var node = _TreeOperator2.default.getChildrenNode(this.node, offset);
 
 						// No such node
 						if (!node) {
-							node = astHandler.getLastNode(this.node);
+							node = _TreeOperator2.default.getLastNode(this.node);
 							return node.component.getPosition(node.component.getLength());
 						}
 
@@ -10195,8 +10265,7 @@
 
 					// Traverse node tree
 					var index = 0;
-					var astHandler = this.renderer.shiji.astHandler;
-					var target = astHandler.getChildrenNode(this.node, index);
+					var target = _TreeOperator2.default.getChildrenNode(this.node, index);
 					while (target) {
 
 						var len = target.component.getCaretLength();
@@ -10212,7 +10281,7 @@
 							return 0;
 						}
 
-						target = astHandler.getNextNode(target);
+						target = _TreeOperator2.default.getNextNode(target);
 						index++;
 					}
 
@@ -10238,11 +10307,9 @@
 
 					console.log('ADJUST CURSOR');
 
-					var astHandler = this.renderer.shiji.astHandler;
-
 					// Check nodes
-					var prevNode = astHandler.getChildrenNode(this.node, cursor.startOffset - 1);
-					var nextNode = astHandler.getChildrenNode(this.node, cursor.startOffset);
+					var prevNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset - 1);
+					var nextNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset);
 
 					if (prevNode && nextNode) {
 
@@ -10269,7 +10336,7 @@
 		exports.default = BlockComponent;
 
 	/***/ },
-	/* 309 */
+	/* 310 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10280,11 +10347,11 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(305);
+		var _InlineComponent2 = __webpack_require__(306);
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
-		var _ImageLoader = __webpack_require__(324);
+		var _ImageLoader = __webpack_require__(311);
 
 		var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
@@ -10520,7 +10587,86 @@
 		exports.default = Image;
 
 	/***/ },
-	/* 310 */
+	/* 311 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var ImageLoader = function (_events$EventEmitter) {
+			_inherits(ImageLoader, _events$EventEmitter);
+
+			function ImageLoader() {
+				_classCallCheck(this, ImageLoader);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
+
+				_this.caches = {};
+				return _this;
+			}
+
+			_createClass(ImageLoader, [{
+				key: 'exists',
+				value: function exists(src) {
+					return this.caches[src];
+				}
+			}, {
+				key: '_load',
+				value: function _load(src) {
+
+					return this.caches[src] || null;
+				}
+			}, {
+				key: 'load',
+				value: function load(src) {
+					var obj = this._load(src);
+					if (obj) {
+						return obj;
+					}
+
+					if (this.caches.hasOwnProperty(src)) {
+						return null;
+					}
+
+					// Register and ready to load
+					this.caches[src] = null;
+
+					// Create a new image object to load image and store it to be cache
+					var $img = $('<img>').load(function () {
+						this.caches[src] = $img;
+
+						// Fire event
+						this.emit(src, $img);
+					}.bind(this)).attr('src', src);
+
+					return null;
+				}
+			}]);
+
+			return ImageLoader;
+		}(_events2.default.EventEmitter);
+
+		exports.default = ImageLoader;
+
+	/***/ },
+	/* 312 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10533,11 +10679,15 @@
 
 		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-		var _BlockComponent2 = __webpack_require__(308);
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _BlockComponent2 = __webpack_require__(309);
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
-		var _inline = __webpack_require__(311);
+		var _inline = __webpack_require__(313);
 
 		var _inline2 = _interopRequireDefault(_inline);
 
@@ -10652,13 +10802,43 @@
 
 					cursors.getAllCursors().forEach(function (cursor) {
 
-						if (!cursor.startNode) return;
+						if (!cursor.startNode || !cursor.endNode) return;
 
-						var lineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+						console.log('renderSelection');
 
-						console.log(lineView);
+						var startPoint = null;
+						var endPoint = null;
 
-						lineView.lineView.css('background', 'green');
+						// if start node is in this node of component
+						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
+							startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
+						}
+
+						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
+							endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+						}
+
+						// Using the end of line view to be end point
+						console.log('QQ', startPoint, endPoint);
+						if (!endPoint) {
+							var lineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+							console.log(lineView);
+						}
+
+						/*
+		    			this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
+		    
+		    			var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+		    
+		    			console.log(lineView);
+		    
+		    			lineView.lineView.css('background', 'green');
+		    			*/
+						/*
+		    			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+		    				console.log(node);
+		    			});
+		    */
 						/*
 		    			// Figure out start point
 		    			var offset = cursor.startOffset;
@@ -10745,7 +10925,7 @@
 		exports.default = Paragraph;
 
 	/***/ },
-	/* 311 */
+	/* 313 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -10990,7 +11170,7 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 312 */
+	/* 314 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10999,15 +11179,15 @@
 			value: true
 		});
 
-		var _events = __webpack_require__(301);
+		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _input_handler = __webpack_require__(313);
+		var _input_handler = __webpack_require__(315);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
-		var _cursor = __webpack_require__(300);
+		var _cursor = __webpack_require__(301);
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
@@ -11028,7 +11208,6 @@
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Input).call(this));
 
 				_this.ctx = renderer;
-				_this.astHandler = _this.ctx.shiji.astHandler;
 				_this.cursor = _this.ctx.caret;
 				_this.inputHandler = new _input_handler2.default(_this);
 				_this.mousedown = false;
@@ -11074,8 +11253,8 @@
 		exports.default = Input;
 
 	/***/ },
-	/* 313 */
-	/***/ function(module, exports) {
+	/* 315 */
+	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
 
@@ -11084,6 +11263,12 @@
 		});
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11103,8 +11288,7 @@
 
 				this.ctx = input;
 				this.shiji = this.ctx.ctx.shiji;
-				this.astHandler = this.ctx.astHandler;
-				this.$inputBox = $('<iframe>').css({
+				this.$inputBox = $('<iframe>').addClass('shiji-inputhandler').css({
 					position: 'absolute',
 					top: 0,
 					left: 0,
@@ -11130,6 +11314,7 @@
 				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
 					this.$inputBody.empty();
 				}.bind(this)).on('compositionstart', function (e) {
+					console.log('SADJLJSDLSJDLAJLSDJALJJD:');
 					// Display input box
 					this.$inputBox.css({
 						display: ''
@@ -11216,10 +11401,10 @@
 						case Key.Backspace:
 
 							// Getting text
-							var sets = this.astHandler.getTextSets(cursor.startNode, cursor.startOffset);
+							var sets = _TreeOperator2.default.getTextSets(cursor.startNode, cursor.startOffset);
 
 							// Replace old text with new text
-							this.astHandler.setText(cursor.startNode, [sets.before.substr(0, cursor.startOffset - 1), sets.after].join(''));
+							_TreeOperator2.default.setText(cursor.startNode, [sets.before.substr(0, cursor.startOffset - 1), sets.after].join(''));
 
 							// done everything so we update now
 							var task = cursor.startNode.component.refresh();
@@ -11243,7 +11428,7 @@
 
 					var cursor = this.ctx.ctx.caret;
 
-					this.astHandler.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
+					_TreeOperator2.default.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
 
 					// done everything so we update now
 					var task = cursor.startNode.component.refresh();
@@ -11273,7 +11458,7 @@
 						this.cursor.startNode.text = this.originContent.slice(0);
 					}
 
-					this.astHandler.insert(this.cursor.startNode, this.cursor.startOffset, text);
+					_TreeOperator2.default.insert(this.cursor.startNode, this.cursor.startOffset, text);
 
 					// done everything so we update now
 					return this.cursor.startNode.component.refresh();
@@ -11327,7 +11512,7 @@
 		exports.default = InputHandler;
 
 	/***/ },
-	/* 314 */
+	/* 316 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11336,7 +11521,7 @@
 		  value: true
 		});
 
-		var _events = __webpack_require__(301);
+		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
 
@@ -11363,7 +11548,228 @@
 		exports.default = ActionDispatcher;
 
 	/***/ },
-	/* 315 */
+	/* 317 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Misc = function () {
+			function Misc(ctx) {
+				_classCallCheck(this, Misc);
+
+				this.ctx = ctx;
+				this.treeOperator = ctx.treeOperator;
+			}
+
+			_createClass(Misc, [{
+				key: 'figurePosition',
+				value: function figurePosition(dom, offset, base) {
+
+					var $dom = $(dom);
+					var textNode = dom.childNodes ? dom.childNodes[0] : null;
+					var $container = base ? $(base) : null;
+
+					var baseX = 0;
+					var baseY = 0;
+
+					if ($container) {
+						baseX = $container.offset().left;
+						baseY = $container.offset().top;
+					}
+
+					var point = {
+						x: 0,
+						y: 0,
+						height: $dom.height(),
+						DOM: dom,
+						offset: offset
+					};
+
+					// Nothing left in this DOM
+					if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
+						//point.x = $dom.offset().left - $container.offset().left;
+						//point.y = $dom.offset().top - $container.offset().top;
+						point.x = $dom.position().left;
+						point.y = $dom.position().top;
+						point.DOM = dom;
+						point.offset = 0;
+
+						return point;
+					}
+
+					// The end of line
+					if (offset >= textNode.length) {
+
+						var range = document.createRange();
+
+						// Last character in a line
+						range.setStart(textNode, textNode.length - 1);
+						range.setEnd(textNode, textNode.length);
+
+						// Getting rect information then figure out exact position
+						var rect = range.getBoundingClientRect();
+						range.detach();
+
+						point.x = rect.right - baseX;
+						point.y = rect.top - baseY;
+						point.DOM = textNode;
+						point.offset = textNode.length;
+
+						return point;
+					}
+
+					// If the last word of line is return character
+					if (textNode.nodeValue[offset] == '\n') {
+
+						// empty line
+						if (textNode.length == 1) {
+							//point.x = $dom.offset().left - $container.offset().left;
+							//point.y = $dom.offset().top - $container.offset().top;
+							point.x = $dom.position().left;
+							point.y = $dom.position().top;
+							point.DOM = dom;
+							point.offset = 0;
+
+							return point;
+						}
+
+						var range = document.createRange();
+
+						range.setStart(textNode, offset - 1);
+						range.setEnd(textNode, offset);
+
+						// Getting rect information then figure out exact position
+						var rect = range.getBoundingClientRect();
+						range.detach();
+
+						point.x = rect.right - baseX;
+						point.y = rect.top - baseY;
+						point.DOM = dom;
+						point.offset = offset;
+
+						return point;
+					}
+
+					var range = document.createRange();
+
+					range.setStart(textNode, offset);
+					range.setEnd(textNode, offset + 1);
+
+					// Getting rect information then figure out exact position
+					var rect = range.getBoundingClientRect();
+					range.detach();
+					console.log('FFFFFF', rect.left, baseX, rect.top, baseY);
+					point.x = rect.left - baseX;
+					point.y = rect.top - baseY;
+					point.DOM = dom;
+					point.offset = offset;
+
+					return point;
+				}
+			}, {
+				key: 'findLineViewOwner',
+				value: function findLineViewOwner(node) {
+
+					if (node.component.lineViews) {
+						return node;
+					}
+
+					var parentNode = _TreeOperator2.default.getParentNode(node);
+					if (parentNode) return this.findLineViewOwner(parentNode);else return null;
+				}
+			}, {
+				key: 'getLineView',
+				value: function getLineView(targetNode, offset) {
+
+					var node = this.findLineViewOwner(targetNode);
+					if (node) {
+						// Getting DOM by using startNode and startOffset
+						var pos = targetNode.component.getPosition(offset);
+						var range = document.createRange();
+
+						// Figure line which contains such DOM
+						for (var index in node.component.lineViews) {
+							var lineView = node.component.lineViews[index];
+							range.selectNode(lineView[0]);
+
+							// Found
+							if (range.isPointInRange(pos.DOM)) {
+								return {
+									arr: node.component.lineViews,
+									lineView: lineView,
+									index: parseInt(index)
+								};
+							}
+						}
+					}
+
+					return null;
+				}
+			}, {
+				key: 'getLineViewByNode',
+				value: function getLineViewByNode(startNode, endNode, cb) {
+
+					if (!startNode) return true;
+
+					if (startNode.component.lineViews) cb(startNode);
+
+					// Traverse childrens
+					if (startNode.childrens) {
+						for (var index in startNode.childrens) {
+							var node = startNode.childrens[index];
+
+							if (this.getLineViewByNode(node, endNode, cb)) return true;
+						}
+					}
+
+					if (startNode == endNode) {
+						return true;
+					}
+
+					// Process next node
+					var nextNode = _TreeOperator2.default.getNextNode(startNode);
+					while (nextNode) {
+
+						if (this.getLineViewByNode(nextNode, endNode, cb)) return true;
+
+						nextNode = _TreeOperator2.default.getNextNode(startNode);
+					}
+
+					// It's in the end of this level, go to parent level to continue
+					var parentNode = _TreeOperator2.default.getParentNode(startNode);
+					nextNode = _TreeOperator2.default.getNextNode(parentNode);
+
+					return this.getLineViewByNode(nextNode, endNode, cb);
+				}
+			}, {
+				key: 'getLineViews',
+				value: function getLineViews(startNode, startOffset, endNode, endOffset) {
+					console.log('getLineViews', startNode, endNode);
+					this.getLineViewByNode(startNode, endNode, function () {});
+				}
+			}]);
+
+			return Misc;
+		}();
+
+		exports.default = Misc;
+
+	/***/ },
+	/* 318 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11376,17 +11782,12 @@
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var ASTHandler = function () {
-			function ASTHandler() {
-				_classCallCheck(this, ASTHandler);
-
-				this.ast = {
-					root: {}
-				};
-				this.nodes = {};
+		var TreeOperator = function () {
+			function TreeOperator() {
+				_classCallCheck(this, TreeOperator);
 			}
 
-			_createClass(ASTHandler, [{
+			_createClass(TreeOperator, [{
 				key: 'setInternalProperty',
 				value: function setInternalProperty(node, name, value) {
 					node[name] = value;
@@ -11398,64 +11799,9 @@
 					});
 				}
 			}, {
-				key: 'load',
-				value: function load(ast) {
-					this.ast = ast;
-					this.ast.root.id = this.generateId();
-					this.initializeNodes(this.ast.root);
-				}
-			}, {
 				key: 'generateId',
 				value: function generateId() {
 					return Math.random().toString().substr(2) + Date.now();
-				}
-			}, {
-				key: 'initializeNodes',
-				value: function initializeNodes(node) {
-
-					this.registerNode(node);
-
-					if (!node.childrens) return;
-
-					// Initializing dependencies
-					var prevNode = null;
-					node.childrens.forEach(function (subNode, index) {
-
-						if (!subNode.id) subNode.id = this.generateId();
-
-						this.setInternalProperty(subNode, 'parent', node);
-						this.setInternalProperty(subNode, 'prevNode', prevNode);
-
-						if (index + 1 < node.childrens.length) {
-							this.setInternalProperty(subNode, 'nextNode', node.childrens[index + 1]);
-						} else {
-							this.setInternalProperty(subNode, 'nextNode', null);
-						}
-
-						prevNode = subNode;
-
-						this.initializeNodes(subNode);
-					}.bind(this));
-				}
-			}, {
-				key: 'registerNode',
-				value: function registerNode(node) {
-					this.nodes[node.id] = node;
-				}
-			}, {
-				key: 'unregisterNode',
-				value: function unregisterNode(node) {
-					delete this.nodes[node.id];
-				}
-			}, {
-				key: 'getNodeById',
-				value: function getNodeById(id) {
-					return this.nodes[id] || null;
-				}
-			}, {
-				key: 'getRoot',
-				value: function getRoot() {
-					return this.ast.root;
 				}
 			}, {
 				key: 'getParentNode',
@@ -11598,6 +11944,42 @@
 					return parentNode.childrens.indexOf(node);
 				}
 			}, {
+				key: 'traverse',
+				value: function traverse(startNode, endNode, cb) {
+
+					if (!startNode) return true;
+
+					cb(startNode);
+
+					// Traverse childrens
+					if (startNode.childrens) {
+						for (var index in startNode.childrens) {
+							var node = startNode.childrens[index];
+
+							if (this.traverse(node, endNode, cb)) return true;
+						}
+					}
+
+					if (startNode == endNode) {
+						return true;
+					}
+
+					// Process next node
+					var nextNode = this.getNextNode(startNode);
+					while (nextNode) {
+
+						if (this.traverse(nextNode, endNode, cb)) return true;
+
+						nextNode = this.getNextNode(startNode);
+					}
+
+					// It's in the end of this level, go to parent level to continue
+					var parentNode = this.getParentNode(startNode);
+					nextNode = this.getNextNode(parentNode);
+
+					return this.traverse(nextNode, endNode, cb);
+				}
+			}, {
 				key: 'merge',
 				value: function merge(target, node) {
 
@@ -11690,15 +12072,26 @@
 
 					this.unregisterNode(node);
 				}
+			}, {
+				key: 'intersectsNode',
+				value: function intersectsNode(containerNode, node) {
+
+					if (containerNode == node) return true;
+
+					var parentNode = this.getParentNode(node);
+					if (!parentNode) return false;
+
+					return this.intersectsNode(containerNode, parentNode);
+				}
 			}]);
 
-			return ASTHandler;
+			return TreeOperator;
 		}();
 
-		exports.default = ASTHandler;
+		exports.default = new TreeOperator();
 
 	/***/ },
-	/* 316 */
+	/* 319 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11707,7 +12100,7 @@
 			value: true
 		});
 
-		var _Text = __webpack_require__(317);
+		var _Text = __webpack_require__(320);
 
 		var _Text2 = _interopRequireDefault(_Text);
 
@@ -11741,7 +12134,7 @@
 		exports.default = Actions;
 
 	/***/ },
-	/* 317 */
+	/* 320 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11759,16 +12152,109 @@
 		};
 
 	/***/ },
-	/* 318 */
+	/* 321 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(318);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var DocumentTree = function () {
+			function DocumentTree() {
+				_classCallCheck(this, DocumentTree);
+
+				this.ast = {
+					root: {}
+				};
+				this.nodes = {};
+			}
+
+			_createClass(DocumentTree, [{
+				key: 'load',
+				value: function load(ast) {
+					this.ast = ast;
+					this.ast.root.id = _TreeOperator2.default.generateId();
+					this.initializeNodes(this.ast.root);
+				}
+			}, {
+				key: 'initializeNodes',
+				value: function initializeNodes(node) {
+					var _this = this;
+
+					this.registerNode(node);
+
+					if (!node.childrens) return;
+
+					// Initializing dependencies
+					var prevNode = null;
+					node.childrens.forEach(function (subNode, index) {
+
+						if (!subNode.id) subNode.id = _TreeOperator2.default.generateId();
+
+						_TreeOperator2.default.setInternalProperty(subNode, 'parent', node);
+						_TreeOperator2.default.setInternalProperty(subNode, 'prevNode', prevNode);
+
+						if (index + 1 < node.childrens.length) {
+							_TreeOperator2.default.setInternalProperty(subNode, 'nextNode', node.childrens[index + 1]);
+						} else {
+							_TreeOperator2.default.setInternalProperty(subNode, 'nextNode', null);
+						}
+
+						prevNode = subNode;
+
+						_this.initializeNodes(subNode);
+					});
+				}
+			}, {
+				key: 'registerNode',
+				value: function registerNode(node) {
+					this.nodes[node.id] = node;
+				}
+			}, {
+				key: 'unregisterNode',
+				value: function unregisterNode(node) {
+					delete this.nodes[node.id];
+				}
+			}, {
+				key: 'getNodeById',
+				value: function getNodeById(id) {
+					return this.nodes[id] || null;
+				}
+			}, {
+				key: 'getRoot',
+				value: function getRoot() {
+					return this.ast.root;
+				}
+			}]);
+
+			return DocumentTree;
+		}();
+
+		exports.default = DocumentTree;
+
+	/***/ },
+	/* 322 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(319);
+		var content = __webpack_require__(323);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(321)(content, {});
+		var update = __webpack_require__(325)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -11785,10 +12271,10 @@
 		}
 
 	/***/ },
-	/* 319 */
+	/* 323 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(320)();
+		exports = module.exports = __webpack_require__(324)();
 		// imports
 
 
@@ -11799,7 +12285,7 @@
 
 
 	/***/ },
-	/* 320 */
+	/* 324 */
 	/***/ function(module, exports) {
 
 		/*
@@ -11855,7 +12341,7 @@
 
 
 	/***/ },
-	/* 321 */
+	/* 325 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -12107,16 +12593,16 @@
 
 
 	/***/ },
-	/* 322 */
+	/* 326 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(323);
+		var content = __webpack_require__(327);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(321)(content, {});
+		var update = __webpack_require__(325)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12133,10 +12619,10 @@
 		}
 
 	/***/ },
-	/* 323 */
+	/* 327 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(320)();
+		exports = module.exports = __webpack_require__(324)();
 		// imports
 
 
@@ -12145,307 +12631,6 @@
 
 		// exports
 
-
-	/***/ },
-	/* 324 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		var _events = __webpack_require__(301);
-
-		var _events2 = _interopRequireDefault(_events);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var ImageLoader = function (_events$EventEmitter) {
-			_inherits(ImageLoader, _events$EventEmitter);
-
-			function ImageLoader() {
-				_classCallCheck(this, ImageLoader);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
-
-				_this.caches = {};
-				return _this;
-			}
-
-			_createClass(ImageLoader, [{
-				key: 'exists',
-				value: function exists(src) {
-					return this.caches[src];
-				}
-			}, {
-				key: '_load',
-				value: function _load(src) {
-
-					return this.caches[src] || null;
-				}
-			}, {
-				key: 'load',
-				value: function load(src) {
-					var obj = this._load(src);
-					if (obj) {
-						return obj;
-					}
-
-					if (this.caches.hasOwnProperty(src)) {
-						return null;
-					}
-
-					// Register and ready to load
-					this.caches[src] = null;
-
-					// Create a new image object to load image and store it to be cache
-					var $img = $('<img>').load(function () {
-						this.caches[src] = $img;
-
-						// Fire event
-						this.emit(src, $img);
-					}.bind(this)).attr('src', src);
-
-					return null;
-				}
-			}]);
-
-			return ImageLoader;
-		}(_events2.default.EventEmitter);
-
-		exports.default = ImageLoader;
-
-	/***/ },
-	/* 325 */,
-	/* 326 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var Misc = function () {
-			function Misc(ctx) {
-				_classCallCheck(this, Misc);
-
-				this.ctx = ctx;
-				this.astHandler = ctx.astHandler;
-			}
-
-			_createClass(Misc, [{
-				key: 'figurePosition',
-				value: function figurePosition(dom, offset, base) {
-
-					var $dom = $(dom);
-					var textNode = dom.childNodes ? dom.childNodes[0] : null;
-					var $container = base ? $(base) : null;
-
-					var baseX = 0;
-					var baseY = 0;
-
-					if ($container) {
-						baseX = $container.offset().left;
-						baseY = $container.offset().top;
-					}
-
-					var point = {
-						x: 0,
-						y: 0,
-						height: $dom.height(),
-						DOM: dom,
-						offset: offset
-					};
-
-					// Nothing left in this DOM
-					if (!textNode || textNode.nodeType != Node.TEXT_NODE) {
-						//point.x = $dom.offset().left - $container.offset().left;
-						//point.y = $dom.offset().top - $container.offset().top;
-						point.x = $dom.position().left;
-						point.y = $dom.position().top;
-						point.DOM = dom;
-						point.offset = 0;
-
-						return point;
-					}
-
-					// The end of line
-					if (offset >= textNode.length) {
-
-						var range = document.createRange();
-
-						// Last character in a line
-						range.setStart(textNode, textNode.length - 1);
-						range.setEnd(textNode, textNode.length);
-
-						// Getting rect information then figure out exact position
-						var rect = range.getBoundingClientRect();
-						range.detach();
-
-						point.x = rect.right - baseX;
-						point.y = rect.top - baseY;
-						point.DOM = textNode;
-						point.offset = textNode.length;
-
-						return point;
-					}
-
-					// If the last word of line is return character
-					if (textNode.nodeValue[offset] == '\n') {
-
-						// empty line
-						if (textNode.length == 1) {
-							//point.x = $dom.offset().left - $container.offset().left;
-							//point.y = $dom.offset().top - $container.offset().top;
-							point.x = $dom.position().left;
-							point.y = $dom.position().top;
-							point.DOM = dom;
-							point.offset = 0;
-
-							return point;
-						}
-
-						var range = document.createRange();
-
-						range.setStart(textNode, offset - 1);
-						range.setEnd(textNode, offset);
-
-						// Getting rect information then figure out exact position
-						var rect = range.getBoundingClientRect();
-						range.detach();
-
-						point.x = rect.right - baseX;
-						point.y = rect.top - baseY;
-						point.DOM = dom;
-						point.offset = offset;
-
-						return point;
-					}
-
-					var range = document.createRange();
-
-					range.setStart(textNode, offset);
-					range.setEnd(textNode, offset + 1);
-
-					// Getting rect information then figure out exact position
-					var rect = range.getBoundingClientRect();
-					range.detach();
-
-					point.x = rect.left - baseX;
-					point.y = rect.top - baseY;
-					point.DOM = dom;
-					point.offset = offset;
-
-					return point;
-				}
-			}, {
-				key: 'findLineViewOwner',
-				value: function findLineViewOwner(node) {
-
-					if (node.component.lineViews) {
-						return node;
-					}
-
-					var astHandler = this.astHandler;
-					var parentNode = astHandler.getParentNode(node);
-					if (parentNode) return this.findLineViewOwner(parentNode);else return null;
-				}
-			}, {
-				key: 'getLineView',
-				value: function getLineView(targetNode, offset) {
-
-					var node = this.findLineViewOwner(targetNode);
-					if (node) {
-						// Getting DOM by using startNode and startOffset
-						var pos = targetNode.component.getPosition(offset);
-						var range = document.createRange();
-
-						// Figure line which contains such DOM
-						for (var index in node.component.lineViews) {
-							var lineView = node.component.lineViews[index];
-							range.selectNode(lineView[0]);
-
-							// Found
-							if (range.isPointInRange(pos.DOM)) {
-								return {
-									arr: node.component.lineViews,
-									lineView: lineView,
-									index: parseInt(index)
-								};
-							}
-						}
-					}
-
-					return null;
-				}
-			}]);
-
-			return Misc;
-		}();
-
-		exports.default = Misc;
-
-	/***/ },
-	/* 327 */
-	/***/ function(module, exports) {
-
-		"use strict";
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var Selection = function () {
-			function Selection() {
-				_classCallCheck(this, Selection);
-
-				this.cursors = [];
-			}
-
-			_createClass(Selection, [{
-				key: "getAllCursors",
-				value: function getAllCursors() {
-					return this.cursors;
-				}
-			}, {
-				key: "addCursor",
-				value: function addCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
-					if (index != -1) return;
-
-					this.cursors.push(cursor);
-				}
-			}, {
-				key: "removeCursor",
-				value: function removeCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
-					if (index != -1) this.cursors.splice(index, 1);
-				}
-			}]);
-
-			return Selection;
-		}();
-
-		exports.default = Selection;
 
 	/***/ }
 	/******/ ]);

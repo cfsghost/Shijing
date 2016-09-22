@@ -1,4 +1,5 @@
 import events from 'events';
+import treeOperator from './TreeOperator';
 import Caret from './caret';
 
 class Cursor extends events.EventEmitter {
@@ -81,7 +82,7 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-
+console.log('setPosition', caret);
 		this.caret.move(caret.x, caret.y);
 		this._setPosition(node, offset);
 
@@ -213,14 +214,13 @@ console.log('MOVED', this, this.startNode, this.startOffset);
 		}
 console.log('Cursor2', this.startNode, leftOffset);
 		// Getting target index of childrens
-		var astHandler = this.renderer.shiji.astHandler;
-		var index = astHandler.getIndex(this.startNode);
+		var index = treeOperator.getIndex(this.startNode);
 		if (index == -1) {
 			return 0;
 		}
 
 		// Put curosr on parent
-		var parentNode = astHandler.getParentNode(this.startNode);
+		var parentNode = treeOperator.getParentNode(this.startNode);
 		if (!parentNode)
 			return 0;
 
@@ -248,8 +248,7 @@ console.log('Cursor2', this.startNode, leftOffset);
 		// Range was selected
 		if (this.endNode != null && this.endOffset != null) {
 			console.log('RANGEEEE');
-			var astHandler = this.renderer.shiji.astHandler;
-			astHandler.getAncestorNode(this.startNode, this.endNode);
+			treeOperator.getAncestorNode(this.startNode, this.endNode);
 		}
 
 		this.caret.show();
