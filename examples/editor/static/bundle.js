@@ -85,7 +85,7 @@
 				childrens: [{
 					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
 				}, {
-					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'orange' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '文繞圖也可以搞定，有點神！' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
+					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
 				}]
 			}
 		});
@@ -8232,15 +8232,15 @@
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
-		var _action_dispatcher = __webpack_require__(317);
+		var _action_dispatcher = __webpack_require__(316);
 
 		var _action_dispatcher2 = _interopRequireDefault(_action_dispatcher);
 
-		var _Misc = __webpack_require__(318);
+		var _Misc = __webpack_require__(317);
 
 		var _Misc2 = _interopRequireDefault(_Misc);
 
-		var _Actions = __webpack_require__(319);
+		var _Actions = __webpack_require__(318);
 
 		var _Actions2 = _interopRequireDefault(_Actions);
 
@@ -8248,7 +8248,7 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _DocumentTree = __webpack_require__(321);
+		var _DocumentTree = __webpack_require__(320);
 
 		var _DocumentTree2 = _interopRequireDefault(_DocumentTree);
 
@@ -8262,8 +8262,8 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		__webpack_require__(322);
-		__webpack_require__(326);
+		__webpack_require__(321);
+		__webpack_require__(325);
 
 		var Shijing = function (_events$EventEmitter) {
 			_inherits(Shijing, _events$EventEmitter);
@@ -8459,7 +8459,7 @@
 
 		var _Components2 = _interopRequireDefault(_Components);
 
-		var _input = __webpack_require__(315);
+		var _input = __webpack_require__(314);
 
 		var _input2 = _interopRequireDefault(_input);
 
@@ -9616,7 +9616,7 @@
 			inline: __webpack_require__(306).default,
 			hiddenNode: __webpack_require__(309).default,
 			image: __webpack_require__(311).default,
-			paragraph: __webpack_require__(313).default
+			paragraph: __webpack_require__(312).default
 		};
 
 	/***/ },
@@ -10674,7 +10674,7 @@
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
-		var _ImageLoader = __webpack_require__(312);
+		var _ImageLoader = __webpack_require__(327);
 
 		var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
@@ -10747,85 +10747,142 @@
 						offset: offset - 1
 					};
 				}
+
+				//_loadImage(style, src, obj) {
+
 			}, {
 				key: '_loadImage',
-				value: function _loadImage(style, src) {
+				value: function _loadImage(style, obj) {
+					var _this2 = this;
 
-					var $dom = $(this.dom);
+					return new Promise(function (resolve) {
+						var $dom = $(_this2.dom);
 
-					// Change container's appearance
-					$dom.css({
-						width: 'initial',
-						height: 'initial',
-						border: 'initial'
-					}).empty();
+						// Change container's appearance
+						$dom.css({
+							width: 'initial',
+							height: 'initial',
+							border: 'initial'
+						}).empty();
 
-					// Create a new image object
-					$('<img>').attr('src', src).css(style).appendTo($dom);
+						var image = obj.cloneNode(true);
+						$(image).css(style).appendTo($dom);
+
+						return resolve();
+					});
 				}
 			}, {
 				key: 'loadImage',
 				value: function loadImage() {
+					var _this3 = this;
 
-					return new Promise(function (resolve) {
+					return new Promise(function () {
+						var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(resolve) {
+							var style, obj;
+							return regeneratorRuntime.wrap(function _callee2$(_context2) {
+								while (1) {
+									switch (_context2.prev = _context2.next) {
+										case 0:
+											style = {
+												width: 'initial',
+												height: 'initial',
+												verticalAlign: 'bottom'
+											};
 
-						var style = {
-							width: 'initial',
-							height: 'initial',
-							verticalAlign: 'bottom'
+											if (_this3.node.style) {
+												if (_this3.node.style.width) style.width = _this3.node.style.width;
+
+												if (_this3.node.style.height) style.height = _this3.node.style.height;
+											}
+
+											// Loading image
+											obj = imageLoader.load(_this3.node.src);
+
+											if (!obj) {
+												_context2.next = 8;
+												break;
+											}
+
+											console.log(obj);
+											_context2.next = 7;
+											return _this3._loadImage(style, obj);
+
+										case 7:
+											return _context2.abrupt('return', resolve());
+
+										case 8:
+
+											// Waiting for image 
+											imageLoader.once(_this3.node.src, function () {
+												var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee(obj) {
+													return regeneratorRuntime.wrap(function _callee$(_context) {
+														while (1) {
+															switch (_context.prev = _context.next) {
+																case 0:
+																	_context.next = 2;
+																	return _this3._loadImage(style, obj);
+
+																case 2:
+																	resolve();
+
+																case 3:
+																case 'end':
+																	return _context.stop();
+															}
+														}
+													}, _callee, _this3);
+												}));
+
+												return function (_x2) {
+													return _ref2.apply(this, arguments);
+												};
+											}());
+
+										case 9:
+										case 'end':
+											return _context2.stop();
+									}
+								}
+							}, _callee2, _this3);
+						}));
+
+						return function (_x) {
+							return _ref.apply(this, arguments);
 						};
-						if (this.node.style) {
-							if (this.node.style.width) style.width = this.node.style.width;
-
-							if (this.node.style.height) style.height = this.node.style.height;
-						}
-
-						// Loading image
-						var obj = imageLoader.load(this.node.src);
-						if (obj) {
-							this._loadImage(style, obj[0].src);
-							return resolve();
-						}
-
-						// Waiting for image 
-						imageLoader.once(this.node.src, function (obj) {
-							this._loadImage(style, obj[0].src);
-							resolve();
-						}.bind(this));
-					}.bind(this));
+					}());
 				}
 			}, {
 				key: 'componentDidMount',
 				value: function () {
-					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-						return regeneratorRuntime.wrap(function _callee$(_context) {
+					var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3() {
+						return regeneratorRuntime.wrap(function _callee3$(_context3) {
 							while (1) {
-								switch (_context.prev = _context.next) {
+								switch (_context3.prev = _context3.next) {
 									case 0:
 										if (!this.loaded) {
-											_context.next = 2;
+											_context3.next = 2;
 											break;
 										}
 
-										return _context.abrupt('return', false);
+										return _context3.abrupt('return', false);
 
 									case 2:
-										_context.next = 4;
+										_context3.next = 4;
 										return this.loadImage();
 
 									case 4:
-										return _context.abrupt('return', true);
+										return _context3.abrupt('return', true);
 
 									case 5:
 									case 'end':
-										return _context.stop();
+										return _context3.stop();
 								}
 							}
-						}, _callee, this);
+						}, _callee3, this);
 					}));
 
 					function componentDidMount() {
-						return _ref.apply(this, arguments);
+						return _ref3.apply(this, arguments);
 					}
 
 					return componentDidMount;
@@ -10835,11 +10892,11 @@
 				value: function render() {
 
 					return new Promise(function () {
-						var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(resolve) {
+						var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(resolve) {
 							var node, style, $DOM, x, $loader;
-							return regeneratorRuntime.wrap(function _callee2$(_context2) {
+							return regeneratorRuntime.wrap(function _callee4$(_context4) {
 								while (1) {
-									switch (_context2.prev = _context2.next) {
+									switch (_context4.prev = _context4.next) {
 										case 0:
 											node = this.node;
 											style = Object.assign({}, this.node.style || {}, {
@@ -10856,18 +10913,18 @@
 											// Loading directly if cache exists already
 
 											if (!imageLoader.exists(this.node.src)) {
-												_context2.next = 11;
+												_context4.next = 11;
 												break;
 											}
 
 											console.time('Load image');
 											this.loaded = true;
-											_context2.next = 9;
+											_context4.next = 9;
 											return this.loadImage();
 
 										case 9:
 											x = console.timeEnd('Load image');
-											return _context2.abrupt('return', resolve());
+											return _context4.abrupt('return', resolve());
 
 										case 11:
 
@@ -10891,14 +10948,14 @@
 
 										case 14:
 										case 'end':
-											return _context2.stop();
+											return _context4.stop();
 									}
 								}
-							}, _callee2, this);
+							}, _callee4, this);
 						}));
 
-						return function (_x) {
-							return _ref2.apply(this, arguments);
+						return function (_x3) {
+							return _ref4.apply(this, arguments);
 						};
 					}().bind(this));
 				}
@@ -10921,85 +10978,6 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(298);
-
-		var _events2 = _interopRequireDefault(_events);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var ImageLoader = function (_events$EventEmitter) {
-			_inherits(ImageLoader, _events$EventEmitter);
-
-			function ImageLoader() {
-				_classCallCheck(this, ImageLoader);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
-
-				_this.caches = {};
-				return _this;
-			}
-
-			_createClass(ImageLoader, [{
-				key: 'exists',
-				value: function exists(src) {
-					return this.caches[src];
-				}
-			}, {
-				key: '_load',
-				value: function _load(src) {
-
-					return this.caches[src] || null;
-				}
-			}, {
-				key: 'load',
-				value: function load(src) {
-					var obj = this._load(src);
-					if (obj) {
-						return obj;
-					}
-
-					if (this.caches.hasOwnProperty(src)) {
-						return null;
-					}
-
-					// Register and ready to load
-					this.caches[src] = null;
-
-					// Create a new image object to load image and store it to be cache
-					var $img = $('<img>').load(function () {
-						this.caches[src] = $img;
-
-						// Fire event
-						this.emit(src, $img);
-					}.bind(this)).attr('src', src);
-
-					return null;
-				}
-			}]);
-
-			return ImageLoader;
-		}(_events2.default.EventEmitter);
-
-		exports.default = ImageLoader;
-
-	/***/ },
-	/* 313 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 		var _TreeOperator = __webpack_require__(300);
@@ -11010,7 +10988,7 @@
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
-		var _inline = __webpack_require__(314);
+		var _inline = __webpack_require__(313);
 
 		var _inline2 = _interopRequireDefault(_inline);
 
@@ -11193,7 +11171,7 @@
 								wordBreak: 'break-all'
 							});
 							offscreen.resize(this.style.width, this.style.height);
-
+							console.log('LAYOUTTTTTTTTTTTT');
 							// Apply inline layout, then we can get a lots of line views
 							var layout = new _inline2.default(this, offscreen);
 							try {
@@ -11248,7 +11226,7 @@
 		exports.default = Paragraph;
 
 	/***/ },
-	/* 314 */
+	/* 313 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11493,7 +11471,7 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 315 */
+	/* 314 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11506,7 +11484,7 @@
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _input_handler = __webpack_require__(316);
+		var _input_handler = __webpack_require__(315);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
@@ -11577,7 +11555,7 @@
 		exports.default = Input;
 
 	/***/ },
-	/* 316 */
+	/* 315 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11836,7 +11814,7 @@
 		exports.default = InputHandler;
 
 	/***/ },
-	/* 317 */
+	/* 316 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11872,7 +11850,7 @@
 		exports.default = ActionDispatcher;
 
 	/***/ },
-	/* 318 */
+	/* 317 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12093,7 +12071,7 @@
 		exports.default = Misc;
 
 	/***/ },
-	/* 319 */
+	/* 318 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12102,7 +12080,7 @@
 			value: true
 		});
 
-		var _Text = __webpack_require__(320);
+		var _Text = __webpack_require__(319);
 
 		var _Text2 = _interopRequireDefault(_Text);
 
@@ -12136,7 +12114,7 @@
 		exports.default = Actions;
 
 	/***/ },
-	/* 320 */
+	/* 319 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -12154,7 +12132,7 @@
 		};
 
 	/***/ },
-	/* 321 */
+	/* 320 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12247,16 +12225,16 @@
 		exports.default = DocumentTree;
 
 	/***/ },
-	/* 322 */
+	/* 321 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(323);
+		var content = __webpack_require__(322);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(325)(content, {});
+		var update = __webpack_require__(324)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12273,10 +12251,10 @@
 		}
 
 	/***/ },
-	/* 323 */
+	/* 322 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(324)();
+		exports = module.exports = __webpack_require__(323)();
 		// imports
 
 
@@ -12287,7 +12265,7 @@
 
 
 	/***/ },
-	/* 324 */
+	/* 323 */
 	/***/ function(module, exports) {
 
 		/*
@@ -12343,7 +12321,7 @@
 
 
 	/***/ },
-	/* 325 */
+	/* 324 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -12595,16 +12573,16 @@
 
 
 	/***/ },
-	/* 326 */
+	/* 325 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(327);
+		var content = __webpack_require__(326);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(325)(content, {});
+		var update = __webpack_require__(324)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12621,10 +12599,10 @@
 		}
 
 	/***/ },
-	/* 327 */
+	/* 326 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(324)();
+		exports = module.exports = __webpack_require__(323)();
 		// imports
 
 
@@ -12633,6 +12611,99 @@
 
 		// exports
 
+
+	/***/ },
+	/* 327 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var ImageLoader = function (_events$EventEmitter) {
+			_inherits(ImageLoader, _events$EventEmitter);
+
+			function ImageLoader() {
+				_classCallCheck(this, ImageLoader);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
+
+				_this.caches = {};
+				return _this;
+			}
+
+			_createClass(ImageLoader, [{
+				key: 'exists',
+				value: function exists(src) {
+					return this.caches[src];
+				}
+			}, {
+				key: '_load',
+				value: function _load(src) {
+
+					return this.caches[src] || null;
+				}
+			}, {
+				key: 'load',
+				value: function load(src) {
+					var _this2 = this;
+
+					var obj = this._load(src);
+					if (obj) {
+						return obj;
+					}
+
+					if (this.caches.hasOwnProperty(src)) {
+						return null;
+					}
+
+					// Register and ready to load
+					this.caches[src] = null;
+
+					// Create a new image object to load image and store it to be cache
+					var image = new Image();
+					image.onload = function () {
+
+						var canvas = document.createElement('canvas');
+						canvas.width = image.naturalWidth;
+						canvas.height = image.naturalHeight;
+						canvas.getContext('2d').drawImage(image, 0, 0);
+
+						var img = new Image();
+						img.src = canvas.toDataURL('image/png');
+
+						// Cache
+						_this2.caches[src] = img;
+
+						// Fire event
+						_this2.emit(src, img);
+					};
+					image.src = src;
+
+					return null;
+				}
+			}]);
+
+			return ImageLoader;
+		}(_events2.default.EventEmitter);
+
+		exports.default = ImageLoader;
 
 	/***/ }
 	/******/ ]);

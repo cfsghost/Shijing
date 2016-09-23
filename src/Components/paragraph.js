@@ -133,7 +133,7 @@ console.log('renderSelection');
 						wordBreak: 'break-all'
 					});
 				offscreen.resize(this.style.width, this.style.height);
-
+console.log('LAYOUTTTTTTTTTTTT');
 				// Apply inline layout, then we can get a lots of line views
 				var layout = new InlineLayout(this, offscreen);
 				try {

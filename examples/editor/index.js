@@ -53,6 +53,16 @@ $(function() {
 						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
 						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+					]
+				},
+/*
+				{
+					type: 'paragraph', childrens: [
+						{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' },
+						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
 						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
@@ -81,6 +91,7 @@ $(function() {
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 					]
 				},
+*/
 	/*
 				{
 					type: 'paragraph', childrens: [

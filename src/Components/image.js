@@ -54,29 +54,33 @@ export default class Image extends InlineComponent {
 		};
 	}
 
-	_loadImage(style, src) {
+	//_loadImage(style, src, obj) {
+	_loadImage(style, obj) {
 
-		var $dom = $(this.dom);
+		return new Promise((resolve) => {
+			var $dom = $(this.dom);
 
-		// Change container's appearance
-		$dom
-			.css({
-				width: 'initial',
-				height: 'initial',
-				border: 'initial'
-			})
-			.empty();
+			// Change container's appearance
+			$dom
+				.css({
+					width: 'initial',
+					height: 'initial',
+					border: 'initial'
+				})
+				.empty();
 
-		// Create a new image object
-		$('<img>')
-			.attr('src', src)
-			.css(style)
-			.appendTo($dom);
+			var image = obj.cloneNode(true);
+			$(image)
+				.css(style)
+				.appendTo($dom);
+
+			return resolve();
+		});
 	}
 
 	loadImage() {
 
-		return new Promise(function(resolve) {
+		return new Promise(async (resolve) => {
 
 			var style = {
 				width: 'initial',
@@ -94,16 +98,17 @@ export default class Image extends InlineComponent {
 			// Loading image
 			var obj = imageLoader.load(this.node.src);
 			if (obj) {
-				this._loadImage(style, obj[0].src);
+				console.log(obj);
+				await this._loadImage(style, obj);
 				return resolve();
 			}
 
 			// Waiting for image 
-			imageLoader.once(this.node.src, function(obj) {
-				this._loadImage(style, obj[0].src);
+			imageLoader.once(this.node.src, async (obj) => {
+				await this._loadImage(style, obj);
 				resolve();
-			}.bind(this));
-		}.bind(this));
+			});
+		});
 	}
 
 	async componentDidMount() {

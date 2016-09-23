@@ -31,14 +31,24 @@ class ImageLoader extends events.EventEmitter {
 		this.caches[src] = null;
 
 		// Create a new image object to load image and store it to be cache
-		var $img = $('<img>')
-			.load(function() {
-				this.caches[src] = $img;
+		var image = new Image();
+		image.onload = () => {
 
-				// Fire event
-				this.emit(src, $img);
-			}.bind(this))
-			.attr('src', src);
+			var canvas = document.createElement('canvas');
+			canvas.width = image.naturalWidth;
+			canvas.height = image.naturalHeight;
+			canvas.getContext('2d').drawImage(image, 0, 0);
+
+			var img = new Image();
+			img.src = canvas.toDataURL('image/png');
+
+			// Cache
+			this.caches[src] = img;
+
+			// Fire event
+			this.emit(src, img);
+		};
+		image.src = src;
 
 		return null;
 	}
