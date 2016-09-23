@@ -80,7 +80,7 @@
 		// margin is set to  2.54 cm
 		shijing.setPaperMargin(96);
 
-		shijing.loadAst({
+		shijing.load({
 			root: {
 				childrens: [{
 					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
@@ -8365,8 +8365,8 @@
 					});
 				}
 			}, {
-				key: 'loadAst',
-				value: function loadAst(source) {
+				key: 'load',
+				value: function load(source) {
 					this.documentTree.load(source);
 
 					return this.render();

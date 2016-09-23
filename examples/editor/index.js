@@ -28,7 +28,7 @@ $(function() {
 	// margin is set to  2.54 cm
 	shijing.setPaperMargin(96);
 
-	shijing.loadAst({
+	shijing.load({
 		root: {
 			childrens: [
 				{

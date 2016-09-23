@@ -121,7 +121,7 @@ class Shijing extends events.EventEmitter {
 		});
 	}
 
-	loadAst(source) {
+	load(source) {
 		this.documentTree.load(source);
 
 		return this.render();
