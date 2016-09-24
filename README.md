@@ -4,6 +4,35 @@
 
 Shijing is a document editing engine, provides WYSIWYG way for editing requirement. Similar but not the same with other popular WYSIWYG projects(eg, CKEditor), this project is a library that trying to realize a possible way to make a powerful document editor, like Google Docs which supports collaborative mechanism and much functionility like Microsoft Word.
 
+Usage
+-
+
+Here is the sample code to explain how to create a simple editor:
+
+```js
+// Create a instance of editor and given a condition of selector to determine specific DOM we want to use
+var editor = new Shijing('#editor');
+
+// We set A4 to paper size
+editor.setPaperSize(793.7, 1122.5);
+
+// Set paper margin
+editor.setPaperMargin(96);
+
+// Now you can load document tree here
+editor.load({
+  root: {
+    childrens: [
+      {
+        type: 'paragraph', childrens: [
+          { type: 'inline', style: { color: 'pink' }, text: 'Hello baby!' },
+        ]
+      }
+    ]
+  }
+});
+```
+
 Example
 -
 
