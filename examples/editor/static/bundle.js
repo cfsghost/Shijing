@@ -11563,6 +11563,10 @@
 					this.cursor.setPositionByAxis(e.clientX, e.clientY);
 					this.cursor.show();
 					this.mousedown = true;
+
+					// Update component
+					var task = this.cursor.startNode.component.refresh();
+					task.then(function () {});
 				}.bind(_this), false);
 
 				_this.ctx.$origin[0].addEventListener('mousemove', function (e) {
@@ -11577,6 +11581,7 @@
 		    					node.component.updateSelection();
 		    				});
 		    */
+						// Update component
 						var task = this.cursor.startNode.component.refresh();
 						task.then(function () {});
 					}

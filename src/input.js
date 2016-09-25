@@ -34,6 +34,11 @@ class Input extends events.EventEmitter {
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			this.cursor.show();
 			this.mousedown = true;
+
+			// Update component
+			var task = this.cursor.startNode.component.refresh();
+			task.then(() => {
+			});
 		}.bind(this), false);
 
 		this.ctx.$origin[0].addEventListener('mousemove', function(e) {
@@ -48,6 +53,7 @@ class Input extends events.EventEmitter {
 					node.component.updateSelection();
 				});
 */
+				// Update component
 				var task = this.cursor.startNode.component.refresh();
 				task.then(() => {
 				});
