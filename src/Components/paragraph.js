@@ -121,70 +121,72 @@ export default class Paragraph extends BlockComponent {
 				}
 
 				// start and end point are in the same line view
-				if (startLineView.lineView == endLineView.lineView) {
-					var $lineView = $(startLineView.lineView);
-					var $selection = $('<div>')
-						.css({
-							position: 'absolute',
-							top: 0,
-							left: startPoint.x,
-							background: '#aabbff',
-							width: endPoint.x - startPoint.x,
-							height: $lineView.height()
-						})
-						.prependTo($lineView);
-				} else {
+				if (startLineView && endLineView) {
+					if (startLineView.lineView == endLineView.lineView) {
+						var $lineView = $(startLineView.lineView);
+						var $selection = $('<div>')
+							.css({
+								position: 'absolute',
+								top: 0,
+								left: startPoint.x,
+								background: '#aabbff',
+								width: endPoint.x - startPoint.x,
+								height: $lineView.height()
+							})
+							.prependTo($lineView);
+					} else {
 
-					// Apply first of line view
-					var $lineView = $(startLineView.lineView);
-					var $selection = $('<div>')
-						.css({
-							position: 'absolute',
-							top: 0,
-							left: startPoint.x,
-							background: '#aabbff',
-							width: $lineView.width() - startPoint.x,
-							height: $lineView.height()
-						})
-						.prependTo($lineView);
+						// Apply first of line view
+						var $lineView = $(startLineView.lineView);
+						var $selection = $('<div>')
+							.css({
+								position: 'absolute',
+								top: 0,
+								left: startPoint.x,
+								background: '#aabbff',
+								width: $lineView.width() - startPoint.x,
+								height: $lineView.height()
+							})
+							.prependTo($lineView);
 
 
-					// Deal with rest of line views
-					var index = this.lineViews.indexOf(startLineView.lineView);
-					console.log('XXXXX', startLineView, index);
-					for (index++; index < this.lineViews.length; index++) {
-						var lineView = this.lineViews[index];
+						// Deal with rest of line views
+						var index = this.lineViews.indexOf(startLineView.lineView);
+						console.log('XXXXX', startLineView, index);
+						for (index++; index < this.lineViews.length; index++) {
+							var lineView = this.lineViews[index];
 
-						if (lineView == endLineView.lineView) {
-							// The end of line view
-							var $lineView = $(endLineView.lineView);
+							if (lineView == endLineView.lineView) {
+								// The end of line view
+								var $lineView = $(endLineView.lineView);
+								var $selection = $('<div>')
+									.css({
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										background: '#aabbff',
+										width: endPoint.x,
+										height: $lineView.height()
+									})
+									.prependTo($lineView);
+
+								break;
+							}
+
+							var $lineView = $(lineView);
 							var $selection = $('<div>')
 								.css({
 									position: 'absolute',
 									top: 0,
 									left: 0,
 									background: '#aabbff',
-									width: endPoint.x,
+									width: $lineView.width(),
 									height: $lineView.height()
 								})
 								.prependTo($lineView);
-
-							break;
 						}
 
-						var $lineView = $(lineView);
-						var $selection = $('<div>')
-							.css({
-								position: 'absolute',
-								top: 0,
-								left: 0,
-								background: '#aabbff',
-								width: $lineView.width(),
-								height: $lineView.height()
-							})
-							.prependTo($lineView);
 					}
-
 				}
 
 	/*
