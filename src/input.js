@@ -1,5 +1,6 @@
 import events from 'events';
 import treeOperator from './TreeOperator';
+import Selection from './Selection';
 import InputHandler from './input_handler';
 import Cursor from './cursor';
 
@@ -15,7 +16,11 @@ class Input extends events.EventEmitter {
 		this.mousedown = false;
 		this.dragging = false;
 
-		renderer.selection.addCursor(this.cursor);
+		// Create selection for current user
+		var selection = new Selection(this);
+		selection.addCursor(this.cursor);
+
+		this.renderer.Selection.addSelection(selection);
 
 		this.cursor.on('update', function() {
 			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);

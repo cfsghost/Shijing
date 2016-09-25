@@ -1,7 +1,7 @@
 import treeOperator from './TreeOperator';
 import Offscreen from './offscreen';
 import Cursor from './cursor';
-import Selection from './Selection';
+import SelectionManager from './SelectionManager';
 import Components from './Components';
 import Input from './input';
 
@@ -10,7 +10,7 @@ class Renderer {
 	constructor(context) {
 		this.ctx = context;
 		this.Components = Components;
-		this.selection = new Selection(this);
+		this.Selection = new SelectionManager(this);
 
 		// Initializing offscreen buffer
 		this.offscreen = new Offscreen(this);

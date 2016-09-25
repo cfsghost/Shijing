@@ -8451,9 +8451,9 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _Selection = __webpack_require__(304);
+		var _SelectionManager = __webpack_require__(328);
 
-		var _Selection2 = _interopRequireDefault(_Selection);
+		var _SelectionManager2 = _interopRequireDefault(_SelectionManager);
 
 		var _Components = __webpack_require__(305);
 
@@ -8473,7 +8473,7 @@
 
 				this.ctx = context;
 				this.Components = _Components2.default;
-				this.selection = new _Selection2.default(this);
+				this.Selection = new _SelectionManager2.default(this);
 
 				// Initializing offscreen buffer
 				this.offscreen = new _offscreen2.default(this);
@@ -11043,137 +11043,134 @@
 				value: function renderSelection(baseLayer) {
 					var _this2 = this;
 
-					var cursors = this.renderer.selection;
+					var selections = this.renderer.Selection.getAllSelections();
 
-					cursors.getAllCursors().forEach(function (cursor) {
+					selections.forEach(function (selection) {
+						var cursors = selection.getAllCursors();
 
-						if (!cursor.startNode || !cursor.endNode) return;
+						cursors.forEach(function (cursor) {
 
-						console.log('renderSelection');
+							if (!cursor.startNode || !cursor.endNode) return;
 
-						var startPoint = null;
-						var endPoint = null;
-						/*
-		    			var lineViews = [];
-		    
-		    			// Filter all of node which is in our node
-		    			for (var index in cursor.nodeList) {
-		    				var node = cursor.nodeList[index];
-		    
-		    				if (treeOperator.intersectsNode(this.node, node)) {
-		    					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-		    					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-		    				}
-		    
-		    			}
-		    */
-						// if start node is in this node of component
-						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
-							var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-							startPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+							console.log('renderSelection');
 
-							//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
-						}
+							var startPoint = null;
+							var endPoint = null;
+							/*
+		     			var lineViews = [];
+		     				// Filter all of node which is in our node
+		     			for (var index in cursor.nodeList) {
+		     				var node = cursor.nodeList[index];
+		     					if (treeOperator.intersectsNode(this.node, node)) {
+		     					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+		     					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+		     				}
+		     				}
+		     */
+							// if start node is in this node of component
+							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
+								var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+								startPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
 
-						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
-							var pos = cursor.endNode.component.getPosition(cursor.endOffset);
-							endPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-							//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
-						}
+								//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
+							}
 
-						var startLineView = null;
-						var endLineView = null;
+							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
+								var pos = cursor.endNode.component.getPosition(cursor.endOffset);
+								endPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+								//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+							}
 
-						if (startPoint) {
-							startLineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
-						}
+							var startLineView = null;
+							var endLineView = null;
 
-						if (endPoint) {
-							endLineView = _this2.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
-						}
+							if (startPoint) {
+								startLineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+							}
 
-						// start and end point are in the same line view
-						if (startLineView.lineView == endLineView.lineView) {
-							var $lineView = $(startLineView.lineView);
-							var $selection = $('<div>').css({
-								position: 'absolute',
-								top: 0,
-								left: startPoint.x,
-								background: '#aabbff',
-								width: endPoint.x - startPoint.x,
-								height: $lineView.height()
-							}).prependTo($lineView);
-						} else {
+							if (endPoint) {
+								endLineView = _this2.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
+							}
 
-							// Apply first of line view
-							var $lineView = $(startLineView.lineView);
-							var $selection = $('<div>').css({
-								position: 'absolute',
-								top: 0,
-								left: startPoint.x,
-								background: '#aabbff',
-								width: $lineView.width() - startPoint.x,
-								height: $lineView.height()
-							}).prependTo($lineView);
+							// start and end point are in the same line view
+							if (startLineView.lineView == endLineView.lineView) {
+								var $lineView = $(startLineView.lineView);
+								var $selection = $('<div>').css({
+									position: 'absolute',
+									top: 0,
+									left: startPoint.x,
+									background: '#aabbff',
+									width: endPoint.x - startPoint.x,
+									height: $lineView.height()
+								}).prependTo($lineView);
+							} else {
 
-							// Deal with rest of line views
-							var index = _this2.lineViews.indexOf(startLineView.lineView);
-							console.log('XXXXX', startLineView, index);
-							for (index++; index < _this2.lineViews.length; index++) {
-								var lineView = _this2.lineViews[index];
+								// Apply first of line view
+								var $lineView = $(startLineView.lineView);
+								var $selection = $('<div>').css({
+									position: 'absolute',
+									top: 0,
+									left: startPoint.x,
+									background: '#aabbff',
+									width: $lineView.width() - startPoint.x,
+									height: $lineView.height()
+								}).prependTo($lineView);
 
-								if (lineView == endLineView.lineView) {
-									// The end of line view
-									var $lineView = $(endLineView.lineView);
+								// Deal with rest of line views
+								var index = _this2.lineViews.indexOf(startLineView.lineView);
+								console.log('XXXXX', startLineView, index);
+								for (index++; index < _this2.lineViews.length; index++) {
+									var lineView = _this2.lineViews[index];
+
+									if (lineView == endLineView.lineView) {
+										// The end of line view
+										var $lineView = $(endLineView.lineView);
+										var $selection = $('<div>').css({
+											position: 'absolute',
+											top: 0,
+											left: 0,
+											background: '#aabbff',
+											width: endPoint.x,
+											height: $lineView.height()
+										}).prependTo($lineView);
+
+										break;
+									}
+
+									var $lineView = $(lineView);
 									var $selection = $('<div>').css({
 										position: 'absolute',
 										top: 0,
 										left: 0,
 										background: '#aabbff',
-										width: endPoint.x,
+										width: $lineView.width(),
 										height: $lineView.height()
 									}).prependTo($lineView);
-
-									break;
 								}
-
-								var $lineView = $(lineView);
-								var $selection = $('<div>').css({
-									position: 'absolute',
-									top: 0,
-									left: 0,
-									background: '#aabbff',
-									width: $lineView.width(),
-									height: $lineView.height()
-								}).prependTo($lineView);
 							}
-						}
 
-						/*
-		    			this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
-		    
-		    			var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
-		    
-		    			console.log(lineView);
-		    
-		    			lineView.lineView.css('background', 'green');
-		    			*/
-						/*
-		    			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
-		    				console.log(node);
-		    			});
-		    */
-						/*
-		    			// Figure out start point
-		    			var offset = cursor.startOffset;
-		    			var node = cursor.startNode;
-		    			var pos = node.component.getPosition(offset);
-		    			var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-		    			console.log('renderSelection', node, point);
-		    
-		    			var lineview = cursor.getLineView();
-		    //			console.log(lineview);
-		    */
+							/*
+		     			this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
+		     				var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+		     				console.log(lineView);
+		     				lineView.lineView.css('background', 'green');
+		     			*/
+							/*
+		     			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+		     				console.log(node);
+		     			});
+		     */
+							/*
+		     			// Figure out start point
+		     			var offset = cursor.startOffset;
+		     			var node = cursor.startNode;
+		     			var pos = node.component.getPosition(offset);
+		     			var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+		     			console.log('renderSelection', node, point);
+		     				var lineview = cursor.getLineView();
+		     //			console.log(lineview);
+		     */
+						});
 					});
 				}
 			}, {
@@ -11513,6 +11510,10 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
+		var _Selection = __webpack_require__(304);
+
+		var _Selection2 = _interopRequireDefault(_Selection);
+
 		var _input_handler = __webpack_require__(315);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
@@ -11544,7 +11545,11 @@
 				_this.mousedown = false;
 				_this.dragging = false;
 
-				renderer.selection.addCursor(_this.cursor);
+				// Create selection for current user
+				var selection = new _Selection2.default(_this);
+				selection.addCursor(_this.cursor);
+
+				_this.renderer.Selection.addSelection(selection);
 
 				_this.cursor.on('update', function () {
 					this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
@@ -12741,6 +12746,59 @@
 		}(_events2.default.EventEmitter);
 
 		exports.default = ImageLoader;
+
+	/***/ },
+	/* 328 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var SelectionManager = function () {
+			function SelectionManager() {
+				_classCallCheck(this, SelectionManager);
+
+				this.selections = [];
+			}
+
+			_createClass(SelectionManager, [{
+				key: 'getAllSelections',
+				value: function getAllSelections() {
+					return this.selections;
+				}
+			}, {
+				key: 'addSelection',
+				value: function addSelection(selection) {
+					var index = this.selections.indexOf(selection);
+					if (index != -1) return;
+
+					this.selections.push(selection);
+				}
+			}, {
+				key: 'removeSelection',
+				value: function removeSelection(selection) {
+					var index = this.selections.indexOf(selections);
+					if (index != -1) this.selections.splice(index, 1);
+				}
+			}]);
+
+			return SelectionManager;
+		}();
+
+		exports.default = SelectionManager;
 
 	/***/ }
 	/******/ ]);

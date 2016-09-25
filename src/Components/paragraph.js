@@ -67,148 +67,152 @@ export default class Paragraph extends BlockComponent {
 	}
 
 	renderSelection(baseLayer) {
-		var cursors = this.renderer.selection;
+		var selections = this.renderer.Selection.getAllSelections();
 
-		cursors.getAllCursors().forEach((cursor) => {
+		selections.forEach((selection) => {
+			var cursors = selection.getAllCursors();
 
-			if (!cursor.startNode || !cursor.endNode)
-				return;
+			cursors.forEach((cursor) => {
 
-console.log('renderSelection');
+				if (!cursor.startNode || !cursor.endNode)
+					return;
 
-			var startPoint = null;
-			var endPoint = null;
-/*
-			var lineViews = [];
+	console.log('renderSelection');
 
-			// Filter all of node which is in our node
-			for (var index in cursor.nodeList) {
-				var node = cursor.nodeList[index];
+				var startPoint = null;
+				var endPoint = null;
+	/*
+				var lineViews = [];
 
-				if (treeOperator.intersectsNode(this.node, node)) {
+				// Filter all of node which is in our node
+				for (var index in cursor.nodeList) {
+					var node = cursor.nodeList[index];
+
+					if (treeOperator.intersectsNode(this.node, node)) {
+						var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+						startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+					}
+
+				}
+	*/
+				// if start node is in this node of component
+				if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
 					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
 					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+
+	//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
 				}
 
-			}
-*/
-			// if start node is in this node of component
-			if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
-				var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-				startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+				if (treeOperator.intersectsNode(this.node, cursor.endNode)) {
+					var pos = cursor.endNode.component.getPosition(cursor.endOffset);
+					endPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+					//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+				}
 
-//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
-			}
+				var startLineView = null;
+				var endLineView = null;
 
-			if (treeOperator.intersectsNode(this.node, cursor.endNode)) {
-				var pos = cursor.endNode.component.getPosition(cursor.endOffset);
-				endPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-				//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
-			}
+				if (startPoint) {
+					startLineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+				}
 
-			var startLineView = null;
-			var endLineView = null;
+				if (endPoint) {
+					endLineView = this.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
+				}
 
-			if (startPoint) {
-				startLineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
-			}
+				// start and end point are in the same line view
+				if (startLineView.lineView == endLineView.lineView) {
+					var $lineView = $(startLineView.lineView);
+					var $selection = $('<div>')
+						.css({
+							position: 'absolute',
+							top: 0,
+							left: startPoint.x,
+							background: '#aabbff',
+							width: endPoint.x - startPoint.x,
+							height: $lineView.height()
+						})
+						.prependTo($lineView);
+				} else {
 
-			if (endPoint) {
-				endLineView = this.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
-			}
-
-			// start and end point are in the same line view
-			if (startLineView.lineView == endLineView.lineView) {
-				var $lineView = $(startLineView.lineView);
-				var $selection = $('<div>')
-					.css({
-						position: 'absolute',
-						top: 0,
-						left: startPoint.x,
-						background: '#aabbff',
-						width: endPoint.x - startPoint.x,
-						height: $lineView.height()
-					})
-					.prependTo($lineView);
-			} else {
-
-				// Apply first of line view
-				var $lineView = $(startLineView.lineView);
-				var $selection = $('<div>')
-					.css({
-						position: 'absolute',
-						top: 0,
-						left: startPoint.x,
-						background: '#aabbff',
-						width: $lineView.width() - startPoint.x,
-						height: $lineView.height()
-					})
-					.prependTo($lineView);
+					// Apply first of line view
+					var $lineView = $(startLineView.lineView);
+					var $selection = $('<div>')
+						.css({
+							position: 'absolute',
+							top: 0,
+							left: startPoint.x,
+							background: '#aabbff',
+							width: $lineView.width() - startPoint.x,
+							height: $lineView.height()
+						})
+						.prependTo($lineView);
 
 
-				// Deal with rest of line views
-				var index = this.lineViews.indexOf(startLineView.lineView);
-				console.log('XXXXX', startLineView, index);
-				for (index++; index < this.lineViews.length; index++) {
-					var lineView = this.lineViews[index];
+					// Deal with rest of line views
+					var index = this.lineViews.indexOf(startLineView.lineView);
+					console.log('XXXXX', startLineView, index);
+					for (index++; index < this.lineViews.length; index++) {
+						var lineView = this.lineViews[index];
 
-					if (lineView == endLineView.lineView) {
-						// The end of line view
-						var $lineView = $(endLineView.lineView);
+						if (lineView == endLineView.lineView) {
+							// The end of line view
+							var $lineView = $(endLineView.lineView);
+							var $selection = $('<div>')
+								.css({
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									background: '#aabbff',
+									width: endPoint.x,
+									height: $lineView.height()
+								})
+								.prependTo($lineView);
+
+							break;
+						}
+
+						var $lineView = $(lineView);
 						var $selection = $('<div>')
 							.css({
 								position: 'absolute',
 								top: 0,
 								left: 0,
 								background: '#aabbff',
-								width: endPoint.x,
+								width: $lineView.width(),
 								height: $lineView.height()
 							})
 							.prependTo($lineView);
-
-						break;
 					}
 
-					var $lineView = $(lineView);
-					var $selection = $('<div>')
-						.css({
-							position: 'absolute',
-							top: 0,
-							left: 0,
-							background: '#aabbff',
-							width: $lineView.width(),
-							height: $lineView.height()
-						})
-						.prependTo($lineView);
 				}
 
-			}
+	/*
+				this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
 
-/*
-			this.ctx.Misc.getLineViews(cursor.startNode, cursor.startOffset, cursor.endNode, cursor.endOffset);
+				var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
 
-			var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+				console.log(lineView);
 
-			console.log(lineView);
+				lineView.lineView.css('background', 'green');
+				*/
+	/*
+				treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+					console.log(node);
+				});
+	*/
+	/*
+				// Figure out start point
+				var offset = cursor.startOffset;
+				var node = cursor.startNode;
+				var pos = node.component.getPosition(offset);
+				var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+				console.log('renderSelection', node, point);
 
-			lineView.lineView.css('background', 'green');
-			*/
-/*
-			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
-				console.log(node);
+				var lineview = cursor.getLineView();
+	//			console.log(lineview);
+	*/
 			});
-*/
-/*
-			// Figure out start point
-			var offset = cursor.startOffset;
-			var node = cursor.startNode;
-			var pos = node.component.getPosition(offset);
-			var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-			console.log('renderSelection', node, point);
-
-			var lineview = cursor.getLineView();
-//			console.log(lineview);
-*/
 		});
 	}
 
