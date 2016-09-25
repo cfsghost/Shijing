@@ -20,6 +20,9 @@ export default class Paragraph extends BlockComponent {
 
 	getOffset(DOM, targetOffset) {
 
+		var range = document.createRange();
+		range.selectNode(DOM);
+
 		// If this medthod was called, that means text node only in this component
 		var offset = targetOffset;
 
@@ -59,7 +62,11 @@ export default class Paragraph extends BlockComponent {
 		}.bind(this));
 	}
 
-	renderSelection() {
+	updateSelection() {
+		this.renderSelection();
+	}
+
+	renderSelection(baseLayer) {
 		var cursors = this.renderer.selection;
 
 		cursors.getAllCursors().forEach((cursor) => {
@@ -71,21 +78,110 @@ console.log('renderSelection');
 
 			var startPoint = null;
 			var endPoint = null;
+/*
+			var lineViews = [];
 
+			// Filter all of node which is in our node
+			for (var index in cursor.nodeList) {
+				var node = cursor.nodeList[index];
+
+				if (treeOperator.intersectsNode(this.node, node)) {
+					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+				}
+
+			}
+*/
 			// if start node is in this node of component
 			if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
-				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
+				var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+				startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+
+//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
 			}
 
 			if (treeOperator.intersectsNode(this.node, cursor.endNode)) {
-				endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+				var pos = cursor.endNode.component.getPosition(cursor.endOffset);
+				endPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+				//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
 			}
 
-			// Using the end of line view to be end point
-			console.log('QQ', startPoint, endPoint);
-			if (!endPoint) {
-				var lineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
-				console.log(lineView);
+			var startLineView = null;
+			var endLineView = null;
+
+			if (startPoint) {
+				startLineView = this.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+			}
+
+			if (endPoint) {
+				endLineView = this.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
+			}
+
+			// start and end point are in the same line view
+			if (startLineView.lineView == endLineView.lineView) {
+				var $lineView = $(startLineView.lineView);
+				var $selection = $('<div>')
+					.css({
+						position: 'absolute',
+						top: 0,
+						left: startPoint.x,
+						background: '#aabbff',
+						width: endPoint.x - startPoint.x,
+						height: $lineView.height()
+					})
+					.prependTo($lineView);
+			} else {
+
+				// Apply first of line view
+				var $lineView = $(startLineView.lineView);
+				var $selection = $('<div>')
+					.css({
+						position: 'absolute',
+						top: 0,
+						left: startPoint.x,
+						background: '#aabbff',
+						width: $lineView.width() - startPoint.x,
+						height: $lineView.height()
+					})
+					.prependTo($lineView);
+
+
+				// Deal with rest of line views
+				var index = this.lineViews.indexOf(startLineView.lineView);
+				console.log('XXXXX', startLineView, index);
+				for (index++; index < this.lineViews.length; index++) {
+					var lineView = this.lineViews[index];
+
+					if (lineView == endLineView.lineView) {
+						// The end of line view
+						var $lineView = $(endLineView.lineView);
+						var $selection = $('<div>')
+							.css({
+								position: 'absolute',
+								top: 0,
+								left: 0,
+								background: '#aabbff',
+								width: endPoint.x,
+								height: $lineView.height()
+							})
+							.prependTo($lineView);
+
+						break;
+					}
+
+					var $lineView = $(lineView);
+					var $selection = $('<div>')
+						.css({
+							position: 'absolute',
+							top: 0,
+							left: 0,
+							background: '#aabbff',
+							width: $lineView.width(),
+							height: $lineView.height()
+						})
+						.prependTo($lineView);
+				}
+
 			}
 
 /*
@@ -153,7 +249,7 @@ console.log('LAYOUTTTTTTTTTTTT');
 					.append(this.lineViews);
 
 				// To check all cursors to draw selection.
-				this.renderSelection();
+				this.renderSelection(offscreen.$dom[0]);
 				
 				// Clear offscreen buffer
 				offscreen.empty();

@@ -267,6 +267,9 @@ class Component extends events.EventEmitter {
 	adjustCursorPosition(cursor, direction) {
 	}
 
+	updateSelection() {
+	}
+
 	refresh() {
 
 		if (!this.blockType) {

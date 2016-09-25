@@ -62,7 +62,11 @@ class Inline {
 	//				borderBottom: '1px solid black'
 			});
 
-		$lineView.append(lineContent);
+		var $lineContent = $('<div>')
+			.addClass('sjijing-lineview-content')
+			.append(lineContent);
+
+		$lineView.append($lineContent);
 
 		this.lineViews.push($lineView);
 	}

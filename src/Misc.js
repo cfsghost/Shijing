@@ -102,7 +102,7 @@ class Misc {
 		// Getting rect information then figure out exact position
 		var rect = range.getBoundingClientRect();
 		range.detach();
-console.log('FFFFFF', rect.left, baseX, rect.top, baseY);
+
 		point.x = rect.left - baseX;
 		point.y = rect.top - baseY;
 		point.DOM = dom;

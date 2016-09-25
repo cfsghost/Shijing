@@ -9579,6 +9579,13 @@
 					var index = this.cursors.indexOf(cursor);
 					if (index != -1) return;
 
+					cursor.nodeList = [];
+
+					// Getting all nodes
+					_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
+						cursor.nodeList.push(node);
+					});
+
 					this.cursors.push(cursor);
 				}
 			}, {
@@ -10242,6 +10249,9 @@
 			}, {
 				key: 'adjustCursorPosition',
 				value: function adjustCursorPosition(cursor, direction) {}
+			}, {
+				key: 'updateSelection',
+				value: function updateSelection() {}
 			}, {
 				key: 'refresh',
 				value: function refresh() {
@@ -10982,6 +10992,9 @@
 				key: 'getOffset',
 				value: function getOffset(DOM, targetOffset) {
 
+					var range = document.createRange();
+					range.selectNode(DOM);
+
 					// If this medthod was called, that means text node only in this component
 					var offset = targetOffset;
 
@@ -11021,8 +11034,13 @@
 					}.bind(this));
 				}
 			}, {
+				key: 'updateSelection',
+				value: function updateSelection() {
+					this.renderSelection();
+				}
+			}, {
 				key: 'renderSelection',
-				value: function renderSelection() {
+				value: function renderSelection(baseLayer) {
 					var _this2 = this;
 
 					var cursors = this.renderer.selection;
@@ -11035,21 +11053,100 @@
 
 						var startPoint = null;
 						var endPoint = null;
-
+						/*
+		    			var lineViews = [];
+		    
+		    			// Filter all of node which is in our node
+		    			for (var index in cursor.nodeList) {
+		    				var node = cursor.nodeList[index];
+		    
+		    				if (treeOperator.intersectsNode(this.node, node)) {
+		    					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+		    					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+		    				}
+		    
+		    			}
+		    */
 						// if start node is in this node of component
 						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
-							startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
+							var pos = cursor.startNode.component.getPosition(cursor.startOffset);
+							startPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+
+							//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
 						}
 
 						if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
-							endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
+							var pos = cursor.endNode.component.getPosition(cursor.endOffset);
+							endPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+							//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
 						}
 
-						// Using the end of line view to be end point
-						console.log('QQ', startPoint, endPoint);
-						if (!endPoint) {
-							var lineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
-							console.log(lineView);
+						var startLineView = null;
+						var endLineView = null;
+
+						if (startPoint) {
+							startLineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+						}
+
+						if (endPoint) {
+							endLineView = _this2.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
+						}
+
+						// start and end point are in the same line view
+						if (startLineView.lineView == endLineView.lineView) {
+							var $lineView = $(startLineView.lineView);
+							var $selection = $('<div>').css({
+								position: 'absolute',
+								top: 0,
+								left: startPoint.x,
+								background: '#aabbff',
+								width: endPoint.x - startPoint.x,
+								height: $lineView.height()
+							}).prependTo($lineView);
+						} else {
+
+							// Apply first of line view
+							var $lineView = $(startLineView.lineView);
+							var $selection = $('<div>').css({
+								position: 'absolute',
+								top: 0,
+								left: startPoint.x,
+								background: '#aabbff',
+								width: $lineView.width() - startPoint.x,
+								height: $lineView.height()
+							}).prependTo($lineView);
+
+							// Deal with rest of line views
+							var index = _this2.lineViews.indexOf(startLineView.lineView);
+							console.log('XXXXX', startLineView, index);
+							for (index++; index < _this2.lineViews.length; index++) {
+								var lineView = _this2.lineViews[index];
+
+								if (lineView == endLineView.lineView) {
+									// The end of line view
+									var $lineView = $(endLineView.lineView);
+									var $selection = $('<div>').css({
+										position: 'absolute',
+										top: 0,
+										left: 0,
+										background: '#aabbff',
+										width: endPoint.x,
+										height: $lineView.height()
+									}).prependTo($lineView);
+
+									break;
+								}
+
+								var $lineView = $(lineView);
+								var $selection = $('<div>').css({
+									position: 'absolute',
+									top: 0,
+									left: 0,
+									background: '#aabbff',
+									width: $lineView.width(),
+									height: $lineView.height()
+								}).prependTo($lineView);
+							}
 						}
 
 						/*
@@ -11115,7 +11212,7 @@
 							$DOM.empty().append(this.lineViews);
 
 							// To check all cursors to draw selection.
-							this.renderSelection();
+							this.renderSelection(offscreen.$dom[0]);
 
 							// Clear offscreen buffer
 							offscreen.empty();
@@ -11229,7 +11326,9 @@
 						background: '#cceeff'
 					});
 
-					$lineView.append(lineContent);
+					var $lineContent = $('<div>').addClass('sjijing-lineview-content').append(lineContent);
+
+					$lineView.append($lineContent);
 
 					this.lineViews.push($lineView);
 				}
@@ -11410,6 +11509,10 @@
 
 		var _events2 = _interopRequireDefault(_events);
 
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
 		var _input_handler = __webpack_require__(315);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
@@ -11463,6 +11566,14 @@
 						this.emit('dragging');
 						newCursor.setPositionByAxis(e.clientX, e.clientY);
 						this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+						/*
+		    				// Update selection
+		    				treeOperator.traverse(this.cursor.startNode, this.cursor.endNode, function(node) {
+		    					node.component.updateSelection();
+		    				});
+		    */
+						var task = this.cursor.startNode.component.refresh();
+						task.then(function () {});
 					}
 				}.bind(_this), false);
 
@@ -11900,7 +12011,7 @@
 					// Getting rect information then figure out exact position
 					var rect = range.getBoundingClientRect();
 					range.detach();
-					console.log('FFFFFF', rect.left, baseX, rect.top, baseY);
+
 					point.x = rect.left - baseX;
 					point.y = rect.top - baseY;
 					point.DOM = dom;
@@ -12185,7 +12296,7 @@
 
 
 		// module
-		exports.push([module.id, ".shijing-lineview {\n\tline-height: 1.15;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
+		exports.push([module.id, ".shijing-lineview {\n\tline-height: 1.15;\n\tposition: relative;\n}\n\n.sjijing-lineview:after {\n\tclear: both;\n\tcontent: \"\";\n\tdisplay: block;\n}\n\n.sjijing-lineview-content {\n\tposition: relative;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
 
 		// exports
 

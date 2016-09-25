@@ -15,6 +15,13 @@ class Selection {
 		if (index != -1)
 			return;
 
+		cursor.nodeList = [];
+
+		// Getting all nodes
+		treeOperator.traverse(cursor.startNode, cursor.endNode, (node) => {
+			cursor.nodeList.push(node);
+		});
+
 		this.cursors.push(cursor);
 	}
 

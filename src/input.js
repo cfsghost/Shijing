@@ -1,4 +1,5 @@
 import events from 'events';
+import treeOperator from './TreeOperator';
 import InputHandler from './input_handler';
 import Cursor from './cursor';
 
@@ -36,6 +37,15 @@ class Input extends events.EventEmitter {
 				this.emit('dragging');
 				newCursor.setPositionByAxis(e.clientX, e.clientY);
 				this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+/*
+				// Update selection
+				treeOperator.traverse(this.cursor.startNode, this.cursor.endNode, function(node) {
+					node.component.updateSelection();
+				});
+*/
+				var task = this.cursor.startNode.component.refresh();
+				task.then(() => {
+				});
 			}
 		}.bind(this), false);
 
