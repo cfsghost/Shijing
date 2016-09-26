@@ -9308,7 +9308,7 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-					console.log('setPosition', caret);
+
 					this.caret.move(caret.x, caret.y);
 					this._setPosition(node, offset);
 
@@ -9481,12 +9481,12 @@
 			}, {
 				key: 'show',
 				value: function show() {
-					// Range was selected
-					if (this.endNode != null && this.endOffset != null) {
-						console.log('RANGEEEE');
-						_TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
-					}
-
+					/*
+		   // Range was selected
+		   if (this.endNode != null && this.endOffset != null) {
+		   	treeOperator.getAncestorNode(this.startNode, this.endNode);
+		   }
+		   */
 					this.caret.show();
 				}
 			}, {
@@ -11185,7 +11185,7 @@
 
 									// Deal with rest of line views
 									var index = _this2.lineViews.indexOf(startLineView.lineView);
-									console.log('XXXXX', startLineView, index);
+
 									for (index++; index < _this2.lineViews.length; index++) {
 										var lineView = _this2.lineViews[index];
 
@@ -11259,7 +11259,7 @@
 								wordBreak: 'break-all'
 							});
 							offscreen.resize(this.style.width, this.style.height);
-							console.log('LAYOUTTTTTTTTTTTT');
+
 							// Apply inline layout, then we can get a lots of line views
 							var layout = new _inline2.default(this, offscreen);
 							try {
@@ -11674,7 +11674,6 @@
 				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {
 					this.mousedown = false;
 					this.dragging = false;
-					console.log(newCursor.startNode, newCursor.startOffset);
 					this.cursor.show();
 				}.bind(_this), false);
 				return _this;
@@ -11913,7 +11912,6 @@
 			}, {
 				key: 'focus',
 				value: function focus() {
-					console.log('FOCUS');
 					this.$inputBox.outerWidth(this.ctx.$layout.width());
 
 					this.$inputBody.css({

@@ -229,7 +229,6 @@ class InputHandler {
 	}
 
 	focus() {
-		console.log('FOCUS');
 		this.$inputBox
 			.outerWidth(this.ctx.$layout.width());
 

@@ -152,7 +152,7 @@ export default class Paragraph extends BlockComponent {
 
 						// Deal with rest of line views
 						var index = this.lineViews.indexOf(startLineView.lineView);
-						console.log('XXXXX', startLineView, index);
+
 						for (index++; index < this.lineViews.length; index++) {
 							var lineView = this.lineViews[index];
 
@@ -235,7 +235,7 @@ export default class Paragraph extends BlockComponent {
 						wordBreak: 'break-all'
 					});
 				offscreen.resize(this.style.width, this.style.height);
-console.log('LAYOUTTTTTTTTTTTT');
+
 				// Apply inline layout, then we can get a lots of line views
 				var layout = new InlineLayout(this, offscreen);
 				try {

@@ -82,7 +82,7 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-console.log('setPosition', caret);
+
 		this.caret.move(caret.x, caret.y);
 		this._setPosition(node, offset);
 
@@ -251,12 +251,12 @@ console.log('Cursor2', this.startNode, leftOffset);
 	}
 
 	show() {
+		/*
 		// Range was selected
 		if (this.endNode != null && this.endOffset != null) {
-			console.log('RANGEEEE');
 			treeOperator.getAncestorNode(this.startNode, this.endNode);
 		}
-
+*/
 		this.caret.show();
 	}
 

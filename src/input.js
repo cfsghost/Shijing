@@ -79,7 +79,6 @@ class Input extends events.EventEmitter {
 		this.ctx.$origin[0].addEventListener('mouseup', function(e) {
 			this.mousedown = false;
 			this.dragging = false;
-			console.log(newCursor.startNode, newCursor.startOffset);
 			this.cursor.show();
 		}.bind(this), false);
 	}
