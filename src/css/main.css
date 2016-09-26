@@ -1,16 +1,16 @@
 .shijing-lineview {
+	position: relative;
+}
+
+.shijing-lineview-content {
+	position: relative;
 	line-height: 1.15;
-	position: relative;
 }
 
-.sjijing-lineview:after {
-	clear: both;
-	content: "";
-	display: block;
-}
-
-.sjijing-lineview-content {
-	position: relative;
+.shijing-selection {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 .shijing-paragraph {

@@ -58,12 +58,12 @@ class Inline {
 		var $lineView = $('<div>')
 			.addClass('shijing-lineview')
 			.css({
-					background: '#cceeff',
+//					background: '#cceeff',
 	//				borderBottom: '1px solid black'
 			});
 
 		var $lineContent = $('<div>')
-			.addClass('sjijing-lineview-content')
+			.addClass('shijing-lineview-content')
 			.append(lineContent);
 
 		$lineView.append($lineContent);

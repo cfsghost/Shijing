@@ -66,7 +66,7 @@ export default class Paragraph extends BlockComponent {
 		this.renderSelection();
 	}
 
-	renderSelection(baseLayer) {
+	renderSelection() {
 		var selections = this.renderer.Selection.getAllSelections();
 
 		selections.forEach((selection) => {
@@ -76,8 +76,6 @@ export default class Paragraph extends BlockComponent {
 
 				if (!cursor.startNode || !cursor.endNode)
 					return;
-
-	console.log('renderSelection');
 
 				var startPoint = null;
 				var endPoint = null;
@@ -124,65 +122,60 @@ export default class Paragraph extends BlockComponent {
 				if (startLineView && endLineView) {
 					if (startLineView.lineView == endLineView.lineView) {
 						var $lineView = $(startLineView.lineView);
+						var $lineViewContent = $lineView.children('.shijing-lineview-content');
+						var style = Object.assign(selection.styles, {
+							left: startPoint.x
+						});
+
+						console.log($lineViewContent[0].getClientRects());
+						console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
 						var $selection = $('<div>')
-							.css({
-								position: 'absolute',
-								top: 0,
-								left: startPoint.x,
-								background: '#aabbff',
-								width: endPoint.x - startPoint.x,
-								height: $lineView.height()
-							})
+							.addClass('shijing-selection')
+							.css(style)
+							.outerHeight($lineView.outerHeight())
+							.outerWidth(endPoint.x - startPoint.x)
 							.prependTo($lineView);
 					} else {
 
 						// Apply first of line view
 						var $lineView = $(startLineView.lineView);
+						var $lineViewContent = $lineView.children('.shijing-lineview-content');
+						var style = Object.assign(selection.styles, {
+							left: startPoint.x
+						});
+						console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
 						var $selection = $('<div>')
-							.css({
-								position: 'absolute',
-								top: 0,
-								left: startPoint.x,
-								background: '#aabbff',
-								width: $lineView.width() - startPoint.x,
-								height: $lineView.height()
-							})
+							.addClass('shijing-selection')
+							.css(style)
+							.outerHeight($lineViewContent.height())
+							.outerWidth($lineView.width() - startPoint.x)
 							.prependTo($lineView);
-
 
 						// Deal with rest of line views
 						var index = this.lineViews.indexOf(startLineView.lineView);
 
 						for (index++; index < this.lineViews.length; index++) {
 							var lineView = this.lineViews[index];
+							var $lineView = $(lineView);
+							var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 							if (lineView == endLineView.lineView) {
 								// The end of line view
-								var $lineView = $(endLineView.lineView);
 								var $selection = $('<div>')
-									.css({
-										position: 'absolute',
-										top: 0,
-										left: 0,
-										background: '#aabbff',
-										width: endPoint.x,
-										height: $lineView.height()
-									})
+									.addClass('shijing-selection')
+									.css(selection.styles)
+									.outerHeight($lineViewContent.height())
+									.outerWidth(endPoint.x)
 									.prependTo($lineView);
 
 								break;
 							}
 
-							var $lineView = $(lineView);
 							var $selection = $('<div>')
-								.css({
-									position: 'absolute',
-									top: 0,
-									left: 0,
-									background: '#aabbff',
-									width: $lineView.width(),
-									height: $lineView.height()
-								})
+								.addClass('shijing-selection')
+								.css(selection.styles)
+								.outerHeight($lineViewContent.height())
+								.outerWidth($lineView.width())
 								.prependTo($lineView);
 						}
 
@@ -255,7 +248,7 @@ export default class Paragraph extends BlockComponent {
 					.append(this.lineViews);
 
 				// To check all cursors to draw selection.
-				this.renderSelection(offscreen.$dom[0]);
+				this.renderSelection();
 				
 				// Clear offscreen buffer
 				offscreen.empty();

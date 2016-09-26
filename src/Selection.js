@@ -3,6 +3,9 @@ import treeOperator from './TreeOperator';
 class Selection {
 
 	constructor() {
+		this.styles = {
+			background: '#cceeff'
+		};
 		this.cursors = [];
 	}
 

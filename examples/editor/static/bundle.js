@@ -9631,6 +9631,9 @@
 			function Selection() {
 				_classCallCheck(this, Selection);
 
+				this.styles = {
+					background: '#cceeff'
+				};
 				this.cursors = [];
 			}
 
@@ -10801,18 +10804,17 @@
 											obj = imageLoader.load(_this3.node.src);
 
 											if (!obj) {
-												_context2.next = 8;
+												_context2.next = 7;
 												break;
 											}
 
-											console.log(obj);
-											_context2.next = 7;
+											_context2.next = 6;
 											return _this3._loadImage(style, obj);
 
-										case 7:
+										case 6:
 											return _context2.abrupt('return', resolve());
 
-										case 8:
+										case 7:
 
 											// Waiting for image 
 											imageLoader.once(_this3.node.src, function () {
@@ -10840,7 +10842,7 @@
 												};
 											}());
 
-										case 9:
+										case 8:
 										case 'end':
 											return _context2.stop();
 									}
@@ -10895,7 +10897,7 @@
 
 					return new Promise(function () {
 						var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(resolve) {
-							var node, style, $DOM, x, $loader;
+							var node, style, $DOM, $loader;
 							return regeneratorRuntime.wrap(function _callee4$(_context4) {
 								while (1) {
 									switch (_context4.prev = _context4.next) {
@@ -10915,20 +10917,18 @@
 											// Loading directly if cache exists already
 
 											if (!imageLoader.exists(this.node.src)) {
-												_context4.next = 11;
+												_context4.next = 9;
 												break;
 											}
 
-											console.time('Load image');
 											this.loaded = true;
-											_context4.next = 9;
+											_context4.next = 8;
 											return this.loadImage();
 
-										case 9:
-											x = console.timeEnd('Load image');
+										case 8:
 											return _context4.abrupt('return', resolve());
 
-										case 11:
+										case 9:
 
 											// Setup background and border
 											$DOM.css({
@@ -10948,7 +10948,7 @@
 
 											resolve();
 
-										case 14:
+										case 12:
 										case 'end':
 											return _context4.stop();
 									}
@@ -11106,7 +11106,7 @@
 				}
 			}, {
 				key: 'renderSelection',
-				value: function renderSelection(baseLayer) {
+				value: function renderSelection() {
 					var _this2 = this;
 
 					var selections = this.renderer.Selection.getAllSelections();
@@ -11117,8 +11117,6 @@
 						cursors.forEach(function (cursor) {
 
 							if (!cursor.startNode || !cursor.endNode) return;
-
-							console.log('renderSelection');
 
 							var startPoint = null;
 							var endPoint = null;
@@ -11162,57 +11160,41 @@
 							if (startLineView && endLineView) {
 								if (startLineView.lineView == endLineView.lineView) {
 									var $lineView = $(startLineView.lineView);
-									var $selection = $('<div>').css({
-										position: 'absolute',
-										top: 0,
-										left: startPoint.x,
-										background: '#aabbff',
-										width: endPoint.x - startPoint.x,
-										height: $lineView.height()
-									}).prependTo($lineView);
+									var $lineViewContent = $lineView.children('.shijing-lineview-content');
+									var style = Object.assign(selection.styles, {
+										left: startPoint.x
+									});
+
+									console.log($lineViewContent[0].getClientRects());
+									console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
+									var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
 								} else {
 
 									// Apply first of line view
 									var $lineView = $(startLineView.lineView);
-									var $selection = $('<div>').css({
-										position: 'absolute',
-										top: 0,
-										left: startPoint.x,
-										background: '#aabbff',
-										width: $lineView.width() - startPoint.x,
-										height: $lineView.height()
-									}).prependTo($lineView);
+									var $lineViewContent = $lineView.children('.shijing-lineview-content');
+									var style = Object.assign(selection.styles, {
+										left: startPoint.x
+									});
+									console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
+									var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
 									// Deal with rest of line views
 									var index = _this2.lineViews.indexOf(startLineView.lineView);
 
 									for (index++; index < _this2.lineViews.length; index++) {
 										var lineView = _this2.lineViews[index];
+										var $lineView = $(lineView);
+										var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 										if (lineView == endLineView.lineView) {
 											// The end of line view
-											var $lineView = $(endLineView.lineView);
-											var $selection = $('<div>').css({
-												position: 'absolute',
-												top: 0,
-												left: 0,
-												background: '#aabbff',
-												width: endPoint.x,
-												height: $lineView.height()
-											}).prependTo($lineView);
+											var $selection = $('<div>').addClass('shijing-selection').css(selection.styles).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
 
 											break;
 										}
 
-										var $lineView = $(lineView);
-										var $selection = $('<div>').css({
-											position: 'absolute',
-											top: 0,
-											left: 0,
-											background: '#aabbff',
-											width: $lineView.width(),
-											height: $lineView.height()
-										}).prependTo($lineView);
+										var $selection = $('<div>').addClass('shijing-selection').css(selection.styles).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
 									}
 								}
 							}
@@ -11277,7 +11259,7 @@
 							$DOM.empty().append(this.lineViews);
 
 							// To check all cursors to draw selection.
-							this.renderSelection(offscreen.$dom[0]);
+							this.renderSelection();
 
 							// Clear offscreen buffer
 							offscreen.empty();
@@ -11388,10 +11370,11 @@
 
 					// Create line view to store a line data
 					var $lineView = $('<div>').addClass('shijing-lineview').css({
-						background: '#cceeff'
+						//					background: '#cceeff',
+						//				borderBottom: '1px solid black'
 					});
 
-					var $lineContent = $('<div>').addClass('sjijing-lineview-content').append(lineContent);
+					var $lineContent = $('<div>').addClass('shijing-lineview-content').append(lineContent);
 
 					$lineView.append($lineContent);
 
@@ -12388,7 +12371,7 @@
 
 
 		// module
-		exports.push([module.id, ".shijing-lineview {\n\tline-height: 1.15;\n\tposition: relative;\n}\n\n.sjijing-lineview:after {\n\tclear: both;\n\tcontent: \"\";\n\tdisplay: block;\n}\n\n.sjijing-lineview-content {\n\tposition: relative;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
+		exports.push([module.id, ".shijing-lineview {\n\tposition: relative;\n}\n\n.shijing-lineview-content {\n\tposition: relative;\n\tline-height: 1.15;\n}\n\n.shijing-selection {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
 
 		// exports
 

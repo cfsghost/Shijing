@@ -98,7 +98,6 @@ export default class Image extends InlineComponent {
 			// Loading image
 			var obj = imageLoader.load(this.node.src);
 			if (obj) {
-				console.log(obj);
 				await this._loadImage(style, obj);
 				return resolve();
 			}
@@ -143,10 +142,8 @@ export default class Image extends InlineComponent {
 
 			// Loading directly if cache exists already
 			if (imageLoader.exists(this.node.src)) {
-				console.time('Load image');
 				this.loaded = true;
 				await this.loadImage();
-				var x = console.timeEnd('Load image');
 
 				return resolve();
 			}
