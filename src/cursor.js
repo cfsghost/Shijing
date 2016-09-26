@@ -238,6 +238,12 @@ console.log('Cursor2', this.startNode, leftOffset);
 		return this.move(leftOffset);
 	}
 
+	setStart(node, offset) {
+		this.startNode = node;
+		this.startOffset = offset;
+		this.emit('update', this);
+	}
+
 	setEnd(node, offset) {
 		this.endNode = node;
 		this.endOffset = offset;

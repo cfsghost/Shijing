@@ -96,7 +96,7 @@ class TreeOperator {
 		}
 
 		// Put itself
-		pathSet.unshift(node);
+		pathSet.push(node);
 
 		return pathSet;
 	}
@@ -117,7 +117,67 @@ class TreeOperator {
 			break;
 		}
 
-		console.log(aNode[index - 1]);
+		return aNode[index - 1];
+	}
+
+	compareNodeBoundary(a, b) {
+
+		var aNode = this.getPathSet(a);
+		var bNode = this.getPathSet(b);
+
+		var index = 0;
+		while(aNode[index] == bNode[index]) {
+
+			index++;
+
+			if (index < aNode.length && index < bNode.length)
+				continue;
+			
+			break;
+		}
+
+		var ancestor = aNode[index - 1];
+
+		if (ancestor.childrens) {
+
+			if (!aNode[index] && !bNode[index]) {
+				return 0;
+			} else if (!aNode[index]) {
+				return 1;
+			} else if (!bNode[index]) {
+				return -1;
+			}
+
+			var aIndex = ancestor.childrens.indexOf(aNode[index]);
+			var bIndex = ancestor.childrens.indexOf(bNode[index]);
+			if (aIndex < bIndex) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+
+		return 0;
+	}
+
+	compareBoundary(a, aOffset, b, bOffset) {
+
+		if (a == b && aOffset == bOffset)
+			return 0;
+
+		var compare = this.compareNodeBoundary(a, b);
+		if (compare == 0) {
+
+			// Compare with offset
+			if (aOffset < bOffset) {
+				return 1;
+			} else {
+				return -1;
+			}
+
+		}
+		
+		return compare;
 	}
 
 	insert(node, offset, value) {

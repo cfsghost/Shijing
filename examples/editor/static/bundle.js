@@ -8837,7 +8837,7 @@
 					}
 
 					// Put itself
-					pathSet.unshift(node);
+					pathSet.push(node);
 
 					return pathSet;
 				}
@@ -8858,7 +8858,66 @@
 						break;
 					}
 
-					console.log(aNode[index - 1]);
+					return aNode[index - 1];
+				}
+			}, {
+				key: 'compareNodeBoundary',
+				value: function compareNodeBoundary(a, b) {
+
+					var aNode = this.getPathSet(a);
+					var bNode = this.getPathSet(b);
+
+					var index = 0;
+					while (aNode[index] == bNode[index]) {
+
+						index++;
+
+						if (index < aNode.length && index < bNode.length) continue;
+
+						break;
+					}
+
+					var ancestor = aNode[index - 1];
+
+					if (ancestor.childrens) {
+
+						if (!aNode[index] && !bNode[index]) {
+							return 0;
+						} else if (!aNode[index]) {
+							return 1;
+						} else if (!bNode[index]) {
+							return -1;
+						}
+
+						var aIndex = ancestor.childrens.indexOf(aNode[index]);
+						var bIndex = ancestor.childrens.indexOf(bNode[index]);
+						if (aIndex < bIndex) {
+							return 1;
+						} else {
+							return -1;
+						}
+					}
+
+					return 0;
+				}
+			}, {
+				key: 'compareBoundary',
+				value: function compareBoundary(a, aOffset, b, bOffset) {
+
+					if (a == b && aOffset == bOffset) return 0;
+
+					var compare = this.compareNodeBoundary(a, b);
+					if (compare == 0) {
+
+						// Compare with offset
+						if (aOffset < bOffset) {
+							return 1;
+						} else {
+							return -1;
+						}
+					}
+
+					return compare;
 				}
 			}, {
 				key: 'insert',
@@ -9404,6 +9463,13 @@
 					parentNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
 
 					return this.move(leftOffset);
+				}
+			}, {
+				key: 'setStart',
+				value: function setStart(node, offset) {
+					this.startNode = node;
+					this.startOffset = offset;
+					this.emit('update', this);
 				}
 			}, {
 				key: 'setEnd',
@@ -11547,6 +11613,12 @@
 				_this.mousedown = false;
 				_this.dragging = false;
 
+				// Selection anchor
+				_this.anchor = {
+					node: null,
+					offset: null
+				};
+
 				// Create selection for current user
 				var selection = new _Selection2.default(_this);
 				selection.addCursor(_this.cursor);
@@ -11566,6 +11638,10 @@
 					this.cursor.show();
 					this.mousedown = true;
 
+					// Reset anchor
+					this.anchor.node = this.cursor.startNode;
+					this.anchor.offset = this.cursor.startOffset;
+
 					// Update component
 					var task = this.cursor.startNode.component.refresh();
 					task.then(function () {});
@@ -11575,14 +11651,20 @@
 					if (this.mousedown) {
 						this.dragging = true;
 						this.emit('dragging');
+
+						// Getting node and offset by using x and y
 						newCursor.setPositionByAxis(e.clientX, e.clientY);
-						this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
-						/*
-		    				// Update selection
-		    				treeOperator.traverse(this.cursor.startNode, this.cursor.endNode, function(node) {
-		    					node.component.updateSelection();
-		    				});
-		    */
+
+						var compare = _TreeOperator2.default.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
+
+						if (compare > 0) {
+							this.cursor.setStart(this.anchor.node, this.anchor.offset);
+							this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+						} else {
+							this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
+							this.cursor.setEnd(this.anchor.node, this.anchor.offset);
+						}
+
 						// Update component
 						var task = this.cursor.startNode.component.refresh();
 						task.then(function () {});

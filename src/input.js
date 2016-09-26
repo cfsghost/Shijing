@@ -16,6 +16,12 @@ class Input extends events.EventEmitter {
 		this.mousedown = false;
 		this.dragging = false;
 
+		// Selection anchor
+		this.anchor = {
+			node: null,
+			offset: null
+		};
+
 		// Create selection for current user
 		var selection = new Selection(this);
 		selection.addCursor(this.cursor);
@@ -35,6 +41,10 @@ class Input extends events.EventEmitter {
 			this.cursor.show();
 			this.mousedown = true;
 
+			// Reset anchor
+			this.anchor.node = this.cursor.startNode;
+			this.anchor.offset = this.cursor.startOffset;
+
 			// Update component
 			var task = this.cursor.startNode.component.refresh();
 			task.then(() => {
@@ -45,14 +55,20 @@ class Input extends events.EventEmitter {
 			if (this.mousedown) {
 				this.dragging = true;
 				this.emit('dragging');
+
+				// Getting node and offset by using x and y
 				newCursor.setPositionByAxis(e.clientX, e.clientY);
-				this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
-/*
-				// Update selection
-				treeOperator.traverse(this.cursor.startNode, this.cursor.endNode, function(node) {
-					node.component.updateSelection();
-				});
-*/
+
+				var compare = treeOperator.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
+
+				if (compare > 0) {
+					this.cursor.setStart(this.anchor.node, this.anchor.offset);
+					this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+				} else {
+					this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
+					this.cursor.setEnd(this.anchor.node, this.anchor.offset);
+				}
+
 				// Update component
 				var task = this.cursor.startNode.component.refresh();
 				task.then(() => {
