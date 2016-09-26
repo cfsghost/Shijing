@@ -59,6 +59,12 @@ class Input extends events.EventEmitter {
 				// Getting node and offset by using x and y
 				newCursor.setPositionByAxis(e.clientX, e.clientY);
 
+				// Nothing's changed
+				if (newCursor.startNode == this.cursor.startNode &&
+					newCursor.startOffset == this.cursor.startOffset) {
+					return;
+				}
+
 				var compare = treeOperator.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
 
 				if (compare > 0) {

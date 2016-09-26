@@ -97,16 +97,14 @@ export default class Paragraph extends BlockComponent {
 				if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
 					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
 					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-
-	//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
 				}
 
 				if (treeOperator.intersectsNode(this.node, cursor.endNode)) {
 					var pos = cursor.endNode.component.getPosition(cursor.endOffset);
 					endPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-					//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
 				}
 
+				// Getting line views
 				var startLineView = null;
 				var endLineView = null;
 
@@ -120,6 +118,7 @@ export default class Paragraph extends BlockComponent {
 
 				// start and end point are in the same line view
 				if (startLineView && endLineView) {
+
 					if (startLineView.lineView == endLineView.lineView) {
 						var $lineView = $(startLineView.lineView);
 						var $lineViewContent = $lineView.children('.shijing-lineview-content');
@@ -160,10 +159,15 @@ export default class Paragraph extends BlockComponent {
 							var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 							if (lineView == endLineView.lineView) {
+
+								var style = Object.assign(selection.styles, {
+									left: 0
+								});
+
 								// The end of line view
 								var $selection = $('<div>')
 									.addClass('shijing-selection')
-									.css(selection.styles)
+									.css(style)
 									.outerHeight($lineViewContent.height())
 									.outerWidth(endPoint.x)
 									.prependTo($lineView);
@@ -171,9 +175,13 @@ export default class Paragraph extends BlockComponent {
 								break;
 							}
 
+							var style = Object.assign(selection.styles, {
+								left: 0
+							});
+
 							var $selection = $('<div>')
 								.addClass('shijing-selection')
-								.css(selection.styles)
+								.css(style)
 								.outerHeight($lineViewContent.height())
 								.outerWidth($lineView.width())
 								.prependTo($lineView);
@@ -215,11 +223,11 @@ export default class Paragraph extends BlockComponent {
 
 		var offscreen = this.renderer.offscreen;
 
-		return new Promise(function(resolve) {
+		return new Promise((resolve) => {
 
 			// Split by line by using offscreen
 			var renderTask = offscreen.render($DOM);
-			renderTask.then(function() {
+			renderTask.then(() => {
 
 				// Initializing offscreen
 				offscreen.getContent()
@@ -255,9 +263,9 @@ export default class Paragraph extends BlockComponent {
 
 				resolve();
 
-			}.bind(this));
+			});
 
-		}.bind(this));
+		});
 	}
 
 	render() {

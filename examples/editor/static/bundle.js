@@ -11135,16 +11135,14 @@
 							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
 								var pos = cursor.startNode.component.getPosition(cursor.startOffset);
 								startPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-
-								//				startPoint = cursor.startNode.component.getCaret(cursor.startOffset);
 							}
 
 							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
 								var pos = cursor.endNode.component.getPosition(cursor.endOffset);
 								endPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-								//endPoint = cursor.endNode.component.getCaret(cursor.endOffset);
 							}
 
+							// Getting line views
 							var startLineView = null;
 							var endLineView = null;
 
@@ -11158,6 +11156,7 @@
 
 							// start and end point are in the same line view
 							if (startLineView && endLineView) {
+
 								if (startLineView.lineView == endLineView.lineView) {
 									var $lineView = $(startLineView.lineView);
 									var $lineViewContent = $lineView.children('.shijing-lineview-content');
@@ -11188,13 +11187,22 @@
 										var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 										if (lineView == endLineView.lineView) {
+
+											var style = Object.assign(selection.styles, {
+												left: 0
+											});
+
 											// The end of line view
-											var $selection = $('<div>').addClass('shijing-selection').css(selection.styles).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
+											var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
 
 											break;
 										}
 
-										var $selection = $('<div>').addClass('shijing-selection').css(selection.styles).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
+										var style = Object.assign(selection.styles, {
+											left: 0
+										});
+
+										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
 									}
 								}
 							}
@@ -11226,6 +11234,7 @@
 			}, {
 				key: 'layout',
 				value: function layout($DOM) {
+					var _this3 = this;
 
 					var offscreen = this.renderer.offscreen;
 
@@ -11240,12 +11249,12 @@
 								whiteSpace: 'pre-wrap',
 								wordBreak: 'break-all'
 							});
-							offscreen.resize(this.style.width, this.style.height);
+							offscreen.resize(_this3.style.width, _this3.style.height);
 
 							// Apply inline layout, then we can get a lots of line views
-							var layout = new _inline2.default(this, offscreen);
+							var layout = new _inline2.default(_this3, offscreen);
 							try {
-								this.lineViews = layout.grabLines($DOM[0]);
+								_this3.lineViews = layout.grabLines($DOM[0]);
 							} catch (e) {
 								console.log(e);
 								console.log($DOM);
@@ -11253,20 +11262,20 @@
 
 							// DOMs might be splited into multiple new DOMs by inline layout process, we need
 							// to update these DOMs to its component object.
-							this.updateDOMs();
+							_this3.updateDOMs();
 							//return resolve();
 							// Clear all then re-append lines
-							$DOM.empty().append(this.lineViews);
+							$DOM.empty().append(_this3.lineViews);
 
 							// To check all cursors to draw selection.
-							this.renderSelection();
+							_this3.renderSelection();
 
 							// Clear offscreen buffer
 							offscreen.empty();
 
 							resolve();
-						}.bind(this));
-					}.bind(this));
+						});
+					});
 				}
 			}, {
 				key: 'render',
@@ -11637,6 +11646,11 @@
 
 						// Getting node and offset by using x and y
 						newCursor.setPositionByAxis(e.clientX, e.clientY);
+
+						// Nothing's changed
+						if (newCursor.startNode == this.cursor.startNode && newCursor.startOffset == this.cursor.startOffset) {
+							return;
+						}
 
 						var compare = _TreeOperator2.default.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
 
