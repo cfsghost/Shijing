@@ -8824,6 +8824,8 @@
 				key: 'getPathSet',
 				value: function getPathSet(node) {
 
+					if (!node) return [];
+
 					var pathSet = [];
 					var parentNode = this.getParentNode(node);
 					while (parentNode) {
@@ -8839,6 +8841,14 @@
 			}, {
 				key: 'getAncestorNode',
 				value: function getAncestorNode(a, b) {
+
+					if (!a && !b) {
+						return null;
+					} else if (a && !b) {
+						return a;
+					} else if (!a && b) {
+						return b;
+					}
 
 					var aNode = this.getPathSet(a);
 					var bNode = this.getPathSet(b);
@@ -9228,6 +9238,7 @@
 
 				_this.ctx = renderer.ctx;
 				_this.renderer = renderer;
+				_this.ancestorNode = null;
 				_this.startOffset = -1;
 				_this.startNode = null;
 				_this.endNode = null;
@@ -9464,14 +9475,14 @@
 				value: function setStart(node, offset) {
 					this.startNode = node;
 					this.startOffset = offset;
-					this.emit('update', this);
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
 				}
 			}, {
 				key: 'setEnd',
 				value: function setEnd(node, offset) {
 					this.endNode = node;
 					this.endOffset = offset;
-					this.emit('update', this);
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
 				}
 			}, {
 				key: 'show',
@@ -9614,22 +9625,40 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _Utils = __webpack_require__(329);
+
+		var _Utils2 = _interopRequireDefault(_Utils);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var Selection = function () {
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Selection = function (_events$EventEmitter) {
+			_inherits(Selection, _events$EventEmitter);
+
 			function Selection() {
 				_classCallCheck(this, Selection);
 
-				this.styles = {
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Selection).call(this));
+
+				_this.id = _Utils2.default.generateId();
+				_this.styles = {
 					background: '#cceeff'
 				};
-				this.cursors = [];
+				_this.cursors = [];
+				return _this;
 			}
 
 			_createClass(Selection, [{
@@ -9645,12 +9674,17 @@
 
 					cursor.nodeList = [];
 
-					// Getting all nodes
+					// Getting all nodes in range
 					_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
 						cursor.nodeList.push(node);
 					});
 
 					this.cursors.push(cursor);
+				}
+			}, {
+				key: 'removeAllCursors',
+				value: function removeAllCursors() {
+					this.cursors = [];
 				}
 			}, {
 				key: 'removeCursor',
@@ -9661,16 +9695,32 @@
 			}, {
 				key: 'update',
 				value: function update() {
+
 					this.cursors.forEach(function (cursor) {
-						_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
-							console.log(node);
+
+						if (!cursor.ancestorNode) return;
+
+						// Re-render component
+						var task = cursor.ancestorNode.component.refresh();
+						task.then(function () {
+							// Do nothing
 						});
 					});
 				}
+				/*
+		  	update() {
+		  		this.cursors.forEach((cursor) => {
+		  			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+		  				console.log(node);
+		  			});
+		  		});
+		  	}
+		  */
+
 			}]);
 
 			return Selection;
-		}();
+		}(_events2.default.EventEmitter);
 
 		exports.default = Selection;
 
@@ -11181,7 +11231,7 @@
 
 										console.log($lineViewContent[0].getClientRects());
 										console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
-										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
+										var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
 
 										return;
 									}
@@ -11194,7 +11244,7 @@
 									left: startPoint.x
 								});
 								console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
-								var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
+								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
 								index = _this2.lineViews.indexOf(startLineView.lineView) + 1;
 							}
@@ -11213,7 +11263,7 @@
 										});
 
 										// The end of line view
-										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
+										var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
 
 										break;
 									}
@@ -11223,7 +11273,7 @@
 									left: 0
 								});
 
-								var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
+								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
 
 								index++;
 							}
@@ -11639,63 +11689,59 @@
 				_this.renderer.Selection.addSelection(selection);
 
 				_this.cursor.on('update', function () {
-					this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
-					this.inputHandler.focus();
-				}.bind(_this));
+					_this.inputHandler.setCursorPosition(_this.cursor.caret.x, _this.cursor.caret.y);
+					_this.inputHandler.focus();
+				});
 
 				// Set cursor position
 				var newCursor = new _cursor2.default(renderer);
 				_this.ctx.$origin[0].addEventListener('mousedown', function (e) {
-					this.cursor.setEnd(null, null);
-					this.cursor.setPositionByAxis(e.clientX, e.clientY);
-					this.cursor.show();
-					this.mousedown = true;
+					_this.cursor.setEnd(null, null);
+					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
+					_this.cursor.show();
+					_this.mousedown = true;
 
 					// Reset anchor
-					this.anchor.node = this.cursor.startNode;
-					this.anchor.offset = this.cursor.startOffset;
+					_this.anchor.node = _this.cursor.startNode;
+					_this.anchor.offset = _this.cursor.startOffset;
 
-					// Update component
-					var task = this.cursor.startNode.component.refresh();
-					task.then(function () {});
-				}.bind(_this), false);
+					_this.renderer.Selection.update(selection);
+					//			selection.update();
+				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mousemove', function (e) {
-					if (this.mousedown) {
-						this.dragging = true;
-						this.emit('dragging');
+					if (!_this.mousedown) return;
 
-						// Getting node and offset by using x and y
-						newCursor.setPositionByAxis(e.clientX, e.clientY);
+					_this.dragging = true;
+					_this.emit('dragging');
 
-						// Nothing's changed
-						if (newCursor.startNode == this.cursor.startNode && newCursor.startOffset == this.cursor.startOffset) {
-							return;
-						}
+					// Getting node and offset by using x and y
+					newCursor.setPositionByAxis(e.clientX, e.clientY);
 
-						var compare = _TreeOperator2.default.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
-
-						if (compare > 0) {
-							this.cursor.setStart(this.anchor.node, this.anchor.offset);
-							this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
-						} else {
-							this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
-							this.cursor.setEnd(this.anchor.node, this.anchor.offset);
-						}
-
-						// Update component
-						var ancestorNode = _TreeOperator2.default.getAncestorNode(this.cursor.startNode, this.cursor.endNode);
-						console.log(ancestorNode);
-						var task = ancestorNode.component.refresh();
-						task.then(function () {});
+					// Nothing's changed
+					if (newCursor.startNode == _this.cursor.startNode && newCursor.startOffset == _this.cursor.startOffset) {
+						return;
 					}
-				}.bind(_this), false);
+
+					var compare = _TreeOperator2.default.compareBoundary(_this.anchor.node, _this.anchor.offset, newCursor.startNode, newCursor.startOffset);
+
+					if (compare > 0) {
+						_this.cursor.setStart(_this.anchor.node, _this.anchor.offset);
+						_this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+					} else {
+						_this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
+						_this.cursor.setEnd(_this.anchor.node, _this.anchor.offset);
+					}
+
+					_this.renderer.Selection.update(selection);
+					//			selection.update();
+				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {
-					this.mousedown = false;
-					this.dragging = false;
-					this.cursor.show();
-				}.bind(_this), false);
+					_this.mousedown = false;
+					_this.dragging = false;
+					_this.cursor.show();
+				}, false);
 				return _this;
 			}
 
@@ -11766,7 +11812,6 @@
 				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
 					this.$inputBody.empty();
 				}.bind(this)).on('compositionstart', function (e) {
-					console.log('SADJLJSDLSJDLAJLSDJALJJD:');
 					// Display input box
 					this.$inputBox.css({
 						display: ''
@@ -12875,9 +12920,10 @@
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		var SelectionManager = function () {
-			function SelectionManager() {
+			function SelectionManager(renderer) {
 				_classCallCheck(this, SelectionManager);
 
+				this.ctx = renderer.ctx;
 				this.selections = [];
 			}
 
@@ -12897,8 +12943,20 @@
 			}, {
 				key: 'removeSelection',
 				value: function removeSelection(selection) {
-					var index = this.selections.indexOf(selections);
+					var index = this.selections.indexOf(selection);
 					if (index != -1) this.selections.splice(index, 1);
+				}
+			}, {
+				key: 'update',
+				value: function update(selection) {
+					var index = this.selections.indexOf(selection);
+					if (index != -1) {
+
+						// Remove all dom of current selection
+						$(this.ctx.$workarea).find('[shijingref=' + selection.id + ']').remove();
+
+						selection.update();
+					}
 				}
 			}]);
 
@@ -12906,6 +12964,21 @@
 		}();
 
 		exports.default = SelectionManager;
+
+	/***/ },
+	/* 329 */
+	/***/ function(module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+		exports.default = {
+			generateId: function generateId() {
+				return Math.random().toString().substr(2) + Date.now();
+			}
+		};
 
 	/***/ }
 	/******/ ]);

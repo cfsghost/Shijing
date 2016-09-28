@@ -9,6 +9,7 @@ class Cursor extends events.EventEmitter {
 
 		this.ctx = renderer.ctx;
 		this.renderer = renderer;
+		this.ancestorNode = null;
 		this.startOffset = -1;
 		this.startNode = null;
 		this.endNode = null;
@@ -241,13 +242,13 @@ console.log('Cursor2', this.startNode, leftOffset);
 	setStart(node, offset) {
 		this.startNode = node;
 		this.startOffset = offset;
-		this.emit('update', this);
+		this.ancestorNode = treeOperator.getAncestorNode(this.startNode, this.endNode);
 	}
 
 	setEnd(node, offset) {
 		this.endNode = node;
 		this.endOffset = offset;
-		this.emit('update', this);
+		this.ancestorNode = treeOperator.getAncestorNode(this.startNode, this.endNode);
 	}
 
 	show() {

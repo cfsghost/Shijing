@@ -28,14 +28,14 @@ class Input extends events.EventEmitter {
 
 		this.renderer.Selection.addSelection(selection);
 
-		this.cursor.on('update', function() {
+		this.cursor.on('update', () => {
 			this.inputHandler.setCursorPosition(this.cursor.caret.x, this.cursor.caret.y);
 			this.inputHandler.focus();
-		}.bind(this));
+		});
 
 		// Set cursor position
 		var newCursor = new Cursor(renderer);
-		this.ctx.$origin[0].addEventListener('mousedown', function(e) {
+		this.ctx.$origin[0].addEventListener('mousedown', (e) => {
 			this.cursor.setEnd(null, null);
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
 			this.cursor.show();
@@ -45,50 +45,45 @@ class Input extends events.EventEmitter {
 			this.anchor.node = this.cursor.startNode;
 			this.anchor.offset = this.cursor.startOffset;
 
-			// Update component
-			var task = this.cursor.startNode.component.refresh();
-			task.then(() => {
-			});
-		}.bind(this), false);
+			this.renderer.Selection.update(selection);
+//			selection.update();
+		}, false);
 
-		this.ctx.$origin[0].addEventListener('mousemove', function(e) {
-			if (this.mousedown) {
-				this.dragging = true;
-				this.emit('dragging');
+		this.ctx.$origin[0].addEventListener('mousemove', (e) => {
+			if (!this.mousedown)
+				return;
 
-				// Getting node and offset by using x and y
-				newCursor.setPositionByAxis(e.clientX, e.clientY);
+			this.dragging = true;
+			this.emit('dragging');
 
-				// Nothing's changed
-				if (newCursor.startNode == this.cursor.startNode &&
-					newCursor.startOffset == this.cursor.startOffset) {
-					return;
-				}
+			// Getting node and offset by using x and y
+			newCursor.setPositionByAxis(e.clientX, e.clientY);
 
-				var compare = treeOperator.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
-
-				if (compare > 0) {
-					this.cursor.setStart(this.anchor.node, this.anchor.offset);
-					this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
-				} else {
-					this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
-					this.cursor.setEnd(this.anchor.node, this.anchor.offset);
-				}
-
-				// Update component
-				var ancestorNode = treeOperator.getAncestorNode(this.cursor.startNode, this.cursor.endNode);
-				console.log(ancestorNode);
-				var task = ancestorNode.component.refresh();
-				task.then(() => {
-				});
+			// Nothing's changed
+			if (newCursor.startNode == this.cursor.startNode &&
+				newCursor.startOffset == this.cursor.startOffset) {
+				return;
 			}
-		}.bind(this), false);
 
-		this.ctx.$origin[0].addEventListener('mouseup', function(e) {
+			var compare = treeOperator.compareBoundary(this.anchor.node, this.anchor.offset, newCursor.startNode, newCursor.startOffset);
+
+			if (compare > 0) {
+				this.cursor.setStart(this.anchor.node, this.anchor.offset);
+				this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
+			} else {
+				this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
+				this.cursor.setEnd(this.anchor.node, this.anchor.offset);
+			}
+
+			this.renderer.Selection.update(selection);
+//			selection.update();
+		}, false);
+
+		this.ctx.$origin[0].addEventListener('mouseup', (e) => {
 			this.mousedown = false;
 			this.dragging = false;
 			this.cursor.show();
-		}.bind(this), false);
+		}, false);
 	}
 }
 

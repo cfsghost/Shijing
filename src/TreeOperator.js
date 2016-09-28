@@ -88,6 +88,9 @@ class TreeOperator {
 
 	getPathSet(node) {
 
+		if (!node)
+			return [];
+
 		var pathSet = [];
 		var parentNode = this.getParentNode(node);
 		while(parentNode) {
@@ -102,6 +105,14 @@ class TreeOperator {
 	}
 
 	getAncestorNode(a, b) {
+
+		if (!a && !b) {
+			return null;
+		} else if (a && !b) {
+			return a;
+		} else if (!a && b) {
+			return b;
+		}
 
 		var aNode = this.getPathSet(a);
 		var bNode = this.getPathSet(b);

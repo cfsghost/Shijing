@@ -133,6 +133,7 @@ export default class Paragraph extends BlockComponent {
 							console.log($lineViewContent[0].getClientRects());
 							console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
 							var $selection = $('<div>')
+								.attr('shijingref', selection.id)
 								.addClass('shijing-selection')
 								.css(style)
 								.outerHeight($lineView.outerHeight())
@@ -151,6 +152,7 @@ export default class Paragraph extends BlockComponent {
 					});
 					console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
 					var $selection = $('<div>')
+						.attr('shijingref', selection.id)
 						.addClass('shijing-selection')
 						.css(style)
 						.outerHeight($lineViewContent.height())
@@ -175,6 +177,7 @@ export default class Paragraph extends BlockComponent {
 
 							// The end of line view
 							var $selection = $('<div>')
+								.attr('shijingref', selection.id)
 								.addClass('shijing-selection')
 								.css(style)
 								.outerHeight($lineViewContent.height())
@@ -190,6 +193,7 @@ export default class Paragraph extends BlockComponent {
 					});
 
 					var $selection = $('<div>')
+						.attr('shijingref', selection.id)
 						.addClass('shijing-selection')
 						.css(style)
 						.outerHeight($lineViewContent.height())

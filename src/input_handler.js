@@ -54,7 +54,6 @@ class InputHandler {
 				this.$inputBody.empty();
 			}.bind(this))
 			.on('compositionstart', function(e) {
-				console.log('SADJLJSDLSJDLAJLSDJALJJD:');
 				// Display input box
 				this.$inputBox.css({
 					display: ''

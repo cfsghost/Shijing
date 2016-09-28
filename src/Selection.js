@@ -1,8 +1,13 @@
+import events from 'events';
 import treeOperator from './TreeOperator';
+import Utils from './Utils';
 
-class Selection {
+class Selection extends events.EventEmitter {
 
 	constructor() {
+		super();
+
+		this.id = Utils.generateId();
 		this.styles = {
 			background: '#cceeff'
 		};
@@ -20,12 +25,16 @@ class Selection {
 
 		cursor.nodeList = [];
 
-		// Getting all nodes
+		// Getting all nodes in range
 		treeOperator.traverse(cursor.startNode, cursor.endNode, (node) => {
 			cursor.nodeList.push(node);
 		});
 
 		this.cursors.push(cursor);
+	}
+
+	removeAllCursors() {
+		this.cursors = [];
 	}
 
 	removeCursor(cursor) {
@@ -35,12 +44,28 @@ class Selection {
 	}
 
 	update() {
+
+		this.cursors.forEach((cursor) => {
+
+			if (!cursor.ancestorNode)
+				return;
+
+			// Re-render component
+			var task = cursor.ancestorNode.component.refresh();
+			task.then(() => {
+				// Do nothing
+			});
+		});
+	}
+/*
+	update() {
 		this.cursors.forEach((cursor) => {
 			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
 				console.log(node);
 			});
 		});
 	}
+*/
 }
 
 export default Selection;
