@@ -162,14 +162,14 @@ class Component extends events.EventEmitter {
 
 	update() {
 
-		return new Promise(function(resolve) {
+		return new Promise((resolve) => {
 
 			// old DOM
 			var old = this.dom;
 
 			// Re-render this this
 			var renderTask = this.renderer.renderComponent(this);
-			renderTask.then(async function() {
+			renderTask.then(async () => {
 
 				// Replace old DOM with new DOM
 				$(old).replaceWith(this.dom);
@@ -179,9 +179,9 @@ class Component extends events.EventEmitter {
 
 				resolve();
 
-			}.bind(this));
+			});
 
-		}.bind(this));
+		});
 	}
 
 	remove() {
@@ -237,8 +237,6 @@ class Component extends events.EventEmitter {
 			var component = this.subComponents[index];
 
 			component.remove();
-
-			this.renderer.removeComponent(component);
 		}
 
 		if (!subComponents) {
@@ -276,21 +274,17 @@ class Component extends events.EventEmitter {
 			return this.findBlockParent().refresh();
 		}
 
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 
 			// Re-render childrens
 			this.renderer
 				.renderNodes(this.node, this.node.childrens)
-				.then(function(subComponents) {
-
-					if (subComponents.length != 0 || subComponents.length != 0)
-						this.updateSubComponents(subComponents);
-
+				.then((subComponents) => {
+					this.updateSubComponents(subComponents);
 					this.update().then(resolve);
-
-				}.bind(this))
+				})
 				.catch(reject);
-		}.bind(this));
+		});
 	}
 
 	render() {

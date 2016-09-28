@@ -136,20 +136,28 @@ class Shijing extends events.EventEmitter {
 			width: this.$layout.width()
 		});
 
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 
 			this.renderer.render(root)
-				.then(async function(rootComponent) {
+				.then(async (rootComponent) => {
 
+					// It's time to update root component
+					rootComponent.on('update', () => {
+
+						this.$workarea
+							.empty()
+							.append(rootComponent.dom);
+					});
+
+					// Put root DOM to workarea
 					this.$workarea.append(rootComponent.dom);
 
 					await rootComponent.componentDidMount();
 
 					resolve();
-
-				}.bind(this))
+				})
 				.catch(reject);
-		}.bind(this));
+		});
 	}
 }
 

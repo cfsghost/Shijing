@@ -8374,6 +8374,7 @@
 			}, {
 				key: 'render',
 				value: function render() {
+					var _this2 = this;
 
 					var root = this.documentTree.getRoot();
 
@@ -8384,35 +8385,42 @@
 
 					return new Promise(function (resolve, reject) {
 
-						this.renderer.render(root).then(function () {
+						_this2.renderer.render(root).then(function () {
 							var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(rootComponent) {
 								return regeneratorRuntime.wrap(function _callee$(_context) {
 									while (1) {
 										switch (_context.prev = _context.next) {
 											case 0:
 
-												this.$workarea.append(rootComponent.dom);
+												// It's time to update root component
+												rootComponent.on('update', function () {
 
-												_context.next = 3;
+													_this2.$workarea.empty().append(rootComponent.dom);
+												});
+
+												// Put root DOM to workarea
+												_this2.$workarea.append(rootComponent.dom);
+
+												_context.next = 4;
 												return rootComponent.componentDidMount();
 
-											case 3:
+											case 4:
 
 												resolve();
 
-											case 4:
+											case 5:
 											case 'end':
 												return _context.stop();
 										}
 									}
-								}, _callee, this);
+								}, _callee, _this2);
 							}));
 
 							return function (_x) {
 								return _ref.apply(this, arguments);
 							};
-						}().bind(this)).catch(reject);
-					}.bind(this));
+						}()).catch(reject);
+					});
 				}
 			}]);
 
@@ -8488,21 +8496,6 @@
 			}
 
 			_createClass(Renderer, [{
-				key: 'removeComponent',
-				value: function removeComponent(component) {
-
-					if (!component.subComponents) return;
-
-					// Remove all sub-components
-					for (var index in component.subComponents) {
-						var comp = component.subComponents[index];
-
-						delete this.components[comp.node.id];
-
-						this.removeComponent(comp);
-					}
-				}
-			}, {
 				key: 'getComponentByDOM',
 				value: function getComponentByDOM(components, DOM) {
 					for (var index in components) {
@@ -8600,7 +8593,6 @@
 					// append DOMs of components to specific node's DOM
 					if (components) {
 						components.forEach(function (component) {
-							//$DOM.append(component.node.dom);
 							$DOM.append(component.dom);
 						});
 					}
@@ -8619,25 +8611,26 @@
 			}, {
 				key: 'createComponent',
 				value: function createComponent(node, subComponents) {
+					var _this = this;
 
 					return new Promise(function (resolve) {
 
 						var Initializer;
 
 						// Getting initializer
-						Initializer = this.Components[node.type || 'hiddenNode'] || null;
+						Initializer = _this.Components[node.type || 'hiddenNode'] || null;
 						if (!Initializer) return resolve(null);
 
 						// Create component
-						var component = new Initializer(this, node, subComponents);
-						this.setInternalProperty(node, 'component', component);
+						var component = new Initializer(_this, node, subComponents);
+						_this.setInternalProperty(node, 'component', component);
 
-						var task = this.renderComponent(component);
+						var task = _this.renderComponent(component);
 						task.then(function () {
 
 							resolve(component);
-						}.bind(this));
-					}.bind(this));
+						});
+					});
 				}
 			}, {
 				key: 'renderComponent',
@@ -8648,9 +8641,7 @@
 						var task = component.render();
 						task.then(function () {
 
-							$(component.dom)
-							//				$(component.node.dom)
-							.attr('shijingref', component.node.id).addClass('shijing-component');
+							$(component.dom).attr('shijingref', component.node.id).addClass('shijing-component');
 
 							resolve();
 						});
@@ -8659,6 +8650,7 @@
 			}, {
 				key: 'renderNodes',
 				value: function renderNodes(parent, nodes) {
+					var _this3 = this;
 
 					return new Promise(function (resolve) {
 
@@ -8669,6 +8661,8 @@
 						var components = [];
 
 						function _render(index) {
+							var _this2 = this;
+
 							var subNode = nodes[index];
 							if (!subNode) {
 								resolve(components);
@@ -8677,24 +8671,25 @@
 
 							this.render(subNode).then(function (component) {
 								components.push(component);
-								_render.bind(this)(index + 1);
-							}.bind(this));
+								_render.bind(_this2)(index + 1);
+							});
 						}
 
-						_render.bind(this)(0);
-					}.bind(this));
+						_render.bind(_this3)(0);
+					});
 				}
 			}, {
 				key: 'render',
 				value: function render(node) {
 
 					return new Promise(function (resolve, reject) {
+						var _this4 = this;
 
 						// Continue to render childrens
 						this.renderNodes(node, node.childrens).then(function (subComponents) {
 
 							// Rendering a component then append all sub components to it
-							var task = this.createComponent(node, subComponents);
+							var task = _this4.createComponent(node, subComponents);
 							task.then(function (component) {
 								if (component) {
 									return resolve(component);
@@ -8702,7 +8697,7 @@
 
 								resolve();
 							}).catch(reject);
-						}.bind(this)).catch(reject);
+						}).catch(reject);
 					}.bind(this));
 				}
 			}]);
@@ -10198,14 +10193,15 @@
 			}, {
 				key: 'update',
 				value: function update() {
+					var _this2 = this;
 
 					return new Promise(function (resolve) {
 
 						// old DOM
-						var old = this.dom;
+						var old = _this2.dom;
 
 						// Re-render this this
-						var renderTask = this.renderer.renderComponent(this);
+						var renderTask = _this2.renderer.renderComponent(_this2);
 						renderTask.then(_asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
 							return regeneratorRuntime.wrap(function _callee2$(_context2) {
 								while (1) {
@@ -10213,11 +10209,11 @@
 										case 0:
 
 											// Replace old DOM with new DOM
-											$(old).replaceWith(this.dom);
+											$(old).replaceWith(_this2.dom);
 
 											// Notice sub-components that is ready to go
 											_context2.next = 3;
-											return this.componentDidMount();
+											return _this2.componentDidMount();
 
 										case 3:
 
@@ -10228,9 +10224,9 @@
 											return _context2.stop();
 									}
 								}
-							}, _callee2, this);
-						})).bind(this));
-					}.bind(this));
+							}, _callee2, _this2);
+						})));
+					});
 				}
 			}, {
 				key: 'remove',
@@ -10288,8 +10284,6 @@
 						var component = this.subComponents[index];
 
 						component.remove();
-
-						this.renderer.removeComponent(component);
 					}
 
 					if (!subComponents) {
@@ -10324,6 +10318,7 @@
 			}, {
 				key: 'refresh',
 				value: function refresh() {
+					var _this3 = this;
 
 					if (!this.blockType) {
 						return this.findBlockParent().refresh();
@@ -10332,13 +10327,11 @@
 					return new Promise(function (resolve, reject) {
 
 						// Re-render childrens
-						this.renderer.renderNodes(this.node, this.node.childrens).then(function (subComponents) {
-
-							if (subComponents.length != 0 || subComponents.length != 0) this.updateSubComponents(subComponents);
-
-							this.update().then(resolve);
-						}.bind(this)).catch(reject);
-					}.bind(this));
+						_this3.renderer.renderNodes(_this3.node, _this3.node.childrens).then(function (subComponents) {
+							_this3.updateSubComponents(subComponents);
+							_this3.update().then(resolve);
+						}).catch(reject);
+					});
 				}
 			}, {
 				key: 'render',
@@ -10370,6 +10363,8 @@
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -10388,28 +10383,44 @@
 			_createClass(HiddenNode, [{
 				key: 'update',
 				value: function update() {
-					// Clear old DOMs
-					//$(this.node.dom).empty();
-					$(this.dom).empty();
+					var _this2 = this;
 
-					// Re-render this this
-					this.renderer.renderComponent(this);
+					return new Promise(function (resolve) {
+
+						// Re-render this this
+						var renderTask = _this2.renderer.renderComponent(_this2);
+						renderTask.then(_asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+							return regeneratorRuntime.wrap(function _callee$(_context) {
+								while (1) {
+									switch (_context.prev = _context.next) {
+										case 0:
+
+											_this2.emit('update');
+
+											resolve();
+
+										case 2:
+										case 'end':
+											return _context.stop();
+									}
+								}
+							}, _callee, _this2);
+						})));
+					});
 				}
 			}, {
 				key: 'render',
 				value: function render() {
+					var _this3 = this;
 
 					return new Promise(function (resolve) {
 
-						var node = this.node;
-						var subComponents = this.subComponents;
+						_this3.dom = document.createDocumentFragment();
 
-						this.dom = document.createDocumentFragment();
-
-						this.renderer.appendComponents(this, subComponents);
+						if (_this3.subComponents) _this3.renderer.appendComponents(_this3, _this3.subComponents);
 
 						resolve();
-					}.bind(this));
+					});
 				}
 			}]);
 
@@ -11154,57 +11165,67 @@
 								endLineView = _this2.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
 							}
 
+							var index = 0;
+
 							// start and end point are in the same line view
-							if (startLineView && endLineView) {
+							if (startPoint) {
 
-								if (startLineView.lineView == endLineView.lineView) {
-									var $lineView = $(startLineView.lineView);
-									var $lineViewContent = $lineView.children('.shijing-lineview-content');
-									var style = Object.assign(selection.styles, {
-										left: startPoint.x
-									});
-
-									console.log($lineViewContent[0].getClientRects());
-									console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
-									var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
-								} else {
-
-									// Apply first of line view
-									var $lineView = $(startLineView.lineView);
-									var $lineViewContent = $lineView.children('.shijing-lineview-content');
-									var style = Object.assign(selection.styles, {
-										left: startPoint.x
-									});
-									console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
-									var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
-
-									// Deal with rest of line views
-									var index = _this2.lineViews.indexOf(startLineView.lineView);
-
-									for (index++; index < _this2.lineViews.length; index++) {
-										var lineView = _this2.lineViews[index];
-										var $lineView = $(lineView);
+								// Only one line view that we need to deal with
+								if (endLineView) {
+									if (startLineView.lineView == endLineView.lineView) {
+										var $lineView = $(startLineView.lineView);
 										var $lineViewContent = $lineView.children('.shijing-lineview-content');
+										var style = Object.assign(selection.styles, {
+											left: startPoint.x
+										});
 
-										if (lineView == endLineView.lineView) {
+										console.log($lineViewContent[0].getClientRects());
+										console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
+										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
 
-											var style = Object.assign(selection.styles, {
-												left: 0
-											});
+										return;
+									}
+								}
 
-											// The end of line view
-											var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
+								// The first line view
+								var $lineView = $(startLineView.lineView);
+								var $lineViewContent = $lineView.children('.shijing-lineview-content');
+								var style = Object.assign(selection.styles, {
+									left: startPoint.x
+								});
+								console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
+								var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
-											break;
-										}
+								index = _this2.lineViews.indexOf(startLineView.lineView) + 1;
+							}
+
+							// Deal with rest of line views
+							while (index < _this2.lineViews.length) {
+								var lineView = _this2.lineViews[index];
+								var $lineView = $(lineView);
+								var $lineViewContent = $lineView.children('.shijing-lineview-content');
+
+								if (endLineView) {
+									if (lineView == endLineView.lineView) {
 
 										var style = Object.assign(selection.styles, {
 											left: 0
 										});
 
-										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
+										// The end of line view
+										var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth(endPoint.x).prependTo($lineView);
+
+										break;
 									}
 								}
+
+								var style = Object.assign(selection.styles, {
+									left: 0
+								});
+
+								var $selection = $('<div>').addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
+
+								index++;
 							}
 
 							/*
@@ -11663,7 +11684,9 @@
 						}
 
 						// Update component
-						var task = this.cursor.startNode.component.refresh();
+						var ancestorNode = _TreeOperator2.default.getAncestorNode(this.cursor.startNode, this.cursor.endNode);
+						console.log(ancestorNode);
+						var task = ancestorNode.component.refresh();
 						task.then(function () {});
 					}
 				}.bind(_this), false);

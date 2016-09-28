@@ -3,27 +3,33 @@ import BlockComponent from '../BlockComponent';
 export default class HiddenNode extends BlockComponent {
 
 	update() {
-		// Clear old DOMs
-		//$(this.node.dom).empty();
-		$(this.dom).empty();
 
-		// Re-render this this
-		this.renderer.renderComponent(this);
+		return new Promise((resolve) => {
+
+			// Re-render this this
+			var renderTask = this.renderer.renderComponent(this);
+			renderTask.then(async () => {
+
+				this.emit('update');
+
+				resolve();
+
+			});
+
+		});
 	}
 
 	render() {
 
-		return new Promise(function(resolve) {
-
-			var node = this.node;
-			var subComponents = this.subComponents;
+		return new Promise((resolve) => {
 
 			this.dom = document.createDocumentFragment();
 
-			this.renderer.appendComponents(this, subComponents);
+			if (this.subComponents)
+				this.renderer.appendComponents(this, this.subComponents);
 
 			resolve();
 
-		}.bind(this));
+		});
 	}
 }

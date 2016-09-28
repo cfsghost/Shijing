@@ -76,7 +76,9 @@ class Input extends events.EventEmitter {
 				}
 
 				// Update component
-				var task = this.cursor.startNode.component.refresh();
+				var ancestorNode = treeOperator.getAncestorNode(this.cursor.startNode, this.cursor.endNode);
+				console.log(ancestorNode);
+				var task = ancestorNode.component.refresh();
 				task.then(() => {
 				});
 			}

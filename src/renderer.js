@@ -24,21 +24,6 @@ class Renderer {
 */
 	}
 
-	removeComponent(component) {
-
-		if (!component.subComponents)
-			return;
-
-		// Remove all sub-components
-		for (var index in component.subComponents) {
-			var comp = component.subComponents[index];
-
-			delete this.components[comp.node.id];
-
-			this.removeComponent(comp);
-		}
-	}
-
 	getComponentByDOM(components, DOM) {
 		for (var index in components) {
 			var component = components[index];
@@ -136,7 +121,6 @@ class Renderer {
 		// append DOMs of components to specific node's DOM
 		if (components) {
 			components.forEach(function(component) {
-				//$DOM.append(component.node.dom);
 				$DOM.append(component.dom);
 			});
 		}
@@ -154,7 +138,7 @@ class Renderer {
 
 	createComponent(node, subComponents) {
 		
-		return new Promise(function(resolve) {
+		return new Promise((resolve) => {
 
 			var Initializer;
 
@@ -168,24 +152,23 @@ class Renderer {
 			this.setInternalProperty(node, 'component', component);
 
 			var task = this.renderComponent(component);
-			task.then(function() {
+			task.then(() => {
 
 				resolve(component);
 
-			}.bind(this));
+			});
 
-		}.bind(this));
+		});
 	}
 
 	renderComponent(component) {
 
-		return new Promise(function(resolve) {
+		return new Promise((resolve) => {
 
 			var task = component.render();
-			task.then(function() {
+			task.then(() => {
 
 				$(component.dom)
-//				$(component.node.dom)
 					.attr('shijingref', component.node.id)
 					.addClass('shijing-component');
 
@@ -196,7 +179,7 @@ class Renderer {
 
 	renderNodes(parent, nodes) {
 
-		return new Promise(function(resolve) {
+		return new Promise((resolve) => {
 
 			if (!nodes)
 				return resolve([]);
@@ -213,14 +196,14 @@ class Renderer {
 					return;
 				}
 
-				this.render(subNode).then(function(component) {
+				this.render(subNode).then((component) => {
 					components.push(component);
 					_render.bind(this)(index + 1);
-				}.bind(this));
+				});
 			}
 
 			_render.bind(this)(0);
-		}.bind(this));
+		});
 	}
 
 	render(node) {
@@ -229,12 +212,11 @@ class Renderer {
 
 			// Continue to render childrens
 			this.renderNodes(node, node.childrens)
-				.then(function(subComponents) {
+				.then((subComponents) => {
 				
 					// Rendering a component then append all sub components to it
 					var task = this.createComponent(node, subComponents);
-					task
-						.then(function(component) {
+					task.then(function(component) {
 							if (component) {
 								return resolve(component);
 							}
@@ -243,7 +225,7 @@ class Renderer {
 						})
 						.catch(reject);
 				
-				}.bind(this))
+				})
 				.catch(reject);
 			
 		}.bind(this));

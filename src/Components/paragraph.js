@@ -116,78 +116,87 @@ export default class Paragraph extends BlockComponent {
 					endLineView = this.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
 				}
 
+				var index = 0;
+
 				// start and end point are in the same line view
-				if (startLineView && endLineView) {
+				if (startPoint) {
 
-					if (startLineView.lineView == endLineView.lineView) {
-						var $lineView = $(startLineView.lineView);
-						var $lineViewContent = $lineView.children('.shijing-lineview-content');
-						var style = Object.assign(selection.styles, {
-							left: startPoint.x
-						});
-
-						console.log($lineViewContent[0].getClientRects());
-						console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
-						var $selection = $('<div>')
-							.addClass('shijing-selection')
-							.css(style)
-							.outerHeight($lineView.outerHeight())
-							.outerWidth(endPoint.x - startPoint.x)
-							.prependTo($lineView);
-					} else {
-
-						// Apply first of line view
-						var $lineView = $(startLineView.lineView);
-						var $lineViewContent = $lineView.children('.shijing-lineview-content');
-						var style = Object.assign(selection.styles, {
-							left: startPoint.x
-						});
-						console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
-						var $selection = $('<div>')
-							.addClass('shijing-selection')
-							.css(style)
-							.outerHeight($lineViewContent.height())
-							.outerWidth($lineView.width() - startPoint.x)
-							.prependTo($lineView);
-
-						// Deal with rest of line views
-						var index = this.lineViews.indexOf(startLineView.lineView);
-
-						for (index++; index < this.lineViews.length; index++) {
-							var lineView = this.lineViews[index];
-							var $lineView = $(lineView);
+					// Only one line view that we need to deal with
+					if (endLineView) {
+						if (startLineView.lineView == endLineView.lineView) {
+							var $lineView = $(startLineView.lineView);
 							var $lineViewContent = $lineView.children('.shijing-lineview-content');
+							var style = Object.assign(selection.styles, {
+								left: startPoint.x
+							});
 
-							if (lineView == endLineView.lineView) {
+							console.log($lineViewContent[0].getClientRects());
+							console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
+							var $selection = $('<div>')
+								.addClass('shijing-selection')
+								.css(style)
+								.outerHeight($lineView.outerHeight())
+								.outerWidth(endPoint.x - startPoint.x)
+								.prependTo($lineView);
 
-								var style = Object.assign(selection.styles, {
-									left: 0
-								});
+							return;
+						}
+					}
 
-								// The end of line view
-								var $selection = $('<div>')
-									.addClass('shijing-selection')
-									.css(style)
-									.outerHeight($lineViewContent.height())
-									.outerWidth(endPoint.x)
-									.prependTo($lineView);
+					// The first line view
+					var $lineView = $(startLineView.lineView);
+					var $lineViewContent = $lineView.children('.shijing-lineview-content');
+					var style = Object.assign(selection.styles, {
+						left: startPoint.x
+					});
+					console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
+					var $selection = $('<div>')
+						.addClass('shijing-selection')
+						.css(style)
+						.outerHeight($lineViewContent.height())
+						.outerWidth($lineView.width() - startPoint.x)
+						.prependTo($lineView);
 
-								break;
-							}
+					index = this.lineViews.indexOf(startLineView.lineView) + 1;
+				}
+
+				// Deal with rest of line views
+				while(index < this.lineViews.length) {
+					var lineView = this.lineViews[index];
+					var $lineView = $(lineView);
+					var $lineViewContent = $lineView.children('.shijing-lineview-content');
+
+					if (endLineView) {
+						if (lineView == endLineView.lineView) {
 
 							var style = Object.assign(selection.styles, {
 								left: 0
 							});
 
+							// The end of line view
 							var $selection = $('<div>')
 								.addClass('shijing-selection')
 								.css(style)
 								.outerHeight($lineViewContent.height())
-								.outerWidth($lineView.width())
+								.outerWidth(endPoint.x)
 								.prependTo($lineView);
-						}
 
+							break;
+						}
 					}
+
+					var style = Object.assign(selection.styles, {
+						left: 0
+					});
+
+					var $selection = $('<div>')
+						.addClass('shijing-selection')
+						.css(style)
+						.outerHeight($lineViewContent.height())
+						.outerWidth($lineView.width())
+						.prependTo($lineView);
+
+					index++;
 				}
 
 	/*
