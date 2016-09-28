@@ -23,9 +23,9 @@ class Inline {
 		// Getting rects from components
 		var rects = this.rootComponent.getRects();
 
-		rects.forEach(function(rectSet) {
+		rects.forEach((rectSet) => {
 			this._figureLineStates(rectSet.DOM, rectSet.rects);
-		}.bind(this));
+		});
 
 		this._grabLines();
 		this._packLineViews();
@@ -175,7 +175,7 @@ class Inline {
 			range.detach();
 		}
 	}
-
+/*
 	// Performance is really bad
 	newGrabLines(DOM) {
 
@@ -225,6 +225,7 @@ class Inline {
 		
 		return this.lineViews;
 	}	
+*/
 }
 
 export default Inline;

@@ -43,7 +43,7 @@ export default class Paragraph extends BlockComponent {
 	updateDOMs() {
 
 		// sync dom of all components because original dom might be splited by inline layout
-		this.subComponents.forEach(function(component) {
+		this.subComponents.forEach((component) => {
 
 			var doms = [];
 			for (var index in this.lineViews) {
@@ -59,7 +59,7 @@ export default class Paragraph extends BlockComponent {
 			}
 
 			component.dom = (doms.length > 1) ? doms : doms[0];
-		}.bind(this));
+		});
 	}
 
 	updateSelection() {

@@ -11140,13 +11140,14 @@
 			}, {
 				key: 'updateDOMs',
 				value: function updateDOMs() {
+					var _this2 = this;
 
 					// sync dom of all components because original dom might be splited by inline layout
 					this.subComponents.forEach(function (component) {
 
 						var doms = [];
-						for (var index in this.lineViews) {
-							var lineView = this.lineViews[index];
+						for (var index in _this2.lineViews) {
+							var lineView = _this2.lineViews[index];
 							var dom = $(lineView).find('[shijingref=' + component.node.id + ']').first();
 
 							if (dom.length) {
@@ -11158,7 +11159,7 @@
 						}
 
 						component.dom = doms.length > 1 ? doms : doms[0];
-					}.bind(this));
+					});
 				}
 			}, {
 				key: 'updateSelection',
@@ -11168,7 +11169,7 @@
 			}, {
 				key: 'renderSelection',
 				value: function renderSelection() {
-					var _this2 = this;
+					var _this3 = this;
 
 					var selections = this.renderer.Selection.getAllSelections();
 
@@ -11193,14 +11194,14 @@
 		     				}
 		     */
 							// if start node is in this node of component
-							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.startNode)) {
+							if (_TreeOperator2.default.intersectsNode(_this3.node, cursor.startNode)) {
 								var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-								startPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+								startPoint = _this3.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
 							}
 
-							if (_TreeOperator2.default.intersectsNode(_this2.node, cursor.endNode)) {
+							if (_TreeOperator2.default.intersectsNode(_this3.node, cursor.endNode)) {
 								var pos = cursor.endNode.component.getPosition(cursor.endOffset);
-								endPoint = _this2.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
+								endPoint = _this3.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
 							}
 
 							// Getting line views
@@ -11208,11 +11209,11 @@
 							var endLineView = null;
 
 							if (startPoint) {
-								startLineView = _this2.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
+								startLineView = _this3.ctx.Misc.getLineView(cursor.startNode, cursor.startOffset);
 							}
 
 							if (endPoint) {
-								endLineView = _this2.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
+								endLineView = _this3.ctx.Misc.getLineView(cursor.endNode, cursor.endOffset);
 							}
 
 							var index = 0;
@@ -11246,12 +11247,12 @@
 								console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
 								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
-								index = _this2.lineViews.indexOf(startLineView.lineView) + 1;
+								index = _this3.lineViews.indexOf(startLineView.lineView) + 1;
 							}
 
 							// Deal with rest of line views
-							while (index < _this2.lineViews.length) {
-								var lineView = _this2.lineViews[index];
+							while (index < _this3.lineViews.length) {
+								var lineView = _this3.lineViews[index];
 								var $lineView = $(lineView);
 								var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
@@ -11305,7 +11306,7 @@
 			}, {
 				key: 'layout',
 				value: function layout($DOM) {
-					var _this3 = this;
+					var _this4 = this;
 
 					var offscreen = this.renderer.offscreen;
 
@@ -11320,12 +11321,12 @@
 								whiteSpace: 'pre-wrap',
 								wordBreak: 'break-all'
 							});
-							offscreen.resize(_this3.style.width, _this3.style.height);
+							offscreen.resize(_this4.style.width, _this4.style.height);
 
 							// Apply inline layout, then we can get a lots of line views
-							var layout = new _inline2.default(_this3, offscreen);
+							var layout = new _inline2.default(_this4, offscreen);
 							try {
-								_this3.lineViews = layout.grabLines($DOM[0]);
+								_this4.lineViews = layout.grabLines($DOM[0]);
 							} catch (e) {
 								console.log(e);
 								console.log($DOM);
@@ -11333,13 +11334,13 @@
 
 							// DOMs might be splited into multiple new DOMs by inline layout process, we need
 							// to update these DOMs to its component object.
-							_this3.updateDOMs();
+							_this4.updateDOMs();
 							//return resolve();
 							// Clear all then re-append lines
-							$DOM.empty().append(_this3.lineViews);
+							$DOM.empty().append(_this4.lineViews);
 
 							// To check all cursors to draw selection.
-							_this3.renderSelection();
+							_this4.renderSelection();
 
 							// Clear offscreen buffer
 							offscreen.empty();
@@ -11406,6 +11407,7 @@
 			_createClass(Inline, [{
 				key: 'grabLines',
 				value: function grabLines(DOM) {
+					var _this = this;
 
 					this.rootDOM = DOM;
 
@@ -11418,8 +11420,8 @@
 					var rects = this.rootComponent.getRects();
 
 					rects.forEach(function (rectSet) {
-						this._figureLineStates(rectSet.DOM, rectSet.rects);
-					}.bind(this));
+						_this._figureLineStates(rectSet.DOM, rectSet.rects);
+					});
 
 					this._grabLines();
 					this._packLineViews();
@@ -11564,58 +11566,58 @@
 						range.detach();
 					}
 				}
+				/*
+		  	// Performance is really bad
+		  	newGrabLines(DOM) {
+		  
+		  		// Getting size of DOMs
+		  		this.checkRange.selectNode(DOM);
+		  		var rects = this.checkRange.getClientRects();
+		  
+		  		// Getting line width
+		  		var lineWidth = this.offscreen.getWidth();
+		  
+		  		// Getting content width then updating offscreen size
+		  		var contentSize = rects[rects.length - 1].right;
+		  		this.offscreen.setWidth(contentSize);
+		  
+		  		// Empty
+		  		if (!DOM.childNodes)
+		  			return [];
+		  
+		  		console.time('grabLines');
+		  
+		  		// Grabs lines
+		  		this.range.setStart(DOM.childNodes[0], 0);
+		  		var doc = this.offscreen.getDocument();
+		  		for (var width = lineWidth - 1; width < contentSize; width += lineWidth) {
+		  
+		  			var range = doc.caretRangeFromPoint(width, 5);
+		  			range.collapse(true);
+		  
+		  			this.range.setEnd(range.startContainer, range.startOffset);
+		  			this.lineMap.push(this.range.cloneRange());
+		  			this.range.setStart(range.startContainer, range.startOffset);
+		  
+		  			range.detach();
+		  		}
+		  
+		  		var x = console.timeEnd('grabLines');
+		  
+		  		if (width > contentSize) {
+		  			if (DOM.childNodes.length) {
+		  				var lastNode = DOM.childNodes[DOM.childNodes.length - 1];
+		  				this.range.setEndAfter(lastNode);
+		  				this.lineMap.push(this.range.cloneRange());
+		  			}
+		  		}
+		  
+		  		this._packLineViews();
+		  		
+		  		return this.lineViews;
+		  	}	
+		  */
 
-				// Performance is really bad
-
-			}, {
-				key: 'newGrabLines',
-				value: function newGrabLines(DOM) {
-
-					// Getting size of DOMs
-					this.checkRange.selectNode(DOM);
-					var rects = this.checkRange.getClientRects();
-
-					// Getting line width
-					var lineWidth = this.offscreen.getWidth();
-
-					// Getting content width then updating offscreen size
-					var contentSize = rects[rects.length - 1].right;
-					this.offscreen.setWidth(contentSize);
-
-					// Empty
-					if (!DOM.childNodes) return [];
-
-					console.time('grabLines');
-
-					// Grabs lines
-					this.range.setStart(DOM.childNodes[0], 0);
-					var doc = this.offscreen.getDocument();
-					for (var width = lineWidth - 1; width < contentSize; width += lineWidth) {
-
-						var range = doc.caretRangeFromPoint(width, 5);
-						range.collapse(true);
-
-						this.range.setEnd(range.startContainer, range.startOffset);
-						this.lineMap.push(this.range.cloneRange());
-						this.range.setStart(range.startContainer, range.startOffset);
-
-						range.detach();
-					}
-
-					var x = console.timeEnd('grabLines');
-
-					if (width > contentSize) {
-						if (DOM.childNodes.length) {
-							var lastNode = DOM.childNodes[DOM.childNodes.length - 1];
-							this.range.setEndAfter(lastNode);
-							this.lineMap.push(this.range.cloneRange());
-						}
-					}
-
-					this._packLineViews();
-
-					return this.lineViews;
-				}
 			}]);
 
 			return Inline;
@@ -11706,7 +11708,6 @@
 					_this.anchor.offset = _this.cursor.startOffset;
 
 					_this.renderer.Selection.update(selection);
-					//			selection.update();
 				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mousemove', function (e) {
@@ -11734,7 +11735,6 @@
 					}
 
 					_this.renderer.Selection.update(selection);
-					//			selection.update();
 				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {

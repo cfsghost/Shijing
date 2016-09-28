@@ -46,7 +46,6 @@ class Input extends events.EventEmitter {
 			this.anchor.offset = this.cursor.startOffset;
 
 			this.renderer.Selection.update(selection);
-//			selection.update();
 		}, false);
 
 		this.ctx.$origin[0].addEventListener('mousemove', (e) => {
@@ -76,7 +75,6 @@ class Input extends events.EventEmitter {
 			}
 
 			this.renderer.Selection.update(selection);
-//			selection.update();
 		}, false);
 
 		this.ctx.$origin[0].addEventListener('mouseup', (e) => {
