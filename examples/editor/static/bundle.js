@@ -11250,8 +11250,6 @@
 											left: startPoint.x
 										});
 
-										console.log($lineView[0].getClientRects());
-										console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
 										var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
 
 										return;
@@ -11264,7 +11262,6 @@
 								var style = Object.assign(selection.styles, {
 									left: startPoint.x
 								});
-								console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
 								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
 								index = _this3.lineViews.indexOf(startLineView.lineView) + 1;
@@ -11916,6 +11913,33 @@
 							break;
 
 						case Key.Backspace:
+
+							// There is selection which contains range  we have to deal with first
+							if (cursor.endNode && cursor.endOffset) {
+
+								if (cursor.startNode == cursor.endNode) {
+
+									// Getting text before start point
+									var sets = _TreeOperator2.default.getTextSets(cursor.endNode, cursor.endOffset);
+									var beforeStr = sets.before.substr(0, cursor.startOffset);
+
+									// Replace old text with new text
+									_TreeOperator2.default.setText(cursor.startNode, [beforeStr, sets.after].join(''));
+
+									// Reset cursor position
+									cursor.setEnd(null, null);
+									cursor.setPosition(cursor.startNode, cursor.startOffset);
+
+									// done everything so we update now
+									var task = cursor.startNode.component.refresh();
+									task.then(function () {
+
+										// Set new position to caret
+										cursor.show();
+									});
+								}
+								break;
+							}
 
 							// Getting text
 							var sets = _TreeOperator2.default.getTextSets(cursor.startNode, cursor.startOffset);

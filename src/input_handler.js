@@ -146,6 +146,36 @@ class InputHandler {
 
 				case Key.Backspace:
 
+					// There is selection which contains range  we have to deal with first
+					if (cursor.endNode && cursor.endOffset) {
+
+						if (cursor.startNode == cursor.endNode) {
+
+							// Getting text before start point
+							var sets = treeOperator.getTextSets(cursor.endNode, cursor.endOffset);
+							var beforeStr = sets.before.substr(0, cursor.startOffset);
+
+							// Replace old text with new text
+							treeOperator.setText(cursor.startNode, [
+								beforeStr,
+								sets.after
+							].join(''));
+
+							// Reset cursor position
+							cursor.setEnd(null, null);
+							cursor.setPosition(cursor.startNode, cursor.startOffset);
+
+							// done everything so we update now
+							var task = cursor.startNode.component.refresh();
+							task.then(() => {
+
+								// Set new position to caret
+								cursor.show();
+							});
+						}
+						break;
+					}
+
 					// Getting text
 					var sets = treeOperator.getTextSets(cursor.startNode, cursor.startOffset);
 

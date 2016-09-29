@@ -130,8 +130,6 @@ export default class Paragraph extends BlockComponent {
 								left: startPoint.x
 							});
 
-							console.log($lineView[0].getClientRects());
-							console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
 							var $selection = $('<div>')
 								.attr('shijingref', selection.id)
 								.addClass('shijing-selection')
@@ -150,7 +148,6 @@ export default class Paragraph extends BlockComponent {
 					var style = Object.assign(selection.styles, {
 						left: startPoint.x
 					});
-					console.log('HEIGHT', $lineViewContent.height(), $lineViewContent);
 					var $selection = $('<div>')
 						.attr('shijingref', selection.id)
 						.addClass('shijing-selection')
