@@ -8471,6 +8471,10 @@
 
 		var _input2 = _interopRequireDefault(_input);
 
+		var _Utils = __webpack_require__(329);
+
+		var _Utils2 = _interopRequireDefault(_Utils);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8485,6 +8489,8 @@
 
 				// Initializing offscreen buffer
 				this.offscreen = new _offscreen2.default(this);
+				var rules = _Utils2.default.getCurrentStyleRules();
+				this.offscreen.addStyleRules(rules);
 
 				// Initializing caret
 				this.caret = new _cursor2.default(this);
@@ -9137,6 +9143,20 @@
 			}
 
 			_createClass(Offscreen, [{
+				key: 'addStyleRules',
+				value: function addStyleRules(rules) {
+
+					// Initilaize style
+					var style = document.createElement('style');
+					style.appendChild(document.createTextNode(''));
+					this.getDocument().head.appendChild(style);
+
+					// insert all rules
+					for (var index in rules) {
+						style.sheet.insertRule(rules[index].cssText);
+					}
+				}
+			}, {
 				key: 'setWidth',
 				value: function setWidth(width) {
 					this.$dom.css({
@@ -11230,7 +11250,7 @@
 											left: startPoint.x
 										});
 
-										console.log($lineViewContent[0].getClientRects());
+										console.log($lineView[0].getClientRects());
 										console.log('HEIGHT', $lineViewContent.outerHeight(true), $lineViewContent);
 										var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineView.outerHeight()).outerWidth(endPoint.x - startPoint.x).prependTo($lineView);
 
@@ -11274,7 +11294,7 @@
 									left: 0
 								});
 
-								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width()).prependTo($lineView);
+								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineViewContent.width()).prependTo($lineView);
 
 								index++;
 							}
@@ -12453,7 +12473,7 @@
 
 
 		// module
-		exports.push([module.id, ".shijing-lineview {\n\tposition: relative;\n}\n\n.shijing-lineview-content {\n\tposition: relative;\n\tline-height: 1.15;\n}\n\n.shijing-selection {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
+		exports.push([module.id, ".shijing-lineview {\n\tposition: relative;\n}\n\n.shijing-lineview-content {\n\tdisplay: inline-block;\n\tposition: relative;\n\tline-height: 1.15;\n}\n\n.shijing-selection {\n\tposition: absolute;\n\ttop: 0;\n\tleft: 0;\n}\n\n.shijing-paragraph {\n\tmargin-top: 1em;\n}\n\n.shijing-paragraph:first-child {\n\tmargin-top: 0px;\n}\n\n.shijing-workarea *::selection {\n\tbackground: transparent;\n}\n", ""]);
 
 		// exports
 
@@ -12969,7 +12989,7 @@
 	/* 329 */
 	/***/ function(module, exports) {
 
-		"use strict";
+		'use strict';
 
 		Object.defineProperty(exports, "__esModule", {
 			value: true
@@ -12977,6 +12997,32 @@
 		exports.default = {
 			generateId: function generateId() {
 				return Math.random().toString().substr(2) + Date.now();
+			},
+			getCurrentStyleRules: function getCurrentStyleRules() {
+
+				var rules = [];
+				for (var index = 0; index < document.styleSheets.length; index++) {
+					var sheet = document.styleSheets[index];
+
+					if (!sheet.cssRules) continue;
+
+					var found = false;
+					for (var i = 0; i < sheet.cssRules.length; i++) {
+						var rule = sheet.cssRules[i];
+
+						if (!rule.selectorText) continue;
+
+						if (rule.selectorText.search('.shijing') == -1) continue;
+
+						rules.push(rule);
+
+						found = true;
+					}
+
+					if (found) break;
+				}
+
+				return rules;
 			}
 		};
 

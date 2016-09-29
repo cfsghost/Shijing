@@ -4,7 +4,7 @@ $(function() {
 	var $window = $(window);
 	var $layout = $('.layout');
 	var $toolbar = $('.toolbar');
-
+	
 	$layout
 		.height($window.height())
 		.width($window.width());

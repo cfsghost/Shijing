@@ -4,6 +4,7 @@ import Cursor from './cursor';
 import SelectionManager from './SelectionManager';
 import Components from './Components';
 import Input from './input';
+import Utils from './Utils';
 
 class Renderer {
 
@@ -14,6 +15,8 @@ class Renderer {
 
 		// Initializing offscreen buffer
 		this.offscreen = new Offscreen(this);
+		var rules = Utils.getCurrentStyleRules();
+		this.offscreen.addStyleRules(rules);
 
 		// Initializing caret
 		this.caret = new Cursor(this);

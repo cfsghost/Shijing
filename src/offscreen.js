@@ -23,6 +23,19 @@ class Offscreen {
 		});
 	}
 
+	addStyleRules(rules) {
+
+		// Initilaize style
+		var style = document.createElement('style');
+		style.appendChild(document.createTextNode(''));
+		this.getDocument().head.appendChild(style);
+
+		// insert all rules
+		for (var index in rules) {
+			style.sheet.insertRule(rules[index].cssText);
+		}
+	}
+
 	setWidth(width) {
 		this.$dom.css({
 			width: width
