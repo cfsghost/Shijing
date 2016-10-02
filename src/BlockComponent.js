@@ -11,9 +11,7 @@ class BlockComponent extends Component {
 
 	getLength(offset) {
 
-		if (this.node.text) {
-			return offset ? offset : this.node.text.length;
-		} else if (this.node.childrens) {
+		if (this.node.childrens) {
 			if (offset) {
 				if (offset <= this.node.childrens.length) {
 					var len = 0;
@@ -38,9 +36,7 @@ class BlockComponent extends Component {
 		if (offset == 0)
 			return 0;
 
-		if (this.node.text) {
-			return offset ? offset : this.node.text.length + 1;
-		} else if (this.node.childrens) {
+		if (this.node.childrens) {
 			var _offset = offset || this.node.childrens.length;
 
 			if (_offset <= this.node.childrens.length) {
@@ -60,9 +56,32 @@ class BlockComponent extends Component {
 		return 0;
 	}
 
+	getOffset(DOM, targetOffset) {
+
+		if (!this.node.childrens) {
+			var targetDOM = DOM;
+
+			// Figure out the correct offset
+			var offset = 0;
+			for (var index in this.dom.childNodes) {
+				var dom = this.dom.childNodes[index];
+
+				if (targetDOM == dom) {
+					break;
+				}
+
+				offset += dom.length;
+			}
+
+			return offset + targetOffset;
+		}
+
+		return targetOffset;
+	}
+
 	getPosition(offset) {
 
-		if (!this.node.text && this.node.childrens) {
+		if (this.node.childrens) {
 			var node = treeOperator.getChildrenNode(this.node, offset);
 
 			// No such node
@@ -77,50 +96,6 @@ class BlockComponent extends Component {
 			};
 		}
 
-		// Overflow
-		if (this.node.text.length < offset) {
-			return {
-				DOM: null,
-				offset: offset - this.node.text.length
-			};
-		}
-
-		if (this.dom instanceof Array) {
-
-			if (offset == 0) {
-				return {
-					DOM: this.dom[0],
-					offset: 0
-				};
-			}
-
-			var dom;
-			var count = offset;
-
-			for (var index in this.dom) {
-				dom = this.dom[index];
-				var text = dom.childNodes[0];
-
-				if (text.length > count) {
-					break;
-				}
-
-				count -= text.length;
-
-				if (count == 0 && parseInt(index) + 1 == this.dom.length) {
-					return {
-						DOM: dom,
-						offset: text.length
-					}
-				}
-			}
-
-			return {
-				DOM: dom,
-				offset: count
-			};
-		}
-
 		return {
 			DOM: this.dom,
 			offset: offset
@@ -129,6 +104,10 @@ class BlockComponent extends Component {
 	}
 
 	setCursor(cursor, offset) {
+
+		if (!this.node.childrens) {
+			return super.setCursor(cursor, offset);
+		}
 
 		if (offset == 0) {
 			cursor.setPosition(this.node, 0);

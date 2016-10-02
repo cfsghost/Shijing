@@ -208,8 +208,8 @@ class InputHandler {
 				if (e.metaKey)
 					return true;
 
-				var cursor = this.input.renderer.caret;
-
+				var cursor = this.cursor;
+console.log('TYPING', cursor.startNode, cursor.startOffset);
 				treeOperator.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
 
 				// done everything so we update now

@@ -84,8 +84,86 @@
 			root: {
 				childrens: [{
 					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
-				}, {
-					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' }, { type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' }, { type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }]
+				},
+				/*
+	   				{
+	   					type: 'paragraph', childrens: [
+	   						{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+	   						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					]
+	   				},
+	   */
+				/*
+	   				{
+	   					type: 'paragraph', childrens: [
+	   						{ type: 'inline', style: { color: 'blue', fontSize: '36px' }, text: '這是藍色顏色 36px 的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+	   						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'orange' }, text: '文繞圖也可以搞定，有點神！' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '文繞圖也可以搞定，有點神！' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+	   						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+	   						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'image', style: { width: '60px', height: '45px' }, src: 'AvengerGear.png' },
+	   						{ type: 'image', style: { width: '150px', height: '150px' }, src: 'AvengerGear.png' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					]
+	   				},
+	   */
+				/*
+	   			{
+	   				type: 'paragraph', childrens: [
+	   					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   					{ type: 'image', src: 'http://m.img.brothersoft.com/iphone/1646/525711646_icon175x175.jpg' },
+	   					{ type: 'image', style: { width: '32px', height: '32px' }, src: 'http://m.img.brothersoft.com/iphone/1646/525711646_icon175x175.jpg' },
+	   					{ type: 'image', style: { width: '48px', height: '48px' }, src: 'http://m.img.brothersoft.com/iphone/1646/525711646_icon175x175.jpg' },
+	   					{ type: 'image', style: { width: '32px', height: '32px' }, src: 'http://m.img.brothersoft.com/iphone/1646/525711646_icon175x175.jpg' },
+	   					{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
+	   					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   				]
+	   			},
+	   			{
+	   				type: 'paragraph', childrens: [
+	   					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   					{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
+	   					{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
+	   					{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字' },
+	   				]
+	   			},
+	   			*/
+				{
+					type: 'paragraph', childrens: [{ type: 'inline', text: '搭配使用 Git 進行開發工作，時常會碰到一個狀況，就是我們 fork 一個專案出來修改，但在我們在修改的同時上游有了更新，這時我們會想要把上游的更新同步下來。這是一個常見的問題，許多人不時會提出來詢問，事實上如果你去 Google ，多半能找到這樣一篇名為「Syncing a fork」的 Github 文件。雖然這篇文章已經把程序詳細列出來了，但還是有人看不太懂，原因是要搭配「Configuring a remote for a fork」這一篇文件一起看才知道來龍去脈。 簡單來說，我們要先把「上游（upstream）」的 repository 加入我們眼前正在修改的專案，然後把上游更新拉回來，最後再與我們現有程式碼合併。' }]
 				}]
 			}
 		});
@@ -9334,7 +9412,7 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-
+					console.log(caret);
 					this.caret.move(caret.x, caret.y);
 					this._setPosition(node, offset);
 
@@ -9350,7 +9428,8 @@
 					var textNode = range.startContainer;
 					var offset = this.startOffset = range.startOffset;
 
-					range.detach();
+					console.log('_setPositionByAxis', range);
+					//		range.detach();
 
 					// We don't need text node, just getting its parent
 					var parentNode = textNode;
@@ -9383,7 +9462,7 @@
 
 					// Getting the correct offset by using DOM and offset of DOM
 					_offset = component.getOffset(point.DOM, point.offset);
-
+					console.log('setByDOM', component, _offset);
 					// Store it
 					this._setPosition(component.node, _offset);
 
@@ -9503,6 +9582,18 @@
 					this.endNode = node;
 					this.endOffset = offset;
 					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
+				}
+			}, {
+				key: 'deleteContents',
+				value: function deleteContents() {
+					var _this2 = this;
+
+					this.nodeList = [];
+
+					// Getting all nodes in range
+					_TreeOperator2.default.traverse(this.startNode, this.endNode, function (node) {
+						_this2.nodeList.push(node);
+					});
 				}
 			}, {
 				key: 'show',
@@ -9877,6 +9968,7 @@
 			}, {
 				key: 'getRects',
 				value: function getRects(DOM) {
+					var _this2 = this;
 
 					var rects = [];
 
@@ -9884,8 +9976,8 @@
 						var doms = this.getDOMs();
 
 						doms.forEach(function (DOM) {
-							rects = rects.concat(this.getRects(DOM));
-						}.bind(this));
+							rects = rects.concat(_this2.getRects(DOM));
+						});
 
 						return rects;
 					}
@@ -9954,7 +10046,6 @@
 
 						var dom;
 						var count = offset;
-
 						for (var index in this.dom) {
 							dom = this.dom[index];
 							var text = dom.childNodes[0];
@@ -9997,22 +10088,6 @@
 					}
 
 					return leftOffset;
-				}
-			}, {
-				key: 'setCursor',
-				value: function setCursor(cursor, offset) {
-
-					if (offset > this.getLength()) {
-						cursor.setPosition(this.node, this.getLength());
-						return offset - this.getLength();
-					} else if (offset < 0) {
-						cursor.setPosition(this.node, 0);
-						return offset;
-					}
-
-					cursor.setPosition(this.node, offset);
-
-					return 0;
 				}
 			}]);
 
@@ -10199,11 +10274,15 @@
 				key: 'getRects',
 				value: function getRects() {
 
-					var sets = this.subComponents.map(function (component) {
-						return component.getRects();
-					});
+					if (this.subComponents.length) {
+						var sets = this.subComponents.map(function (component) {
+							return component.getRects();
+						});
 
-					return Array.prototype.concat.apply([], sets);
+						return Array.prototype.concat.apply([], sets);
+					}
+
+					return [];
 				}
 			}, {
 				key: 'getOffset',
@@ -10369,6 +10448,7 @@
 
 					// Getting correct position
 					var pos = this.getPosition(offset);
+					console.log('POS', pos, offset, this.node.text);
 					var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 					point.style = {
@@ -10378,6 +10458,22 @@
 					};
 
 					return point;
+				}
+			}, {
+				key: 'setCursor',
+				value: function setCursor(cursor, offset) {
+
+					if (offset > this.getLength()) {
+						cursor.setPosition(this.node, this.getLength());
+						return offset - this.getLength();
+					} else if (offset < 0) {
+						cursor.setPosition(this.node, 0);
+						return offset;
+					}
+
+					cursor.setPosition(this.node, offset);
+
+					return 0;
 				}
 			}, {
 				key: 'adjustCursorPosition',
@@ -10511,6 +10607,8 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
@@ -10543,9 +10641,7 @@
 				key: 'getLength',
 				value: function getLength(offset) {
 
-					if (this.node.text) {
-						return offset ? offset : this.node.text.length;
-					} else if (this.node.childrens) {
+					if (this.node.childrens) {
 						if (offset) {
 							if (offset <= this.node.childrens.length) {
 								var len = 0;
@@ -10570,9 +10666,7 @@
 
 					if (offset == 0) return 0;
 
-					if (this.node.text) {
-						return offset ? offset : this.node.text.length + 1;
-					} else if (this.node.childrens) {
+					if (this.node.childrens) {
 						var _offset = offset || this.node.childrens.length;
 
 						if (_offset <= this.node.childrens.length) {
@@ -10592,10 +10686,34 @@
 					return 0;
 				}
 			}, {
+				key: 'getOffset',
+				value: function getOffset(DOM, targetOffset) {
+
+					if (!this.node.childrens) {
+						var targetDOM = DOM;
+
+						// Figure out the correct offset
+						var offset = 0;
+						for (var index in this.dom.childNodes) {
+							var dom = this.dom.childNodes[index];
+
+							if (targetDOM == dom) {
+								break;
+							}
+
+							offset += dom.length;
+						}
+
+						return offset + targetOffset;
+					}
+
+					return targetOffset;
+				}
+			}, {
 				key: 'getPosition',
 				value: function getPosition(offset) {
 
-					if (!this.node.text && this.node.childrens) {
+					if (this.node.childrens) {
 						var node = _TreeOperator2.default.getChildrenNode(this.node, offset);
 
 						// No such node
@@ -10610,50 +10728,6 @@
 						};
 					}
 
-					// Overflow
-					if (this.node.text.length < offset) {
-						return {
-							DOM: null,
-							offset: offset - this.node.text.length
-						};
-					}
-
-					if (this.dom instanceof Array) {
-
-						if (offset == 0) {
-							return {
-								DOM: this.dom[0],
-								offset: 0
-							};
-						}
-
-						var dom;
-						var count = offset;
-
-						for (var index in this.dom) {
-							dom = this.dom[index];
-							var text = dom.childNodes[0];
-
-							if (text.length > count) {
-								break;
-							}
-
-							count -= text.length;
-
-							if (count == 0 && parseInt(index) + 1 == this.dom.length) {
-								return {
-									DOM: dom,
-									offset: text.length
-								};
-							}
-						}
-
-						return {
-							DOM: dom,
-							offset: count
-						};
-					}
-
 					return {
 						DOM: this.dom,
 						offset: offset
@@ -10662,6 +10736,10 @@
 			}, {
 				key: 'setCursor',
 				value: function setCursor(cursor, offset) {
+
+					if (!this.node.childrens) {
+						return _get(Object.getPrototypeOf(BlockComponent.prototype), 'setCursor', this).call(this, cursor, offset);
+					}
 
 					if (offset == 0) {
 						cursor.setPosition(this.node, 0);
@@ -11093,7 +11171,7 @@
 
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Paragraph).call(this, renderer, node, subComponents));
 
-				_this.lineViews = [];
+				_this.lineView = null;
 				_this.style = {};
 				return _this;
 			}
@@ -11139,23 +11217,34 @@
 				key: 'getOffset',
 				value: function getOffset(DOM, targetOffset) {
 
-					var range = document.createRange();
-					range.selectNode(DOM);
+					return this.lineView.getOffset(DOM) + targetOffset;
+				}
+			}, {
+				key: 'getRects',
+				value: function getRects() {
 
-					// If this medthod was called, that means text node only in this component
-					var offset = targetOffset;
-
-					// Finding line view which contains range
-					for (var index in this.lineViews) {
-						var lineView = this.lineViews[index][0];
-
-						if (range.intersectsNode(lineView)) break;
-
-						// Count length of text node before line view which contains range
-						offset += lineView.childNodes[0].length;
+					// It has childrens so we follow original mechanism to get all rects
+					if (this.subComponents.length) {
+						return _get(Object.getPrototypeOf(Paragraph.prototype), 'getRects', this).call(this);
 					}
 
-					return offset;
+					// there is only text in this paragraph, we get rects from this dom directly
+					var rects = [];
+
+					// Check this text node
+					var range = document.createRange();
+					range.selectNode(this.dom.childNodes[0]);
+					var clientRects = range.getClientRects();
+
+					for (var index = 0; index < clientRects.length; index++) {
+						var rect = clientRects[index];
+						rects.push(rect);
+					}
+
+					return [{
+						DOM: this.dom,
+						rects: rects
+					}];
 				}
 			}, {
 				key: 'updateDOMs',
@@ -11164,21 +11253,7 @@
 
 					// sync dom of all components because original dom might be splited by inline layout
 					this.subComponents.forEach(function (component) {
-
-						var doms = [];
-						for (var index in _this2.lineViews) {
-							var lineView = _this2.lineViews[index];
-							var dom = $(lineView).find('[shijingref=' + component.node.id + ']').first();
-
-							if (dom.length) {
-								doms.push(dom[0]);
-							} else if (doms.length > 0 && !dom.length) {
-								// Not found DOM anymore
-								break;
-							}
-						}
-
-						component.dom = doms.length > 1 ? doms : doms[0];
+						component.dom = _this2.lineView.getDOMs(component.node.id);
 					});
 				}
 			}, {
@@ -11202,17 +11277,7 @@
 
 							var startPoint = null;
 							var endPoint = null;
-							/*
-		     			var lineViews = [];
-		     				// Filter all of node which is in our node
-		     			for (var index in cursor.nodeList) {
-		     				var node = cursor.nodeList[index];
-		     					if (treeOperator.intersectsNode(this.node, node)) {
-		     					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-		     					startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-		     				}
-		     				}
-		     */
+
 							// if start node is in this node of component
 							if (_TreeOperator2.default.intersectsNode(_this3.node, cursor.startNode)) {
 								var pos = cursor.startNode.component.getPosition(cursor.startOffset);
@@ -11264,17 +11329,18 @@
 								});
 								var $selection = $('<div>').attr('shijingref', selection.id).addClass('shijing-selection').css(style).outerHeight($lineViewContent.height()).outerWidth($lineView.width() - startPoint.x).prependTo($lineView);
 
-								index = _this3.lineViews.indexOf(startLineView.lineView) + 1;
+								index = _this3.lineView.getItems().indexOf(startLineView.lineView) + 1;
 							}
 
 							// Deal with rest of line views
-							while (index < _this3.lineViews.length) {
-								var lineView = _this3.lineViews[index];
-								var $lineView = $(lineView);
+							var lines = _this3.lineView.getItems();
+							while (index < lines.length) {
+								var line = lines[index];
+								var $lineView = $(line);
 								var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 								if (endLineView) {
-									if (lineView == endLineView.lineView) {
+									if (line == endLineView.lineView) {
 
 										var style = Object.assign(selection.styles, {
 											left: 0
@@ -11343,7 +11409,8 @@
 							// Apply inline layout, then we can get a lots of line views
 							var layout = new _inline2.default(_this4, offscreen);
 							try {
-								_this4.lineViews = layout.grabLines($DOM[0]);
+								//this.lineViews = layout.grabLines($DOM[0]);
+								_this4.lineView = layout.grabLines($DOM[0]);
 							} catch (e) {
 								console.log(e);
 								console.log($DOM);
@@ -11353,8 +11420,11 @@
 							// to update these DOMs to its component object.
 							_this4.updateDOMs();
 							//return resolve();
+							//
+							var lineDOMs = _this4.lineView.getDOMs();
 							// Clear all then re-append lines
-							$DOM.empty().append(_this4.lineViews);
+							$DOM.empty().append(lineDOMs);
+							//					.append(this.lineViews);
 
 							// To check all cursors to draw selection.
 							_this4.renderSelection();
@@ -11375,10 +11445,8 @@
 						width: this.node.parent.style.width
 					} : {}, this.node.style || {});
 
-					var text = this.node.text || '';
-
 					// Create DOM
-					var $DOM = $('<div>').addClass('shijing-paragraph').html(text.replace(/ /g, '&nbsp')).css(style);
+					var $DOM = $('<div>').addClass('shijing-paragraph').css(style);
 
 					this.dom = $DOM[0];
 
@@ -11395,7 +11463,7 @@
 
 	/***/ },
 	/* 313 */
-	/***/ function(module, exports) {
+	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
 
@@ -11404,6 +11472,12 @@
 		});
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _LineView = __webpack_require__(330);
+
+		var _LineView2 = _interopRequireDefault(_LineView);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11414,10 +11488,10 @@
 				this.rootComponent = rootComponent;
 				this.rootDOM = null;
 				this.range = document.createRange();
-				this.checkRange = document.createRange();
+				//		this.checkRange = document.createRange();
 				this.lineStates = [];
 				this.lineMap = [];
-				this.lineViews = [];
+				this.lineView = null;
 				this.offscreen = offscreen;
 			}
 
@@ -11427,6 +11501,7 @@
 					var _this = this;
 
 					this.rootDOM = DOM;
+					this.lineView = new _LineView2.default(DOM);
 
 					// Clear
 					this.lineStates = [];
@@ -11445,39 +11520,7 @@
 
 					var x = console.timeEnd('grabLines');
 
-					return this.lineViews;
-				}
-			}, {
-				key: '_packLineView',
-				value: function _packLineView(range) {
-
-					var lineContent;
-					if (range.startContainer.parentNode != this.rootDOM && range.startContainer == range.endContainer) {
-						// If it's the line which in the end of lines
-
-						// Clone container
-						var newContainer = range.startContainer.parentNode.cloneNode(false);
-
-						// append content
-						var content = range.cloneContents();
-						$(newContainer).append(content);
-
-						lineContent = newContainer;
-					} else {
-						lineContent = range.cloneContents();
-					}
-
-					// Create line view to store a line data
-					var $lineView = $('<div>').addClass('shijing-lineview').css({
-						//					background: '#cceeff',
-						//				borderBottom: '1px solid black'
-					});
-
-					var $lineContent = $('<div>').addClass('shijing-lineview-content').append(lineContent);
-
-					$lineView.append($lineContent);
-
-					this.lineViews.push($lineView);
+					return this.lineView;
 				}
 			}, {
 				key: '_packLineViews',
@@ -11486,7 +11529,7 @@
 					for (var index in this.lineMap) {
 						var range = this.lineMap[index];
 
-						this._packLineView(range);
+						this.lineView.addRange(range);
 
 						// No need this range anymore
 						range.detach();
@@ -11538,10 +11581,17 @@
 					this.offscreen.setHeight(this.lineStates[0].rect.top + this.lineStates[this.lineStates.length - 1].rect.bottom + 100);
 
 					// Set start point
-					if (this.rootDOM == this.lineStates[0].DOM.parentNode) {
-						this.range.setStart(this.lineStates[0].DOM, 0);
-					} else {
+					/*
+		   		if (this.rootDOM == this.lineStates[0].DOM.parentNode) {
+		   			this.range.setStart(this.lineStates[0].DOM, 0);
+		   		} else {
+		   			this.range.selectNode(this.lineStates[0].DOM.parentNode);
+		   		}
+		   */
+					if (this.lineStates[0].DOM.nodeType == Node.TEXT_NODE) {
 						this.range.selectNode(this.lineStates[0].DOM.parentNode);
+					} else {
+						this.range.setStart(this.lineStates[0].DOM, 0);
 					}
 
 					var doc = this.offscreen.getDocument();
@@ -11717,6 +11767,7 @@
 				_this.ctx.$origin[0].addEventListener('mousedown', function (e) {
 					_this.cursor.setEnd(null, null);
 					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
+					console.log('mouseDOWN', _this.cursor);
 					_this.cursor.show();
 					_this.mousedown = true;
 
@@ -11967,8 +12018,8 @@
 
 					if (e.metaKey) return true;
 
-					var cursor = this.input.renderer.caret;
-
+					var cursor = this.cursor;
+					console.log('TYPING', cursor.startNode, cursor.startOffset);
 					_TreeOperator2.default.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
 
 					// done everything so we update now
@@ -12120,7 +12171,16 @@
 				value: function figurePosition(dom, offset, base) {
 
 					var $dom = $(dom);
-					var textNode = dom.childNodes ? dom.childNodes[0] : null;
+
+					var textNode = null;
+					if (dom.nodeType == Node.TEXT_NODE) {
+						console.log('TEXTNODE');
+						textNode = dom;
+					} else {
+						textNode = dom.childNodes ? dom.childNodes[0] : null;
+					}
+
+					// Initializing base
 					var $container = base ? $(base) : null;
 
 					var baseX = 0;
@@ -12224,7 +12284,7 @@
 				key: 'findLineViewOwner',
 				value: function findLineViewOwner(node) {
 
-					if (node.component.lineViews) {
+					if (node.component.lineView) {
 						return node;
 					}
 
@@ -12242,15 +12302,18 @@
 						var range = document.createRange();
 
 						// Figure line which contains such DOM
-						for (var index in node.component.lineViews) {
-							var lineView = node.component.lineViews[index];
-							range.selectNode(lineView[0]);
+						//for (var index in node.component.lineViews) {
+						var lines = node.component.lineView.getItems();
+						for (var index in lines) {
+							//var lineView = node.component.lineViews[index];
+							var line = lines[index];
+							range.selectNode(line[0]);
 
 							// Found
 							if (range.isPointInRange(pos.DOM)) {
 								return {
-									arr: node.component.lineViews,
-									lineView: lineView,
+									arr: lines,
+									lineView: line,
 									index: parseInt(index)
 								};
 							}
@@ -13049,6 +13112,119 @@
 				return rules;
 			}
 		};
+
+	/***/ },
+	/* 330 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var LineView = function () {
+			function LineView(rootDOM) {
+				_classCallCheck(this, LineView);
+
+				this.rootDOM = rootDOM;
+				this.items = [];
+			}
+
+			_createClass(LineView, [{
+				key: 'getItems',
+				value: function getItems() {
+					return this.items;
+				}
+			}, {
+				key: 'getDOMs',
+				value: function getDOMs(id) {
+					if (!id) return this.getItems();
+
+					var doms = [];
+					for (var index in this.items) {
+						var line = this.items[index];
+						var dom = $(line).find('[shijingref=' + id + ']').first();
+
+						if (dom.length) {
+							doms.push(dom[0]);
+						} else if (doms.length > 0 && !dom.length) {
+							// Not found DOM anymore
+							break;
+						}
+					}
+
+					return doms;
+				}
+			}, {
+				key: 'getLineContent',
+				value: function getLineContent(index) {
+					return this.items[index].children('.shijing-lineview-content')[0];
+				}
+			}, {
+				key: 'getOffset',
+				value: function getOffset(DOM) {
+
+					var range = document.createRange();
+					range.selectNode(DOM);
+
+					var offset = 0;
+
+					// Finding line view which contains range
+					for (var index in this.items) {
+						var line = this.getLineContent(index);
+
+						if (range.intersectsNode(line)) break;
+
+						// Count length of text node before line view which contains range
+						offset += line.childNodes[0].length;
+					}
+
+					return offset;
+				}
+			}, {
+				key: 'addRange',
+				value: function addRange(range) {
+
+					var lineContent;
+					if (range.startContainer.parentNode != this.rootDOM && range.startContainer == range.endContainer) {
+						// If it's the line which in the end of lines
+
+						// Clone container
+						var newContainer = range.startContainer.parentNode.cloneNode(false);
+
+						// append content
+						var content = range.cloneContents();
+						$(newContainer).append(content);
+
+						lineContent = newContainer;
+					} else {
+						lineContent = range.cloneContents();
+					}
+
+					// Create line view to store a line data
+					var $lineView = $('<div>').addClass('shijing-lineview').css({
+						//					background: '#cceeff',
+						//				borderBottom: '1px solid black'
+					});
+
+					var $lineContent = $('<div>').addClass('shijing-lineview-content').append(lineContent);
+
+					$lineView.append($lineContent);
+
+					this.items.push($lineView);
+				}
+			}]);
+
+			return LineView;
+		}();
+
+		exports.default = LineView;
+		;
 
 	/***/ }
 	/******/ ]);

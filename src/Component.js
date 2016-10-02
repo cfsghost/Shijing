@@ -98,11 +98,15 @@ class Component extends events.EventEmitter {
 
 	getRects() {
 
-		var sets = this.subComponents.map(function(component) {
-			return component.getRects();
-		});
+		if (this.subComponents.length) {
+			var sets = this.subComponents.map(function(component) {
+				return component.getRects();
+			});
 
-		return Array.prototype.concat.apply([], sets);
+			return Array.prototype.concat.apply([], sets);
+		}
+
+		return [];
 	}
 
 	getOffset(DOM, targetOffset) {
@@ -251,6 +255,7 @@ class Component extends events.EventEmitter {
 
 		// Getting correct position
 		var pos = this.getPosition(offset);
+		console.log('POS', pos, offset, this.node.text);
 		var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 		point.style = {
@@ -260,6 +265,21 @@ class Component extends events.EventEmitter {
 		};
 
 		return point;
+	}
+
+	setCursor(cursor, offset) {
+
+		if (offset > this.getLength()) {
+			cursor.setPosition(this.node, this.getLength());
+			return offset - this.getLength();
+		} else if (offset < 0) {
+			cursor.setPosition(this.node, 0);
+			return offset;
+		}
+
+		cursor.setPosition(this.node, offset);
+
+		return 0;
 	}
 
 	adjustCursorPosition(cursor, direction) {

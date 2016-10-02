@@ -83,7 +83,7 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-
+console.log(caret);
 		this.caret.move(caret.x, caret.y);
 		this._setPosition(node, offset);
 
@@ -98,7 +98,8 @@ class Cursor extends events.EventEmitter {
 		var textNode = range.startContainer;
 		var offset = this.startOffset = range.startOffset;
 
-		range.detach();
+console.log('_setPositionByAxis', range);
+//		range.detach();
 		
 		// We don't need text node, just getting its parent
 		var parentNode = textNode;
@@ -130,7 +131,7 @@ class Cursor extends events.EventEmitter {
 
 		// Getting the correct offset by using DOM and offset of DOM
 		_offset = component.getOffset(point.DOM, point.offset);
-
+console.log('setByDOM', component, _offset);
 		// Store it
 		this._setPosition(component.node, _offset);
 
@@ -249,6 +250,18 @@ console.log('Cursor2', this.startNode, leftOffset);
 		this.endNode = node;
 		this.endOffset = offset;
 		this.ancestorNode = treeOperator.getAncestorNode(this.startNode, this.endNode);
+	}
+
+	deleteContents() {
+
+		this.nodeList = [];
+
+		// Getting all nodes in range
+		treeOperator.traverse(this.startNode, this.endNode, (node) => {
+			this.nodeList.push(node);
+		});
+
+
 	}
 
 	show() {

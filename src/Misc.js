@@ -10,7 +10,16 @@ class Misc {
 	figurePosition(dom, offset, base) {
 
 		var $dom = $(dom);
-		var textNode = (dom.childNodes) ? dom.childNodes[0] : null;
+
+		var textNode = null;
+		if (dom.nodeType == Node.TEXT_NODE) {
+			console.log('TEXTNODE');
+			textNode = dom;
+		} else {
+			textNode = (dom.childNodes) ? dom.childNodes[0] : null;
+		}
+
+		// Initializing base
 		var $container = base ? $(base) : null;
 
 		var baseX = 0;
@@ -114,7 +123,7 @@ class Misc {
 
 	findLineViewOwner(node) {
 
-		if (node.component.lineViews) {
+		if (node.component.lineView) {
 			return node;
 		}
 
@@ -134,15 +143,18 @@ class Misc {
 			var range = document.createRange();
 
 			// Figure line which contains such DOM
-			for (var index in node.component.lineViews) {
-				var lineView = node.component.lineViews[index];
-				range.selectNode(lineView[0]);
+			//for (var index in node.component.lineViews) {
+			var lines = node.component.lineView.getItems();
+			for (var index in lines) {
+				//var lineView = node.component.lineViews[index];
+				var line = lines[index];
+				range.selectNode(line[0]);
 
 				// Found
 				if (range.isPointInRange(pos.DOM)) {
 					return {
-						arr: node.component.lineViews,
-						lineView: lineView,
+						arr: lines,
+						lineView: line,
 						index: parseInt(index)
 					};
 				}

@@ -26,9 +26,9 @@ class InlineComponent extends Component {
 		if (!DOM) {
 			var doms = this.getDOMs();
 
-			doms.forEach(function(DOM) {
+			doms.forEach((DOM) => {
 				rects = rects.concat(this.getRects(DOM));
-			}.bind(this));
+			});
 
 			return rects;
 		}
@@ -98,7 +98,6 @@ class InlineComponent extends Component {
 
 			var dom;
 			var count = offset;
-
 			for (var index in this.dom) {
 				dom = this.dom[index];
 				var text = dom.childNodes[0];
@@ -142,21 +141,6 @@ class InlineComponent extends Component {
 		}
 
 		return leftOffset;
-	}
-
-	setCursor(cursor, offset) {
-
-		if (offset > this.getLength()) {
-			cursor.setPosition(this.node, this.getLength());
-			return offset - this.getLength();
-		} else if (offset < 0) {
-			cursor.setPosition(this.node, 0);
-			return offset;
-		}
-
-		cursor.setPosition(this.node, offset);
-
-		return 0;
 	}
 
 }

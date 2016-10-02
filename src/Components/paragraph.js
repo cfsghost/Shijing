@@ -7,7 +7,7 @@ export default class Paragraph extends BlockComponent {
 	constructor(renderer, node, subComponents) {
 		super(renderer, node, subComponents);
 
-		this.lineViews = [];
+		this.lineView = null;
 		this.style = {};
 	}
 
@@ -20,45 +20,42 @@ export default class Paragraph extends BlockComponent {
 
 	getOffset(DOM, targetOffset) {
 
-		var range = document.createRange();
-		range.selectNode(DOM);
+		return this.lineView.getOffset(DOM) + targetOffset;
+	}
 
-		// If this medthod was called, that means text node only in this component
-		var offset = targetOffset;
+	getRects() {
 
-		// Finding line view which contains range
-		for (var index in this.lineViews) {
-			var lineView = this.lineViews[index][0];
-
-			if (range.intersectsNode(lineView))
-				break;
-
-			// Count length of text node before line view which contains range
-			offset += lineView.childNodes[0].length;
+		// It has childrens so we follow original mechanism to get all rects
+		if (this.subComponents.length) {
+			return super.getRects();
 		}
 
-		return offset;
+		// there is only text in this paragraph, we get rects from this dom directly
+		var rects = [];
+
+		// Check this text node
+		var range = document.createRange();
+		range.selectNode(this.dom.childNodes[0]);
+		var clientRects = range.getClientRects();
+
+		for (var index = 0; index < clientRects.length; index++) {
+			var rect = clientRects[index];
+			rects.push(rect);
+		}
+
+		return [
+			{
+				DOM: this.dom,
+				rects: rects
+			}
+		];
 	}
 
 	updateDOMs() {
 
 		// sync dom of all components because original dom might be splited by inline layout
 		this.subComponents.forEach((component) => {
-
-			var doms = [];
-			for (var index in this.lineViews) {
-				var lineView = this.lineViews[index];
-				var dom = $(lineView).find('[shijingref=' + component.node.id + ']').first();
-
-				if (dom.length) {
-					doms.push(dom[0]);
-				} else if (doms.length > 0 && !dom.length) {
-					// Not found DOM anymore
-					break;
-				}
-			}
-
-			component.dom = (doms.length > 1) ? doms : doms[0];
+			component.dom = this.lineView.getDOMs(component.node.id);
 		});
 	}
 
@@ -79,20 +76,7 @@ export default class Paragraph extends BlockComponent {
 
 				var startPoint = null;
 				var endPoint = null;
-	/*
-				var lineViews = [];
 
-				// Filter all of node which is in our node
-				for (var index in cursor.nodeList) {
-					var node = cursor.nodeList[index];
-
-					if (treeOperator.intersectsNode(this.node, node)) {
-						var pos = cursor.startNode.component.getPosition(cursor.startOffset);
-						startPoint = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, null);
-					}
-
-				}
-	*/
 				// if start node is in this node of component
 				if (treeOperator.intersectsNode(this.node, cursor.startNode)) {
 					var pos = cursor.startNode.component.getPosition(cursor.startOffset);
@@ -156,17 +140,18 @@ export default class Paragraph extends BlockComponent {
 						.outerWidth($lineView.width() - startPoint.x)
 						.prependTo($lineView);
 
-					index = this.lineViews.indexOf(startLineView.lineView) + 1;
+					index = this.lineView.getItems().indexOf(startLineView.lineView) + 1;
 				}
 
 				// Deal with rest of line views
-				while(index < this.lineViews.length) {
-					var lineView = this.lineViews[index];
-					var $lineView = $(lineView);
+				var lines = this.lineView.getItems();
+				while(index < lines.length) {
+					var line = lines[index];
+					var $lineView = $(line);
 					var $lineViewContent = $lineView.children('.shijing-lineview-content');
 
 					if (endLineView) {
-						if (lineView == endLineView.lineView) {
+						if (line == endLineView.lineView) {
 
 							var style = Object.assign(selection.styles, {
 								left: 0
@@ -250,7 +235,8 @@ export default class Paragraph extends BlockComponent {
 				// Apply inline layout, then we can get a lots of line views
 				var layout = new InlineLayout(this, offscreen);
 				try {
-					this.lineViews = layout.grabLines($DOM[0]);
+					//this.lineViews = layout.grabLines($DOM[0]);
+					this.lineView = layout.grabLines($DOM[0]);
 				} catch(e) {
 					console.log(e);
 					console.log($DOM);
@@ -260,10 +246,13 @@ export default class Paragraph extends BlockComponent {
 				// to update these DOMs to its component object.
 				this.updateDOMs();
 //return resolve();
+//
+				var lineDOMs = this.lineView.getDOMs();
 				// Clear all then re-append lines
 				$DOM
 					.empty()
-					.append(this.lineViews);
+					.append(lineDOMs);
+//					.append(this.lineViews);
 
 				// To check all cursors to draw selection.
 				this.renderSelection();
@@ -285,12 +274,9 @@ export default class Paragraph extends BlockComponent {
 			width: this.node.parent.style.width
 		} : {}, this.node.style || {});
 
-		var text = this.node.text || '';
-
 		// Create DOM
 		var $DOM = $('<div>')
 			.addClass('shijing-paragraph')
-			.html(text.replace(/ /g, '&nbsp'))
 			.css(style);
 		
 		this.dom = $DOM[0];

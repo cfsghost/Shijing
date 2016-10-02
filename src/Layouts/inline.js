@@ -1,19 +1,22 @@
+import LineView from './LineView';
+
 class Inline {
 
 	constructor(rootComponent, offscreen) {
 		this.rootComponent = rootComponent;
 		this.rootDOM = null
 		this.range = document.createRange();
-		this.checkRange = document.createRange();
+//		this.checkRange = document.createRange();
 		this.lineStates = [];
 		this.lineMap = [];
-		this.lineViews = [];
+		this.lineView = null;
 		this.offscreen = offscreen;
 	}
 
 	grabLines(DOM) {
 
 		this.rootDOM = DOM;
+		this.lineView = new LineView(DOM);
 
 		// Clear
 		this.lineStates = [];
@@ -32,43 +35,7 @@ class Inline {
 
 		var x = console.timeEnd('grabLines');
 
-		return this.lineViews;
-	}
-
-	_packLineView(range) {
-
-		var lineContent;
-		if (range.startContainer.parentNode != this.rootDOM &&
-			range.startContainer == range.endContainer) {
-			// If it's the line which in the end of lines
-
-			// Clone container
-			var newContainer = range.startContainer.parentNode.cloneNode(false);
-
-			// append content
-			var content = range.cloneContents();
-			$(newContainer).append(content);
-
-			lineContent = newContainer;
-		} else {
-			lineContent = range.cloneContents();
-		}
-
-		// Create line view to store a line data
-		var $lineView = $('<div>')
-			.addClass('shijing-lineview')
-			.css({
-//					background: '#cceeff',
-	//				borderBottom: '1px solid black'
-			});
-
-		var $lineContent = $('<div>')
-			.addClass('shijing-lineview-content')
-			.append(lineContent);
-
-		$lineView.append($lineContent);
-
-		this.lineViews.push($lineView);
+		return this.lineView;
 	}
 
 	_packLineViews() {
@@ -76,7 +43,7 @@ class Inline {
 		for (var index in this.lineMap) {
 			var range = this.lineMap[index];
 
-			this._packLineView(range);
+			this.lineView.addRange(range);
 			
 			// No need this range anymore
 			range.detach();
@@ -130,10 +97,17 @@ class Inline {
 		this.offscreen.setHeight(this.lineStates[0].rect.top + this.lineStates[this.lineStates.length - 1].rect.bottom + 100);
 
 		// Set start point
+/*
 		if (this.rootDOM == this.lineStates[0].DOM.parentNode) {
 			this.range.setStart(this.lineStates[0].DOM, 0);
 		} else {
 			this.range.selectNode(this.lineStates[0].DOM.parentNode);
+		}
+*/
+		if (this.lineStates[0].DOM.nodeType == Node.TEXT_NODE) {
+			this.range.selectNode(this.lineStates[0].DOM.parentNode);
+		} else {
+			this.range.setStart(this.lineStates[0].DOM, 0);
 		}
 
 		var doc = this.offscreen.getDocument();
