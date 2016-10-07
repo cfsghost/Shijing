@@ -255,7 +255,6 @@ class Component extends events.EventEmitter {
 
 		// Getting correct position
 		var pos = this.getPosition(offset);
-		console.log('POS', pos, offset, this.node.text);
 		var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 		point.style = {

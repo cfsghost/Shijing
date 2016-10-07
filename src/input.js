@@ -38,7 +38,7 @@ class Input extends events.EventEmitter {
 		this.ctx.$origin[0].addEventListener('mousedown', (e) => {
 			this.cursor.setEnd(null, null);
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
-			console.log('mouseDOWN', this.cursor);
+//			console.log('mouseDOWN', this.cursor);
 			this.cursor.show();
 			this.mousedown = true;
 

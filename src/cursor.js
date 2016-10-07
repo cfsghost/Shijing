@@ -83,7 +83,7 @@ class Cursor extends events.EventEmitter {
 
 		// Figure out position
 		var caret = node.component.getCaret(offset);
-console.log(caret);
+
 		this.caret.move(caret.x, caret.y);
 		this._setPosition(node, offset);
 
@@ -98,7 +98,6 @@ console.log(caret);
 		var textNode = range.startContainer;
 		var offset = this.startOffset = range.startOffset;
 
-console.log('_setPositionByAxis', range);
 //		range.detach();
 		
 		// We don't need text node, just getting its parent
@@ -131,7 +130,7 @@ console.log('_setPositionByAxis', range);
 
 		// Getting the correct offset by using DOM and offset of DOM
 		_offset = component.getOffset(point.DOM, point.offset);
-console.log('setByDOM', component, _offset);
+
 		// Store it
 		this._setPosition(component.node, _offset);
 
@@ -206,15 +205,17 @@ console.log('setByDOM', component, _offset);
 			return 0;
 
 		this.baseline = null;
-console.log('Cursor1', this, this.startNode, this.startOffset, offset);
+//console.log('Cursor1', this, this.startNode, this.startOffset, offset);
 
 		// Call start node to move cursor
 		var leftOffset = this.startNode.component.move(this, offset);
-console.log('MOVED', this, this.startNode, this.startOffset);
+//console.log('MOVED', this, this.startNode, this.startOffset, leftOffset);
 		if (leftOffset == 0) {
-			return leftOffset;
+			this.startNode.component.adjustCursorPosition(this, (offset > 0) ? true : false);
+			return 0;
 		}
-console.log('Cursor2', this.startNode, leftOffset);
+//console.log('Cursor2', this.startNode, leftOffset);
+
 		// Getting target index of childrens
 		var index = treeOperator.getIndex(this.startNode);
 		if (index == -1) {
@@ -226,7 +227,7 @@ console.log('Cursor2', this.startNode, leftOffset);
 		if (!parentNode)
 			return 0;
 
-		console.log('PARENT', parentNode, index, leftOffset);
+//		console.log('PARENT', parentNode, index, leftOffset);
 		if (leftOffset > 0) {
 			this.setPosition(parentNode, index + 1);
 			leftOffset--;

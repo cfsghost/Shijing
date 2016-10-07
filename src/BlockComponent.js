@@ -124,7 +124,7 @@ class BlockComponent extends Component {
 		while(target) {
 
 			var len = target.component.getCaretLength();
-			console.log('W', index, len, leftOffset, target);
+//			console.log('W', index, len, leftOffset, target);
 			if (leftOffset <= len)
 				return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
 
@@ -160,17 +160,69 @@ class BlockComponent extends Component {
 
 	adjustCursorPosition(cursor, direction) {
 
-		console.log('ADJUST CURSOR');
+//		console.log('BLOCK NODE ADJUST CURSOR', this.node, cursor.startNode, cursor.startOffset);
+
+		if (cursor.startOffset == 0) {
+
+			if (!direction) {
+
+				var index = treeOperator.getIndex(cursor.startNode);
+
+				// It's the first node
+				if (index == 0) {
+
+					// next node is the inline node inside
+					var nextNode = treeOperator.getChildrenNode(this.node, 0);
+					if (!nextNode.component.blockType) {
+						return cursor.move(1);
+					}
+
+					// Do Nothing
+					return 0;
+				}
+
+				return cursor.move(-1);
+			}
+		}
 
 		// Check nodes
 		var prevNode = treeOperator.getChildrenNode(this.node, cursor.startOffset - 1);
 		var nextNode = treeOperator.getChildrenNode(this.node, cursor.startOffset);
 
+		// It's last node
+		if (!nextNode) {
+//			console.log('NO NEXT NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+			// skip
+			if (direction) {
+				return cursor.move(1);
+			} else {
+				return cursor.move(-1);
+			}
+		}
+
+		// It's first node
+		if (!prevNode) {
+//			console.log('NO PREV NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+			// skip
+			if (direction) {
+				return cursor.move(1);
+			} else {
+
+				return;
+				// It's coming from next node which is inline component
+				if (!nextNode.component.blockType) {
+					return cursor.move(1);
+				}
+			}
+		}
+
 		if (prevNode && nextNode) {
 
 			// Should not stay between two inline nodes.
 			if (!prevNode.component.blockType && !nextNode.component.blockType) {
-				console.log('SKIP', direction ? 'NEXT' : 'BACK');
+//				console.log('BETWEEN INLINE NODE SKIP', direction ? 'NEXT' : 'BACK');
 
 				// skip
 				if (direction) {
@@ -178,9 +230,15 @@ class BlockComponent extends Component {
 				} else {
 					return cursor.move(-1);
 				}
+			} else if (prevNode.component.blockType && nextNode.component.blockType) {
+//				console.log('BETWEEN BLOCK NODE SKIP', direction ? 'NEXT' : 'BACK');
+				// skip
+				if (direction) {
+					return cursor.move(1);
+				} else {
+					return cursor.move(-1);
+				}
 			}
-
-			// TODO:
 		}
 	}
 }

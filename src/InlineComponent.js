@@ -1,3 +1,4 @@
+import treeOperator from './TreeOperator';
 import Component from './Component';
 
 class InlineComponent extends Component {
@@ -134,13 +135,28 @@ class InlineComponent extends Component {
 		var pos = cursor.startOffset + offset;
 		var leftOffset = this.setCursor(cursor, pos);
 
-		// Auto move back when cusor is working at head of content
-		if (pos == 0) {
-			if (offset < 0)
-				return leftOffset - 1;
-		}
-
 		return leftOffset;
+	}
+
+	adjustCursorPosition(cursor, direction) {
+
+//		console.log('INLINE NODE ADJUST CURSOR');
+
+		// Auto move back when cusor is working at head of content
+		if (cursor.startOffset == 0) {
+			if (!direction) {
+
+				var index = treeOperator.getIndex(cursor.startNode);
+
+				// It's the first node
+				if (index == 0) {
+					// Do Nothing
+					return 0;
+				}
+
+				return cursor.move(-1);
+			}
+		}
 	}
 
 }

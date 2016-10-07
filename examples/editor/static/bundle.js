@@ -8310,15 +8310,15 @@
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
-		var _action_dispatcher = __webpack_require__(316);
+		var _action_dispatcher = __webpack_require__(320);
 
 		var _action_dispatcher2 = _interopRequireDefault(_action_dispatcher);
 
-		var _Misc = __webpack_require__(317);
+		var _Misc = __webpack_require__(321);
 
 		var _Misc2 = _interopRequireDefault(_Misc);
 
-		var _Actions = __webpack_require__(318);
+		var _Actions = __webpack_require__(322);
 
 		var _Actions2 = _interopRequireDefault(_Actions);
 
@@ -8326,7 +8326,7 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _DocumentTree = __webpack_require__(320);
+		var _DocumentTree = __webpack_require__(324);
 
 		var _DocumentTree2 = _interopRequireDefault(_DocumentTree);
 
@@ -8340,8 +8340,8 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		__webpack_require__(321);
 		__webpack_require__(325);
+		__webpack_require__(329);
 
 		var Shijing = function (_events$EventEmitter) {
 			_inherits(Shijing, _events$EventEmitter);
@@ -8537,7 +8537,7 @@
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
-		var _SelectionManager = __webpack_require__(328);
+		var _SelectionManager = __webpack_require__(304);
 
 		var _SelectionManager2 = _interopRequireDefault(_SelectionManager);
 
@@ -8545,11 +8545,11 @@
 
 		var _Components2 = _interopRequireDefault(_Components);
 
-		var _input = __webpack_require__(314);
+		var _input = __webpack_require__(316);
 
 		var _input2 = _interopRequireDefault(_input);
 
-		var _Utils = __webpack_require__(329);
+		var _Utils = __webpack_require__(318);
 
 		var _Utils2 = _interopRequireDefault(_Utils);
 
@@ -8702,8 +8702,13 @@
 						var Initializer;
 
 						// Getting initializer
-						Initializer = _this.Components[node.type || 'hiddenNode'] || null;
-						if (!Initializer) return resolve(null);
+						if (node.isRoot) {
+							Initializer = _this.Components.root;
+						} else {
+							Initializer = _this.Components[node.type || 'hiddenNode'] || null;
+
+							if (!Initializer) return resolve(null);
+						}
 
 						// Create component
 						var component = new Initializer(_this, node, subComponents);
@@ -9412,7 +9417,7 @@
 
 					// Figure out position
 					var caret = node.component.getCaret(offset);
-					console.log(caret);
+
 					this.caret.move(caret.x, caret.y);
 					this._setPosition(node, offset);
 
@@ -9428,7 +9433,6 @@
 					var textNode = range.startContainer;
 					var offset = this.startOffset = range.startOffset;
 
-					console.log('_setPositionByAxis', range);
 					//		range.detach();
 
 					// We don't need text node, just getting its parent
@@ -9462,7 +9466,7 @@
 
 					// Getting the correct offset by using DOM and offset of DOM
 					_offset = component.getOffset(point.DOM, point.offset);
-					console.log('setByDOM', component, _offset);
+
 					// Store it
 					this._setPosition(component.node, _offset);
 
@@ -9537,15 +9541,17 @@
 					if (offset == 0) return 0;
 
 					this.baseline = null;
-					console.log('Cursor1', this, this.startNode, this.startOffset, offset);
+					//console.log('Cursor1', this, this.startNode, this.startOffset, offset);
 
 					// Call start node to move cursor
 					var leftOffset = this.startNode.component.move(this, offset);
-					console.log('MOVED', this, this.startNode, this.startOffset);
+					//console.log('MOVED', this, this.startNode, this.startOffset, leftOffset);
 					if (leftOffset == 0) {
-						return leftOffset;
+						this.startNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
+						return 0;
 					}
-					console.log('Cursor2', this.startNode, leftOffset);
+					//console.log('Cursor2', this.startNode, leftOffset);
+
 					// Getting target index of childrens
 					var index = _TreeOperator2.default.getIndex(this.startNode);
 					if (index == -1) {
@@ -9556,7 +9562,7 @@
 					var parentNode = _TreeOperator2.default.getParentNode(this.startNode);
 					if (!parentNode) return 0;
 
-					console.log('PARENT', parentNode, index, leftOffset);
+					//		console.log('PARENT', parentNode, index, leftOffset);
 					if (leftOffset > 0) {
 						this.setPosition(parentNode, index + 1);
 						leftOffset--;
@@ -9736,104 +9742,59 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(298);
-
-		var _events2 = _interopRequireDefault(_events);
-
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
-
-		var _Utils = __webpack_require__(329);
-
-		var _Utils2 = _interopRequireDefault(_Utils);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+		var SelectionManager = function () {
+			function SelectionManager(renderer) {
+				_classCallCheck(this, SelectionManager);
 
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var Selection = function (_events$EventEmitter) {
-			_inherits(Selection, _events$EventEmitter);
-
-			function Selection() {
-				_classCallCheck(this, Selection);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Selection).call(this));
-
-				_this.id = _Utils2.default.generateId();
-				_this.styles = {
-					background: '#cceeff'
-				};
-				_this.cursors = [];
-				return _this;
+				this.ctx = renderer.ctx;
+				this.selections = [];
 			}
 
-			_createClass(Selection, [{
-				key: 'getAllCursors',
-				value: function getAllCursors() {
-					return this.cursors;
+			_createClass(SelectionManager, [{
+				key: 'getAllSelections',
+				value: function getAllSelections() {
+					return this.selections;
 				}
 			}, {
-				key: 'addCursor',
-				value: function addCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
+				key: 'addSelection',
+				value: function addSelection(selection) {
+					var index = this.selections.indexOf(selection);
 					if (index != -1) return;
 
-					cursor.nodeList = [];
-
-					// Getting all nodes in range
-					_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
-						cursor.nodeList.push(node);
-					});
-
-					this.cursors.push(cursor);
+					this.selections.push(selection);
 				}
 			}, {
-				key: 'removeAllCursors',
-				value: function removeAllCursors() {
-					this.cursors = [];
-				}
-			}, {
-				key: 'removeCursor',
-				value: function removeCursor(cursor) {
-					var index = this.cursors.indexOf(cursor);
-					if (index != -1) this.cursors.splice(index, 1);
+				key: 'removeSelection',
+				value: function removeSelection(selection) {
+					var index = this.selections.indexOf(selection);
+					if (index != -1) this.selections.splice(index, 1);
 				}
 			}, {
 				key: 'update',
-				value: function update() {
+				value: function update(selection) {
+					var index = this.selections.indexOf(selection);
+					if (index != -1) {
 
-					this.cursors.forEach(function (cursor) {
+						// Remove all dom of current selection
+						$(this.ctx.$workarea).find('[shijingref=' + selection.id + ']').remove();
 
-						if (!cursor.ancestorNode) return;
-
-						// Re-render component
-						var task = cursor.ancestorNode.component.refresh();
-						task.then(function () {
-							// Do nothing
-						});
-					});
+						selection.update();
+					}
 				}
-				/*
-		  	update() {
-		  		this.cursors.forEach((cursor) => {
-		  			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
-		  				console.log(node);
-		  			});
-		  		});
-		  	}
-		  */
-
 			}]);
 
-			return Selection;
-		}(_events2.default.EventEmitter);
+			return SelectionManager;
+		}();
 
-		exports.default = Selection;
+		exports.default = SelectionManager;
 
 	/***/ },
 	/* 305 */
@@ -9845,10 +9806,11 @@
 			value: true
 		});
 		exports.default = {
+			root: __webpack_require__(331).default,
 			inline: __webpack_require__(306).default,
 			hiddenNode: __webpack_require__(309).default,
 			image: __webpack_require__(311).default,
-			paragraph: __webpack_require__(312).default
+			paragraph: __webpack_require__(313).default
 		};
 
 	/***/ },
@@ -9927,6 +9889,10 @@
 		});
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
 		var _Component2 = __webpack_require__(308);
 
@@ -10082,12 +10048,29 @@
 					var pos = cursor.startOffset + offset;
 					var leftOffset = this.setCursor(cursor, pos);
 
-					// Auto move back when cusor is working at head of content
-					if (pos == 0) {
-						if (offset < 0) return leftOffset - 1;
-					}
-
 					return leftOffset;
+				}
+			}, {
+				key: 'adjustCursorPosition',
+				value: function adjustCursorPosition(cursor, direction) {
+
+					//		console.log('INLINE NODE ADJUST CURSOR');
+
+					// Auto move back when cusor is working at head of content
+					if (cursor.startOffset == 0) {
+						if (!direction) {
+
+							var index = _TreeOperator2.default.getIndex(cursor.startNode);
+
+							// It's the first node
+							if (index == 0) {
+								// Do Nothing
+								return 0;
+							}
+
+							return cursor.move(-1);
+						}
+					}
 				}
 			}]);
 
@@ -10448,7 +10431,6 @@
 
 					// Getting correct position
 					var pos = this.getPosition(offset);
-					console.log('POS', pos, offset, this.node.text);
 					var point = this.ctx.Misc.figurePosition(pos.DOM, pos.offset, this.ctx.$overlay[0]);
 
 					point.style = {
@@ -10756,7 +10738,7 @@
 					while (target) {
 
 						var len = target.component.getCaretLength();
-						console.log('W', index, len, leftOffset, target);
+						//			console.log('W', index, len, leftOffset, target);
 						if (leftOffset <= len) return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
 
 						leftOffset -= len;
@@ -10792,17 +10774,69 @@
 				key: 'adjustCursorPosition',
 				value: function adjustCursorPosition(cursor, direction) {
 
-					console.log('ADJUST CURSOR');
+					//		console.log('BLOCK NODE ADJUST CURSOR', this.node, cursor.startNode, cursor.startOffset);
+
+					if (cursor.startOffset == 0) {
+
+						if (!direction) {
+
+							var index = _TreeOperator2.default.getIndex(cursor.startNode);
+
+							// It's the first node
+							if (index == 0) {
+
+								// next node is the inline node inside
+								var nextNode = _TreeOperator2.default.getChildrenNode(this.node, 0);
+								if (!nextNode.component.blockType) {
+									return cursor.move(1);
+								}
+
+								// Do Nothing
+								return 0;
+							}
+
+							return cursor.move(-1);
+						}
+					}
 
 					// Check nodes
 					var prevNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset - 1);
 					var nextNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset);
 
+					// It's last node
+					if (!nextNode) {
+						//			console.log('NO NEXT NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+						// skip
+						if (direction) {
+							return cursor.move(1);
+						} else {
+							return cursor.move(-1);
+						}
+					}
+
+					// It's first node
+					if (!prevNode) {
+						//			console.log('NO PREV NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+						// skip
+						if (direction) {
+							return cursor.move(1);
+						} else {
+
+							return;
+							// It's coming from next node which is inline component
+							if (!nextNode.component.blockType) {
+								return cursor.move(1);
+							}
+						}
+					}
+
 					if (prevNode && nextNode) {
 
 						// Should not stay between two inline nodes.
 						if (!prevNode.component.blockType && !nextNode.component.blockType) {
-							console.log('SKIP', direction ? 'NEXT' : 'BACK');
+							//				console.log('BETWEEN INLINE NODE SKIP', direction ? 'NEXT' : 'BACK');
 
 							// skip
 							if (direction) {
@@ -10810,9 +10844,15 @@
 							} else {
 								return cursor.move(-1);
 							}
+						} else if (prevNode.component.blockType && nextNode.component.blockType) {
+							//				console.log('BETWEEN BLOCK NODE SKIP', direction ? 'NEXT' : 'BACK');
+							// skip
+							if (direction) {
+								return cursor.move(1);
+							} else {
+								return cursor.move(-1);
+							}
 						}
-
-						// TODO:
 					}
 				}
 			}]);
@@ -10838,7 +10878,7 @@
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
-		var _ImageLoader = __webpack_require__(327);
+		var _ImageLoader = __webpack_require__(312);
 
 		var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
@@ -11139,6 +11179,99 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var ImageLoader = function (_events$EventEmitter) {
+			_inherits(ImageLoader, _events$EventEmitter);
+
+			function ImageLoader() {
+				_classCallCheck(this, ImageLoader);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
+
+				_this.caches = {};
+				return _this;
+			}
+
+			_createClass(ImageLoader, [{
+				key: 'exists',
+				value: function exists(src) {
+					return this.caches[src];
+				}
+			}, {
+				key: '_load',
+				value: function _load(src) {
+
+					return this.caches[src] || null;
+				}
+			}, {
+				key: 'load',
+				value: function load(src) {
+					var _this2 = this;
+
+					var obj = this._load(src);
+					if (obj) {
+						return obj;
+					}
+
+					if (this.caches.hasOwnProperty(src)) {
+						return null;
+					}
+
+					// Register and ready to load
+					this.caches[src] = null;
+
+					// Create a new image object to load image and store it to be cache
+					var image = new Image();
+					image.onload = function () {
+
+						var canvas = document.createElement('canvas');
+						canvas.width = image.naturalWidth;
+						canvas.height = image.naturalHeight;
+						canvas.getContext('2d').drawImage(image, 0, 0);
+
+						var img = new Image();
+						img.src = canvas.toDataURL('image/png');
+
+						// Cache
+						_this2.caches[src] = img;
+
+						// Fire event
+						_this2.emit(src, img);
+					};
+					image.src = src;
+
+					return null;
+				}
+			}]);
+
+			return ImageLoader;
+		}(_events2.default.EventEmitter);
+
+		exports.default = ImageLoader;
+
+	/***/ },
+	/* 313 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 		var _TreeOperator = __webpack_require__(300);
@@ -11149,7 +11282,7 @@
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
-		var _inline = __webpack_require__(313);
+		var _inline = __webpack_require__(314);
 
 		var _inline2 = _interopRequireDefault(_inline);
 
@@ -11462,7 +11595,7 @@
 		exports.default = Paragraph;
 
 	/***/ },
-	/* 313 */
+	/* 314 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11473,7 +11606,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _LineView = __webpack_require__(330);
+		var _LineView = __webpack_require__(315);
 
 		var _LineView2 = _interopRequireDefault(_LineView);
 
@@ -11693,7 +11826,120 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 314 */
+	/* 315 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var LineView = function () {
+			function LineView(rootDOM) {
+				_classCallCheck(this, LineView);
+
+				this.rootDOM = rootDOM;
+				this.items = [];
+			}
+
+			_createClass(LineView, [{
+				key: 'getItems',
+				value: function getItems() {
+					return this.items;
+				}
+			}, {
+				key: 'getDOMs',
+				value: function getDOMs(id) {
+					if (!id) return this.getItems();
+
+					var doms = [];
+					for (var index in this.items) {
+						var line = this.items[index];
+						var dom = $(line).find('[shijingref=' + id + ']').first();
+
+						if (dom.length) {
+							doms.push(dom[0]);
+						} else if (doms.length > 0 && !dom.length) {
+							// Not found DOM anymore
+							break;
+						}
+					}
+
+					return doms;
+				}
+			}, {
+				key: 'getLineContent',
+				value: function getLineContent(index) {
+					return this.items[index].children('.shijing-lineview-content')[0];
+				}
+			}, {
+				key: 'getOffset',
+				value: function getOffset(DOM) {
+
+					var range = document.createRange();
+					range.selectNode(DOM);
+
+					var offset = 0;
+
+					// Finding line view which contains range
+					for (var index in this.items) {
+						var line = this.getLineContent(index);
+
+						if (range.intersectsNode(line)) break;
+
+						// Count length of text node before line view which contains range
+						offset += line.childNodes[0].length;
+					}
+
+					return offset;
+				}
+			}, {
+				key: 'addRange',
+				value: function addRange(range) {
+
+					var lineContent;
+					if (range.startContainer.parentNode != this.rootDOM && range.startContainer == range.endContainer) {
+						// If it's the line which in the end of lines
+
+						// Clone container
+						var newContainer = range.startContainer.parentNode.cloneNode(false);
+
+						// append content
+						var content = range.cloneContents();
+						$(newContainer).append(content);
+
+						lineContent = newContainer;
+					} else {
+						lineContent = range.cloneContents();
+					}
+
+					// Create line view to store a line data
+					var $lineView = $('<div>').addClass('shijing-lineview').css({
+						//					background: '#cceeff',
+						//				borderBottom: '1px solid black'
+					});
+
+					var $lineContent = $('<div>').addClass('shijing-lineview-content').append(lineContent);
+
+					$lineView.append($lineContent);
+
+					this.items.push($lineView);
+				}
+			}]);
+
+			return LineView;
+		}();
+
+		exports.default = LineView;
+		;
+
+	/***/ },
+	/* 316 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11710,11 +11956,11 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _Selection = __webpack_require__(304);
+		var _Selection = __webpack_require__(317);
 
 		var _Selection2 = _interopRequireDefault(_Selection);
 
-		var _input_handler = __webpack_require__(315);
+		var _input_handler = __webpack_require__(319);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
@@ -11767,7 +12013,7 @@
 				_this.ctx.$origin[0].addEventListener('mousedown', function (e) {
 					_this.cursor.setEnd(null, null);
 					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
-					console.log('mouseDOWN', _this.cursor);
+					//			console.log('mouseDOWN', this.cursor);
 					_this.cursor.show();
 					_this.mousedown = true;
 
@@ -11819,7 +12065,159 @@
 		exports.default = Input;
 
 	/***/ },
-	/* 315 */
+	/* 317 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _Utils = __webpack_require__(318);
+
+		var _Utils2 = _interopRequireDefault(_Utils);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Selection = function (_events$EventEmitter) {
+			_inherits(Selection, _events$EventEmitter);
+
+			function Selection() {
+				_classCallCheck(this, Selection);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Selection).call(this));
+
+				_this.id = _Utils2.default.generateId();
+				_this.styles = {
+					background: '#cceeff'
+				};
+				_this.cursors = [];
+				return _this;
+			}
+
+			_createClass(Selection, [{
+				key: 'getAllCursors',
+				value: function getAllCursors() {
+					return this.cursors;
+				}
+			}, {
+				key: 'addCursor',
+				value: function addCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) return;
+
+					cursor.nodeList = [];
+
+					// Getting all nodes in range
+					_TreeOperator2.default.traverse(cursor.startNode, cursor.endNode, function (node) {
+						cursor.nodeList.push(node);
+					});
+
+					this.cursors.push(cursor);
+				}
+			}, {
+				key: 'removeAllCursors',
+				value: function removeAllCursors() {
+					this.cursors = [];
+				}
+			}, {
+				key: 'removeCursor',
+				value: function removeCursor(cursor) {
+					var index = this.cursors.indexOf(cursor);
+					if (index != -1) this.cursors.splice(index, 1);
+				}
+			}, {
+				key: 'update',
+				value: function update() {
+
+					this.cursors.forEach(function (cursor) {
+
+						if (!cursor.ancestorNode) return;
+
+						// Re-render component
+						var task = cursor.ancestorNode.component.refresh();
+						task.then(function () {
+							// Do nothing
+						});
+					});
+				}
+				/*
+		  	update() {
+		  		this.cursors.forEach((cursor) => {
+		  			treeOperator.traverse(cursor.startNode, cursor.endNode, function(node) {
+		  				console.log(node);
+		  			});
+		  		});
+		  	}
+		  */
+
+			}]);
+
+			return Selection;
+		}(_events2.default.EventEmitter);
+
+		exports.default = Selection;
+
+	/***/ },
+	/* 318 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+		exports.default = {
+			generateId: function generateId() {
+				return Math.random().toString().substr(2) + Date.now();
+			},
+			getCurrentStyleRules: function getCurrentStyleRules() {
+
+				var rules = [];
+				for (var index = 0; index < document.styleSheets.length; index++) {
+					var sheet = document.styleSheets[index];
+
+					if (!sheet.cssRules) continue;
+
+					var found = false;
+					for (var i = 0; i < sheet.cssRules.length; i++) {
+						var rule = sheet.cssRules[i];
+
+						if (!rule.selectorText) continue;
+
+						if (rule.selectorText.search('.shijing') == -1) continue;
+
+						rules.push(rule);
+
+						found = true;
+					}
+
+					if (found) break;
+				}
+
+				return rules;
+			}
+		};
+
+	/***/ },
+	/* 319 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12103,7 +12501,7 @@
 		exports.default = InputHandler;
 
 	/***/ },
-	/* 316 */
+	/* 320 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12139,7 +12537,7 @@
 		exports.default = ActionDispatcher;
 
 	/***/ },
-	/* 317 */
+	/* 321 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12372,7 +12770,7 @@
 		exports.default = Misc;
 
 	/***/ },
-	/* 318 */
+	/* 322 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12381,7 +12779,7 @@
 			value: true
 		});
 
-		var _Text = __webpack_require__(319);
+		var _Text = __webpack_require__(323);
 
 		var _Text2 = _interopRequireDefault(_Text);
 
@@ -12415,7 +12813,7 @@
 		exports.default = Actions;
 
 	/***/ },
-	/* 319 */
+	/* 323 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -12433,7 +12831,7 @@
 		};
 
 	/***/ },
-	/* 320 */
+	/* 324 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12467,6 +12865,7 @@
 				value: function load(ast) {
 					this.ast = ast;
 					this.ast.root.id = _TreeOperator2.default.generateId();
+					_TreeOperator2.default.setInternalProperty(this.ast.root, 'isRoot', true);
 					this.initializeNodes(this.ast.root);
 				}
 			}, {
@@ -12526,16 +12925,16 @@
 		exports.default = DocumentTree;
 
 	/***/ },
-	/* 321 */
+	/* 325 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(322);
+		var content = __webpack_require__(326);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(324)(content, {});
+		var update = __webpack_require__(328)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12552,10 +12951,10 @@
 		}
 
 	/***/ },
-	/* 322 */
+	/* 326 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(323)();
+		exports = module.exports = __webpack_require__(327)();
 		// imports
 
 
@@ -12566,7 +12965,7 @@
 
 
 	/***/ },
-	/* 323 */
+	/* 327 */
 	/***/ function(module, exports) {
 
 		/*
@@ -12622,7 +13021,7 @@
 
 
 	/***/ },
-	/* 324 */
+	/* 328 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -12874,16 +13273,16 @@
 
 
 	/***/ },
-	/* 325 */
+	/* 329 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(326);
+		var content = __webpack_require__(330);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(324)(content, {});
+		var update = __webpack_require__(328)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12900,10 +13299,10 @@
 		}
 
 	/***/ },
-	/* 326 */
+	/* 330 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(323)();
+		exports = module.exports = __webpack_require__(327)();
 		// imports
 
 
@@ -12914,7 +13313,7 @@
 
 
 	/***/ },
-	/* 327 */
+	/* 331 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12925,9 +13324,15 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(298);
+		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-		var _events2 = _interopRequireDefault(_events);
+		var _BlockComponent = __webpack_require__(310);
+
+		var _BlockComponent2 = _interopRequireDefault(_BlockComponent);
+
+		var _hiddenNode = __webpack_require__(309);
+
+		var _hiddenNode2 = _interopRequireDefault(_hiddenNode);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12937,294 +13342,37 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		var ImageLoader = function (_events$EventEmitter) {
-			_inherits(ImageLoader, _events$EventEmitter);
+		var Root = function (_HiddenNode) {
+			_inherits(Root, _HiddenNode);
 
-			function ImageLoader() {
-				_classCallCheck(this, ImageLoader);
+			function Root() {
+				_classCallCheck(this, Root);
 
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ImageLoader).call(this));
-
-				_this.caches = {};
-				return _this;
+				return _possibleConstructorReturn(this, Object.getPrototypeOf(Root).apply(this, arguments));
 			}
 
-			_createClass(ImageLoader, [{
-				key: 'exists',
-				value: function exists(src) {
-					return this.caches[src];
-				}
-			}, {
-				key: '_load',
-				value: function _load(src) {
+			_createClass(Root, [{
+				key: 'adjustCursorPosition',
+				value: function adjustCursorPosition(cursor, direction) {
 
-					return this.caches[src] || null;
-				}
-			}, {
-				key: 'load',
-				value: function load(src) {
-					var _this2 = this;
+					//		console.log('ROOT NODE ADJUST CURSOR');
 
-					var obj = this._load(src);
-					if (obj) {
-						return obj;
-					}
+					// It's end of all nodes
+					if (cursor.startOffset == this.node.childrens.length) {
 
-					if (this.caches.hasOwnProperty(src)) {
-						return null;
-					}
-
-					// Register and ready to load
-					this.caches[src] = null;
-
-					// Create a new image object to load image and store it to be cache
-					var image = new Image();
-					image.onload = function () {
-
-						var canvas = document.createElement('canvas');
-						canvas.width = image.naturalWidth;
-						canvas.height = image.naturalHeight;
-						canvas.getContext('2d').drawImage(image, 0, 0);
-
-						var img = new Image();
-						img.src = canvas.toDataURL('image/png');
-
-						// Cache
-						_this2.caches[src] = img;
-
-						// Fire event
-						_this2.emit(src, img);
-					};
-					image.src = src;
-
-					return null;
-				}
-			}]);
-
-			return ImageLoader;
-		}(_events2.default.EventEmitter);
-
-		exports.default = ImageLoader;
-
-	/***/ },
-	/* 328 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		var _TreeOperator = __webpack_require__(300);
-
-		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var SelectionManager = function () {
-			function SelectionManager(renderer) {
-				_classCallCheck(this, SelectionManager);
-
-				this.ctx = renderer.ctx;
-				this.selections = [];
-			}
-
-			_createClass(SelectionManager, [{
-				key: 'getAllSelections',
-				value: function getAllSelections() {
-					return this.selections;
-				}
-			}, {
-				key: 'addSelection',
-				value: function addSelection(selection) {
-					var index = this.selections.indexOf(selection);
-					if (index != -1) return;
-
-					this.selections.push(selection);
-				}
-			}, {
-				key: 'removeSelection',
-				value: function removeSelection(selection) {
-					var index = this.selections.indexOf(selection);
-					if (index != -1) this.selections.splice(index, 1);
-				}
-			}, {
-				key: 'update',
-				value: function update(selection) {
-					var index = this.selections.indexOf(selection);
-					if (index != -1) {
-
-						// Remove all dom of current selection
-						$(this.ctx.$workarea).find('[shijingref=' + selection.id + ']').remove();
-
-						selection.update();
-					}
-				}
-			}]);
-
-			return SelectionManager;
-		}();
-
-		exports.default = SelectionManager;
-
-	/***/ },
-	/* 329 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-		exports.default = {
-			generateId: function generateId() {
-				return Math.random().toString().substr(2) + Date.now();
-			},
-			getCurrentStyleRules: function getCurrentStyleRules() {
-
-				var rules = [];
-				for (var index = 0; index < document.styleSheets.length; index++) {
-					var sheet = document.styleSheets[index];
-
-					if (!sheet.cssRules) continue;
-
-					var found = false;
-					for (var i = 0; i < sheet.cssRules.length; i++) {
-						var rule = sheet.cssRules[i];
-
-						if (!rule.selectorText) continue;
-
-						if (rule.selectorText.search('.shijing') == -1) continue;
-
-						rules.push(rule);
-
-						found = true;
-					}
-
-					if (found) break;
-				}
-
-				return rules;
-			}
-		};
-
-	/***/ },
-	/* 330 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var LineView = function () {
-			function LineView(rootDOM) {
-				_classCallCheck(this, LineView);
-
-				this.rootDOM = rootDOM;
-				this.items = [];
-			}
-
-			_createClass(LineView, [{
-				key: 'getItems',
-				value: function getItems() {
-					return this.items;
-				}
-			}, {
-				key: 'getDOMs',
-				value: function getDOMs(id) {
-					if (!id) return this.getItems();
-
-					var doms = [];
-					for (var index in this.items) {
-						var line = this.items[index];
-						var dom = $(line).find('[shijingref=' + id + ']').first();
-
-						if (dom.length) {
-							doms.push(dom[0]);
-						} else if (doms.length > 0 && !dom.length) {
-							// Not found DOM anymore
-							break;
+						if (direction) {
+							return cursor.move(-1);
 						}
 					}
 
-					return doms;
-				}
-			}, {
-				key: 'getLineContent',
-				value: function getLineContent(index) {
-					return this.items[index].children('.shijing-lineview-content')[0];
-				}
-			}, {
-				key: 'getOffset',
-				value: function getOffset(DOM) {
-
-					var range = document.createRange();
-					range.selectNode(DOM);
-
-					var offset = 0;
-
-					// Finding line view which contains range
-					for (var index in this.items) {
-						var line = this.getLineContent(index);
-
-						if (range.intersectsNode(line)) break;
-
-						// Count length of text node before line view which contains range
-						offset += line.childNodes[0].length;
-					}
-
-					return offset;
-				}
-			}, {
-				key: 'addRange',
-				value: function addRange(range) {
-
-					var lineContent;
-					if (range.startContainer.parentNode != this.rootDOM && range.startContainer == range.endContainer) {
-						// If it's the line which in the end of lines
-
-						// Clone container
-						var newContainer = range.startContainer.parentNode.cloneNode(false);
-
-						// append content
-						var content = range.cloneContents();
-						$(newContainer).append(content);
-
-						lineContent = newContainer;
-					} else {
-						lineContent = range.cloneContents();
-					}
-
-					// Create line view to store a line data
-					var $lineView = $('<div>').addClass('shijing-lineview').css({
-						//					background: '#cceeff',
-						//				borderBottom: '1px solid black'
-					});
-
-					var $lineContent = $('<div>').addClass('shijing-lineview-content').append(lineContent);
-
-					$lineView.append($lineContent);
-
-					this.items.push($lineView);
+					_get(Object.getPrototypeOf(Root.prototype), 'adjustCursorPosition', this).call(this, cursor, direction);
 				}
 			}]);
 
-			return LineView;
-		}();
+			return Root;
+		}(_hiddenNode2.default);
 
-		exports.default = LineView;
-		;
+		exports.default = Root;
 
 	/***/ }
 	/******/ ]);

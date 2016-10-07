@@ -146,9 +146,14 @@ class Renderer {
 			var Initializer;
 
 			// Getting initializer
-			Initializer = this.Components[node.type || 'hiddenNode'] || null;
-			if (!Initializer)
-				return resolve(null);
+			if (node.isRoot) {
+				Initializer = this.Components.root;
+			} else {
+				Initializer = this.Components[node.type || 'hiddenNode'] || null;
+
+				if (!Initializer)
+					return resolve(null);
+			}
 			
 			// Create component
 			var component = new Initializer(this, node, subComponents);
