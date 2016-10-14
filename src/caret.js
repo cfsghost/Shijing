@@ -16,6 +16,10 @@ class Caret {
 		this.isShowed = false;
 	}
 
+	release() {
+		this.$dom.remove();
+	}
+
 	move(x, y) {
 
 		this.x = x;

@@ -197,13 +197,19 @@ class TreeOperator {
 		if (node.text == undefined)
 			return;
 
-		//console.log(offset + 1, node.text.length);
-		//console.log(node.text.substr(0, offset + 1), node.text.substring(offset, node.text.length));
-
 		node.text = [
 			node.text.substr(0, offset),
 			value,
 			node.text.substring(offset, node.text.length)
+		].join('');
+	}
+
+	replace(startNode, startOffset, endNode, endOffset, value) {
+console.log(startNode);
+		startNode.text = [
+			startNode.text.substr(0, startOffset),
+			value,
+			startNode.text.substring(endOffset, startNode.text.length)
 		].join('');
 	}
 

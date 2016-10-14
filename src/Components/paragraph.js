@@ -236,6 +236,7 @@ export default class Paragraph extends BlockComponent {
 				var layout = new InlineLayout(this, offscreen);
 				try {
 					//this.lineViews = layout.grabLines($DOM[0]);
+//					console.log('PPPP', this.node);
 					this.lineView = layout.grabLines($DOM[0]);
 				} catch(e) {
 					console.log(e);

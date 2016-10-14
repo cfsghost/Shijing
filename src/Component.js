@@ -292,7 +292,9 @@ class Component extends events.EventEmitter {
 		if (!this.blockType) {
 			return this.findBlockParent().refresh();
 		}
-
+//console.log('REFRESH', this.node);
+//		var err = new Error();
+//		console.log(err);
 		return new Promise((resolve, reject) => {
 
 			// Re-render childrens

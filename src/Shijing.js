@@ -1,6 +1,5 @@
 import events from 'events';
 import Renderer from './renderer';
-import ActionDispatcher from './action_dispatcher';
 import Misc from './Misc';
 import Actions from './Actions';
 import treeOperator from './TreeOperator';
@@ -14,7 +13,6 @@ class Shijing extends events.EventEmitter {
 	constructor(el) {
 		super();
 
-		this.actionDispatcher = new ActionDispatcher();
 		this.actions = new Actions(this);
 		this.documentTree = new DocumentTree();
 
@@ -119,6 +117,11 @@ class Shijing extends events.EventEmitter {
 			'padding-left': margin.left,
 			'padding-right': margin.right,
 		});
+	}
+
+	dispatch(action) {
+
+		return this.actions.dispatch(action);
 	}
 
 	load(source) {

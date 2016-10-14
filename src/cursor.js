@@ -27,7 +27,12 @@ class Cursor extends events.EventEmitter {
 		this.caret = new Caret();
 		this.caret.$dom.appendTo(this.$dom);
 
-		renderer.ctx.$overlay.append(this.$dom);
+//		renderer.ctx.$overlay.append(this.$dom);
+	}
+
+	release() {
+		this.caret.release();
+		this.$dom.remove();
 	}
 
 	update() {

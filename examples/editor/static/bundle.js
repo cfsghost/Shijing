@@ -8310,10 +8310,6 @@
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
-		var _action_dispatcher = __webpack_require__(320);
-
-		var _action_dispatcher2 = _interopRequireDefault(_action_dispatcher);
-
 		var _Misc = __webpack_require__(321);
 
 		var _Misc2 = _interopRequireDefault(_Misc);
@@ -8326,7 +8322,7 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _DocumentTree = __webpack_require__(324);
+		var _DocumentTree = __webpack_require__(323);
 
 		var _DocumentTree2 = _interopRequireDefault(_DocumentTree);
 
@@ -8340,8 +8336,8 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		__webpack_require__(325);
-		__webpack_require__(329);
+		__webpack_require__(324);
+		__webpack_require__(328);
 
 		var Shijing = function (_events$EventEmitter) {
 			_inherits(Shijing, _events$EventEmitter);
@@ -8351,7 +8347,6 @@
 
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Shijing).call(this));
 
-				_this.actionDispatcher = new _action_dispatcher2.default();
 				_this.actions = new _Actions2.default(_this);
 				_this.documentTree = new _DocumentTree2.default();
 
@@ -8441,6 +8436,12 @@
 						'padding-left': margin.left,
 						'padding-right': margin.right
 					});
+				}
+			}, {
+				key: 'dispatch',
+				value: function dispatch(action) {
+
+					return this.actions.dispatch(action);
 				}
 			}, {
 				key: 'load',
@@ -8533,23 +8534,19 @@
 
 		var _offscreen2 = _interopRequireDefault(_offscreen);
 
-		var _cursor = __webpack_require__(302);
-
-		var _cursor2 = _interopRequireDefault(_cursor);
-
-		var _SelectionManager = __webpack_require__(304);
+		var _SelectionManager = __webpack_require__(302);
 
 		var _SelectionManager2 = _interopRequireDefault(_SelectionManager);
 
-		var _Components = __webpack_require__(305);
+		var _Components = __webpack_require__(303);
 
 		var _Components2 = _interopRequireDefault(_Components);
 
-		var _input = __webpack_require__(316);
+		var _input = __webpack_require__(315);
 
 		var _input2 = _interopRequireDefault(_input);
 
-		var _Utils = __webpack_require__(318);
+		var _Utils = __webpack_require__(317);
 
 		var _Utils2 = _interopRequireDefault(_Utils);
 
@@ -8570,8 +8567,7 @@
 				var rules = _Utils2.default.getCurrentStyleRules();
 				this.offscreen.addStyleRules(rules);
 
-				// Initializing caret
-				this.caret = new _cursor2.default(this);
+				// Input for user who stay infront of screen
 				this.input = new _input2.default(this);
 				/*
 		  		this.ctx.on('paperSizeChanged', (width, height) => {
@@ -9020,10 +9016,13 @@
 					// TODO: it should update sub nodes when it's not pure text
 					if (node.text == undefined) return;
 
-					//console.log(offset + 1, node.text.length);
-					//console.log(node.text.substr(0, offset + 1), node.text.substring(offset, node.text.length));
-
 					node.text = [node.text.substr(0, offset), value, node.text.substring(offset, node.text.length)].join('');
+				}
+			}, {
+				key: 'replace',
+				value: function replace(startNode, startOffset, endNode, endOffset, value) {
+					console.log(startNode);
+					startNode.text = [startNode.text.substr(0, startOffset), value, startNode.text.substring(endOffset, startNode.text.length)].join('');
 				}
 			}, {
 				key: 'indexOf',
@@ -9311,437 +9310,6 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _events = __webpack_require__(298);
-
-		var _events2 = _interopRequireDefault(_events);
-
-		var _TreeOperator = __webpack_require__(300);
-
-		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
-
-		var _caret = __webpack_require__(303);
-
-		var _caret2 = _interopRequireDefault(_caret);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var Cursor = function (_events$EventEmitter) {
-			_inherits(Cursor, _events$EventEmitter);
-
-			function Cursor(renderer) {
-				_classCallCheck(this, Cursor);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
-
-				_this.ctx = renderer.ctx;
-				_this.renderer = renderer;
-				_this.ancestorNode = null;
-				_this.startOffset = -1;
-				_this.startNode = null;
-				_this.endNode = null;
-				_this.endOffset = null;
-				_this.baseline = null;
-				_this.$dom = $('<div>').addClass('shijing-cursor').css({
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					zIndex: 10000
-				});
-
-				_this.caret = new _caret2.default();
-				_this.caret.$dom.appendTo(_this.$dom);
-
-				renderer.ctx.$overlay.append(_this.$dom);
-				return _this;
-			}
-
-			_createClass(Cursor, [{
-				key: 'update',
-				value: function update() {
-
-					// Figure out position
-					var caret = this.startNode.component.getCaret(this.startOffset);
-
-					this.caret.move(caret.x, caret.y);
-					this.caret.setStyle(Object.assign({
-						height: caret.height,
-						fontSize: $(caret.DOM).css('font-size')
-					}, this.startNode.style || {}));
-
-					this.emit('update', this);
-				}
-			}, {
-				key: '_setPosition',
-				value: function _setPosition(node, offset) {
-					this.startOffset = offset;
-
-					// Change component
-					var old = this.startNode;
-					this.startNode = node;
-
-					var changed = false;
-					if (old && this.startNode) {
-						if (old.id != this.startNode.id) {
-							changed = true;
-						}
-					} else if (old != this.startNode) {
-						changed = true;
-					}
-
-					if (changed) {
-
-						// fire events
-						if (old) {
-							old.component.onBlur(this);
-						}
-
-						// trigger onFocus
-						if (this.startNode) {
-							this.startNode.component.onFocus(this);
-						}
-					}
-
-					setTimeout(function () {
-						this.emit('update', this);
-					}.bind(this), 0);
-				}
-			}, {
-				key: 'setPosition',
-				value: function setPosition(node, offset) {
-
-					// Figure out position
-					var caret = node.component.getCaret(offset);
-
-					this.caret.move(caret.x, caret.y);
-					this._setPosition(node, offset);
-
-					this.caret.setStyle(Object.assign({
-						height: caret.height,
-						fontSize: $(caret.DOM).css('font-size')
-					}, node.style || {}));
-				}
-			}, {
-				key: '_setPositionByAxis',
-				value: function _setPositionByAxis(x, y) {
-					var range = document.caretRangeFromPoint(x, y);
-					var textNode = range.startContainer;
-					var offset = this.startOffset = range.startOffset;
-
-					//		range.detach();
-
-					// We don't need text node, just getting its parent
-					var parentNode = textNode;
-					if (textNode.nodeType == Node.TEXT_NODE) {
-						parentNode = textNode.parentNode;
-					}
-
-					// Set position
-					this.setPositionByDOM(parentNode, offset);
-				}
-			}, {
-				key: 'setPositionByAxis',
-				value: function setPositionByAxis(x, y) {
-					this.baseline = null;
-					this._setPositionByAxis(x, y);
-				}
-			}, {
-				key: 'setPositionByDOM',
-				value: function setPositionByDOM(dom, offset) {
-
-					var _offset = offset;
-
-					var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
-
-					this.caret.move(point.x, point.y);
-
-					// Find out component
-					var component = this.renderer.getOwnerByDOM(dom);
-					if (!component) return;
-
-					// Getting the correct offset by using DOM and offset of DOM
-					_offset = component.getOffset(point.DOM, point.offset);
-
-					// Store it
-					this._setPosition(component.node, _offset);
-
-					// Apply styles
-					this.caret.setStyle(Object.assign({
-						height: point.height,
-						fontSize: $(dom).css('font-size')
-					}, component.node.style || {}));
-				}
-			}, {
-				key: 'getCurrentPosition',
-				value: function getCurrentPosition() {
-
-					return {
-						startNode: this.startNode,
-						startOffset: this.startOffset
-					};
-				}
-			}, {
-				key: 'moveUp',
-				value: function moveUp() {
-
-					var y;
-					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
-					if (lineView) {
-						// Previous line
-						if (lineView.index > 0) {
-							var $lineView = lineView.arr[lineView.index - 1];
-							y = $lineView.position().top;
-						}
-					}
-
-					var $container = this.ctx.$overlay;
-
-					if (this.baseline == null) this.baseline = this.caret.x;
-
-					if (y == undefined) {
-						y = this.caret.y - this.caret.$dom.height();
-						if (y < 0) {
-							y = 0;
-						}
-					}
-
-					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
-				}
-			}, {
-				key: 'moveDown',
-				value: function moveDown() {
-
-					var y;
-					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
-					if (lineView) {
-						// Next line
-						if (lineView.index + 1 <= lineView.arr.length) {
-							var $lineView = lineView.arr[lineView.index + 1];
-							y = $lineView.position().top;
-						}
-					}
-
-					var $container = this.ctx.$overlay;
-
-					if (this.baseline == null) this.baseline = this.caret.x;
-
-					if (y == undefined) y = this.caret.y + this.caret.$dom.height();
-
-					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
-				}
-			}, {
-				key: 'move',
-				value: function move(offset) {
-
-					if (offset == 0) return 0;
-
-					this.baseline = null;
-					//console.log('Cursor1', this, this.startNode, this.startOffset, offset);
-
-					// Call start node to move cursor
-					var leftOffset = this.startNode.component.move(this, offset);
-					//console.log('MOVED', this, this.startNode, this.startOffset, leftOffset);
-					if (leftOffset == 0) {
-						this.startNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
-						return 0;
-					}
-					//console.log('Cursor2', this.startNode, leftOffset);
-
-					// Getting target index of childrens
-					var index = _TreeOperator2.default.getIndex(this.startNode);
-					if (index == -1) {
-						return 0;
-					}
-
-					// Put curosr on parent
-					var parentNode = _TreeOperator2.default.getParentNode(this.startNode);
-					if (!parentNode) return 0;
-
-					//		console.log('PARENT', parentNode, index, leftOffset);
-					if (leftOffset > 0) {
-						this.setPosition(parentNode, index + 1);
-						leftOffset--;
-					} else {
-						this.setPosition(parentNode, index);
-						leftOffset++;
-					}
-
-					parentNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
-
-					return this.move(leftOffset);
-				}
-			}, {
-				key: 'setStart',
-				value: function setStart(node, offset) {
-					this.startNode = node;
-					this.startOffset = offset;
-					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
-				}
-			}, {
-				key: 'setEnd',
-				value: function setEnd(node, offset) {
-					this.endNode = node;
-					this.endOffset = offset;
-					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
-				}
-			}, {
-				key: 'deleteContents',
-				value: function deleteContents() {
-					var _this2 = this;
-
-					this.nodeList = [];
-
-					// Getting all nodes in range
-					_TreeOperator2.default.traverse(this.startNode, this.endNode, function (node) {
-						_this2.nodeList.push(node);
-					});
-				}
-			}, {
-				key: 'show',
-				value: function show() {
-					/*
-		   // Range was selected
-		   if (this.endNode != null && this.endOffset != null) {
-		   	treeOperator.getAncestorNode(this.startNode, this.endNode);
-		   }
-		   */
-					this.caret.show();
-				}
-			}, {
-				key: 'hide',
-				value: function hide() {
-					this.caret.hide();
-				}
-			}]);
-
-			return Cursor;
-		}(_events2.default.EventEmitter);
-
-		exports.default = Cursor;
-
-	/***/ },
-	/* 303 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var Caret = function () {
-			function Caret() {
-				_classCallCheck(this, Caret);
-
-				this.timer = null;
-				this.x = 0;
-				this.y = 0;
-				this.$dom = $('<div>').css({
-					position: 'absolute',
-					background: 'red',
-					width: '2px',
-					height: '15px'
-				});
-				this.isShowed = false;
-			}
-
-			_createClass(Caret, [{
-				key: 'move',
-				value: function move(x, y) {
-
-					this.x = x;
-					this.y = y;
-
-					this.$dom.css({
-						left: x,
-						top: y
-					});
-				}
-			}, {
-				key: 'applyDefaultStyles',
-				value: function applyDefaultStyles() {
-
-					this.$dom.removeAttr('style', '');
-
-					if (this.isShowed) {
-						this.$dom.show();
-					} else {
-						this.$dom.hide();
-					}
-
-					this.$dom.css({
-						left: this.x,
-						top: this.y,
-						position: 'absolute',
-						background: 'black'
-					});
-				}
-			}, {
-				key: 'setStyle',
-				value: function setStyle(styles) {
-
-					this.applyDefaultStyles();
-
-					if (!styles.width) {
-						styles.width = '2px';
-					}
-
-					this.$dom.css(styles);
-
-					if (styles.color) {
-						this.$dom.css('background', styles.color);
-					}
-				}
-			}, {
-				key: 'show',
-				value: function show() {
-
-					clearInterval(this.timer);
-
-					this.isShowed = true;
-					this.$dom.show();
-
-					// Blinking
-					this.timer = setInterval(function () {
-						this.$dom.toggle();
-					}.bind(this), 400);
-				}
-			}, {
-				key: 'hide',
-				value: function hide() {
-					clearInterval(this.timer);
-
-					this.isShowed = false;
-					this.$dom.hide();
-				}
-			}]);
-
-			return Caret;
-		}();
-
-		exports.default = Caret;
-
-	/***/ },
-	/* 304 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
@@ -9764,10 +9332,34 @@
 					return this.selections;
 				}
 			}, {
+				key: 'getSelectionById',
+				value: function getSelectionById(id) {
+
+					for (var index in this.selections) {
+						var selection = this.selections[index];
+
+						if (selection.id == id) return selection;
+					}
+
+					return null;
+				}
+			}, {
 				key: 'addSelection',
 				value: function addSelection(selection) {
+					var _this = this;
+
 					var index = this.selections.indexOf(selection);
 					if (index != -1) return;
+
+					selection.on('added', function (cursor) {
+						// Append cursor DOM
+						_this.ctx.$overlay.append(cursor.$dom);
+					});
+
+					// Append cursors of selection to current overlay
+					selection.cursors.forEach(function (cursor) {
+						_this.ctx.$overlay.append(cursor.$dom);
+					});
 
 					this.selections.push(selection);
 				}
@@ -9775,7 +9367,18 @@
 				key: 'removeSelection',
 				value: function removeSelection(selection) {
 					var index = this.selections.indexOf(selection);
-					if (index != -1) this.selections.splice(index, 1);
+					if (index != -1) {
+						this.selections.splice(index, 1);
+						selection.removeAllListeners('added');
+						this.removeDOMs(selection);
+					}
+				}
+			}, {
+				key: 'removeDOMs',
+				value: function removeDOMs(selection) {
+
+					// Remove all dom of current selection
+					$(this.ctx.$workarea).find('[shijingref=' + selection.id + ']').remove();
 				}
 			}, {
 				key: 'update',
@@ -9783,9 +9386,7 @@
 					var index = this.selections.indexOf(selection);
 					if (index != -1) {
 
-						// Remove all dom of current selection
-						$(this.ctx.$workarea).find('[shijingref=' + selection.id + ']').remove();
-
+						this.removeDOMs(selection);
 						selection.update();
 					}
 				}
@@ -9797,7 +9398,7 @@
 		exports.default = SelectionManager;
 
 	/***/ },
-	/* 305 */
+	/* 303 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9806,15 +9407,15 @@
 			value: true
 		});
 		exports.default = {
-			root: __webpack_require__(331).default,
-			inline: __webpack_require__(306).default,
-			hiddenNode: __webpack_require__(309).default,
-			image: __webpack_require__(311).default,
-			paragraph: __webpack_require__(313).default
+			root: __webpack_require__(304).default,
+			inline: __webpack_require__(308).default,
+			hiddenNode: __webpack_require__(307).default,
+			image: __webpack_require__(310).default,
+			paragraph: __webpack_require__(312).default
 		};
 
 	/***/ },
-	/* 306 */
+	/* 304 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9825,9 +9426,15 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(307);
+		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
+		var _BlockComponent = __webpack_require__(305);
+
+		var _BlockComponent2 = _interopRequireDefault(_BlockComponent);
+
+		var _hiddenNode = __webpack_require__(307);
+
+		var _hiddenNode2 = _interopRequireDefault(_hiddenNode);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9837,49 +9444,40 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		var Inline = function (_InlineComponent) {
-			_inherits(Inline, _InlineComponent);
+		var Root = function (_HiddenNode) {
+			_inherits(Root, _HiddenNode);
 
-			function Inline() {
-				_classCallCheck(this, Inline);
+			function Root() {
+				_classCallCheck(this, Root);
 
-				return _possibleConstructorReturn(this, Object.getPrototypeOf(Inline).apply(this, arguments));
+				return _possibleConstructorReturn(this, Object.getPrototypeOf(Root).apply(this, arguments));
 			}
 
-			_createClass(Inline, [{
-				key: 'getLength',
-				value: function getLength(offset) {
-					return offset ? offset : this.node.text.length;
-				}
-			}, {
-				key: 'render',
-				value: function render() {
+			_createClass(Root, [{
+				key: 'adjustCursorPosition',
+				value: function adjustCursorPosition(cursor, direction) {
 
-					return new Promise(function (resolve) {
+					//		console.log('ROOT NODE ADJUST CURSOR');
 
-						var node = this.node;
-						var text = this.node.text || '';
-						var defStyle = {
-							whiteSpace: 'pre-wrap',
-							wordBreak: 'break-all'
-						};
+					// It's end of all nodes
+					if (cursor.startOffset == this.node.childrens.length) {
 
-						var $DOM = $('<span>').addClass('inline-component').html(text.replace(/ /g, '&nbsp')).css(node.style ? Object.assign(defStyle, node.style) : defStyle);
+						if (direction) {
+							return cursor.move(-1);
+						}
+					}
 
-						this.dom = $DOM[0];
-
-						resolve();
-					}.bind(this));
+					_get(Object.getPrototypeOf(Root.prototype), 'adjustCursorPosition', this).call(this, cursor, direction);
 				}
 			}]);
 
-			return Inline;
-		}(_InlineComponent3.default);
+			return Root;
+		}(_hiddenNode2.default);
 
-		exports.default = Inline;
+		exports.default = Root;
 
 	/***/ },
-	/* 307 */
+	/* 305 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -9890,11 +9488,13 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _Component2 = __webpack_require__(308);
+		var _Component2 = __webpack_require__(306);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -9906,133 +9506,106 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		var InlineComponent = function (_Component) {
-			_inherits(InlineComponent, _Component);
+		var BlockComponent = function (_Component) {
+			_inherits(BlockComponent, _Component);
 
-			function InlineComponent(renderer, node, subComponents) {
-				_classCallCheck(this, InlineComponent);
+			function BlockComponent(renderer, node, subComponents) {
+				_classCallCheck(this, BlockComponent);
 
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(InlineComponent).call(this, renderer, node, subComponents));
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BlockComponent).call(this, renderer, node, subComponents));
 
-				_this.blockType = false;
+				_this.blockType = true;
 				return _this;
 			}
 
-			_createClass(InlineComponent, [{
+			_createClass(BlockComponent, [{
 				key: 'getLength',
-				value: function getLength() {
-					return 0;
+				value: function getLength(offset) {
+
+					if (this.node.childrens) {
+						if (offset) {
+							if (offset <= this.node.childrens.length) {
+								var len = 0;
+
+								for (var index = 0; index < offset; index++) {
+									var subNode = this.node.childrens[index];
+									len += subNode.component.getLength();
+								}
+
+								return len;
+							}
+						}
+
+						return this.node.childrens.length;
+					}
+
+					return 1;
 				}
 			}, {
 				key: 'getCaretLength',
 				value: function getCaretLength(offset) {
 
-					var len = this.getLength(offset);
+					if (offset == 0) return 0;
 
-					return len ? this.getLength(offset) + 1 : 0;
-				}
-			}, {
-				key: 'getRects',
-				value: function getRects(DOM) {
-					var _this2 = this;
+					if (this.node.childrens) {
+						var _offset = offset || this.node.childrens.length;
 
-					var rects = [];
+						if (_offset <= this.node.childrens.length) {
+							var len = 0;
 
-					if (!DOM) {
-						var doms = this.getDOMs();
-
-						doms.forEach(function (DOM) {
-							rects = rects.concat(_this2.getRects(DOM));
-						});
-
-						return rects;
-					}
-
-					// traverse child nodes if node is not text node
-					if (DOM.nodeType != Node.TEXT_NODE) {
-
-						if (DOM.childNodes) {
-							for (var i = 0; i < DOM.childNodes.length; i++) {
-								rects = rects.concat(this.getRects(DOM.childNodes[i]));
+							for (var index = 0; index < _offset; index++) {
+								var subNode = this.node.childrens[index];
+								len += subNode.component.getCaretLength();
 							}
+
+							return len + index + 1;
 						}
 
-						return rects;
+						return 0;
 					}
 
-					// Check this text node
-					var range = document.createRange();
-					range.selectNode(DOM);
-					var clientRects = range.getClientRects();
+					return 0;
+				}
+			}, {
+				key: 'getOffset',
+				value: function getOffset(DOM, targetOffset) {
 
-					for (var index = 0; index < clientRects.length; index++) {
-						var rect = clientRects[index];
-						rects.push(rect);
+					if (!this.node.childrens) {
+						var targetDOM = DOM;
+
+						// Figure out the correct offset
+						var offset = 0;
+						for (var index in this.dom.childNodes) {
+							var dom = this.dom.childNodes[index];
+
+							if (targetDOM == dom) {
+								break;
+							}
+
+							offset += dom.length;
+						}
+
+						return offset + targetOffset;
 					}
 
-					return [{
-						DOM: DOM,
-						rects: rects
-					}];
+					return targetOffset;
 				}
 			}, {
 				key: 'getPosition',
 				value: function getPosition(offset) {
 
-					if (!this.node.text && this.node.childrens) {
-						var count = offset;
-						for (var index in this.node.childrens) {
-							var subNode = this.node.childrens[index];
+					if (this.node.childrens) {
+						var node = _TreeOperator2.default.getChildrenNode(this.node, offset);
 
-							var pos = subNode.component.getPosition(count);
-							if (pos.DOM) {
-								return pos;
-							}
-
-							count = pos.offset;
-						}
-					}
-
-					// Overflow
-					if (this.node.text.length < offset) {
-						return {
-							DOM: null,
-							offset: offset - this.node.text.length
-						};
-					}
-
-					if (this.dom instanceof Array) {
-
-						if (offset == 0) {
-							return {
-								DOM: this.dom[0],
-								offset: 0
-							};
-						}
-
-						var dom;
-						var count = offset;
-						for (var index in this.dom) {
-							dom = this.dom[index];
-							var text = dom.childNodes[0];
-
-							if (text.length > count) {
-								break;
-							}
-
-							count -= text.length;
-
-							if (count == 0 && parseInt(index) + 1 == this.dom.length) {
-								return {
-									DOM: dom,
-									offset: text.length
-								};
-							}
+						// No such node
+						if (!node) {
+							node = _TreeOperator2.default.getLastNode(this.node);
+							return node.component.getPosition(node.component.getLength());
 						}
 
 						return {
-							DOM: dom,
-							offset: count
+							DOM: node.component.getDOM(),
+							offset: 0
 						};
 					}
 
@@ -10042,11 +9615,57 @@
 					};
 				}
 			}, {
+				key: 'setCursor',
+				value: function setCursor(cursor, offset) {
+
+					if (!this.node.childrens) {
+						return _get(Object.getPrototypeOf(BlockComponent.prototype), 'setCursor', this).call(this, cursor, offset);
+					}
+
+					if (offset == 0) {
+						cursor.setPosition(this.node, 0);
+						return 0;
+					}
+
+					// ignore First empty node
+					var leftOffset = offset;
+					leftOffset--;
+
+					// Traverse node tree
+					var index = 0;
+					var target = _TreeOperator2.default.getChildrenNode(this.node, index);
+					while (target) {
+
+						var len = target.component.getCaretLength();
+						//			console.log('W', index, len, leftOffset, target);
+						if (leftOffset <= len) return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
+
+						leftOffset -= len;
+
+						// The area between children nodes
+						leftOffset--;
+						if (leftOffset == 0) {
+							cursor.setPosition(this.node, index + 1);
+							return 0;
+						}
+
+						target = _TreeOperator2.default.getNextNode(target);
+						index++;
+					}
+
+					return leftOffset;
+				}
+			}, {
 				key: 'move',
 				value: function move(cursor, offset) {
 
-					var pos = cursor.startOffset + offset;
-					var leftOffset = this.setCursor(cursor, pos);
+					if (offset == 0) return 0;
+
+					console.log('MOVE', cursor, cursor.startNode, cursor.startOffset, this.getCaretLength(cursor.startOffset), offset);
+					var leftOffset = this.getCaretLength(cursor.startOffset) + offset;
+					if (leftOffset > 0) {
+						leftOffset = this.setCursor(cursor, leftOffset);
+					}
 
 					return leftOffset;
 				}
@@ -10054,16 +9673,23 @@
 				key: 'adjustCursorPosition',
 				value: function adjustCursorPosition(cursor, direction) {
 
-					//		console.log('INLINE NODE ADJUST CURSOR');
+					//		console.log('BLOCK NODE ADJUST CURSOR', this.node, cursor.startNode, cursor.startOffset);
 
-					// Auto move back when cusor is working at head of content
 					if (cursor.startOffset == 0) {
+
 						if (!direction) {
 
 							var index = _TreeOperator2.default.getIndex(cursor.startNode);
 
 							// It's the first node
 							if (index == 0) {
+
+								// next node is the inline node inside
+								var nextNode = _TreeOperator2.default.getChildrenNode(this.node, 0);
+								if (!nextNode.component.blockType) {
+									return cursor.move(1);
+								}
+
 								// Do Nothing
 								return 0;
 							}
@@ -10071,16 +9697,72 @@
 							return cursor.move(-1);
 						}
 					}
+
+					// Check nodes
+					var prevNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset - 1);
+					var nextNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset);
+
+					// It's last node
+					if (!nextNode) {
+						//			console.log('NO NEXT NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+						// skip
+						if (direction) {
+							return cursor.move(1);
+						} else {
+							return cursor.move(-1);
+						}
+					}
+
+					// It's first node
+					if (!prevNode) {
+						//			console.log('NO PREV NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+						// skip
+						if (direction) {
+							return cursor.move(1);
+						} else {
+
+							return;
+							// It's coming from next node which is inline component
+							if (!nextNode.component.blockType) {
+								return cursor.move(1);
+							}
+						}
+					}
+
+					if (prevNode && nextNode) {
+
+						// Should not stay between two inline nodes.
+						if (!prevNode.component.blockType && !nextNode.component.blockType) {
+							//				console.log('BETWEEN INLINE NODE SKIP', direction ? 'NEXT' : 'BACK');
+
+							// skip
+							if (direction) {
+								return cursor.move(2);
+							} else {
+								return cursor.move(-1);
+							}
+						} else if (prevNode.component.blockType && nextNode.component.blockType) {
+							//				console.log('BETWEEN BLOCK NODE SKIP', direction ? 'NEXT' : 'BACK');
+							// skip
+							if (direction) {
+								return cursor.move(1);
+							} else {
+								return cursor.move(-1);
+							}
+						}
+					}
 				}
 			}]);
 
-			return InlineComponent;
+			return BlockComponent;
 		}(_Component3.default);
 
-		exports.default = InlineComponent;
+		exports.default = BlockComponent;
 
 	/***/ },
-	/* 308 */
+	/* 306 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10471,7 +10153,9 @@
 					if (!this.blockType) {
 						return this.findBlockParent().refresh();
 					}
-
+					//console.log('REFRESH', this.node);
+					//		var err = new Error();
+					//		console.log(err);
 					return new Promise(function (resolve, reject) {
 
 						// Re-render childrens
@@ -10494,7 +10178,7 @@
 		exports.default = Component;
 
 	/***/ },
-	/* 309 */
+	/* 307 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10505,7 +10189,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _BlockComponent2 = __webpack_require__(310);
+		var _BlockComponent2 = __webpack_require__(305);
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
@@ -10578,7 +10262,7 @@
 		exports.default = HiddenNode;
 
 	/***/ },
-	/* 310 */
+	/* 308 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10589,13 +10273,76 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+		var _InlineComponent2 = __webpack_require__(309);
+
+		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Inline = function (_InlineComponent) {
+			_inherits(Inline, _InlineComponent);
+
+			function Inline() {
+				_classCallCheck(this, Inline);
+
+				return _possibleConstructorReturn(this, Object.getPrototypeOf(Inline).apply(this, arguments));
+			}
+
+			_createClass(Inline, [{
+				key: 'getLength',
+				value: function getLength(offset) {
+					return offset ? offset : this.node.text.length;
+				}
+			}, {
+				key: 'render',
+				value: function render() {
+
+					return new Promise(function (resolve) {
+
+						var node = this.node;
+						var text = this.node.text || '';
+						var defStyle = {
+							whiteSpace: 'pre-wrap',
+							wordBreak: 'break-all'
+						};
+
+						var $DOM = $('<span>').addClass('inline-component').html(text.replace(/ /g, '&nbsp')).css(node.style ? Object.assign(defStyle, node.style) : defStyle);
+
+						this.dom = $DOM[0];
+
+						resolve();
+					}.bind(this));
+				}
+			}]);
+
+			return Inline;
+		}(_InlineComponent3.default);
+
+		exports.default = Inline;
+
+	/***/ },
+	/* 309 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _Component2 = __webpack_require__(308);
+		var _Component2 = __webpack_require__(306);
 
 		var _Component3 = _interopRequireDefault(_Component2);
 
@@ -10607,106 +10354,133 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		var BlockComponent = function (_Component) {
-			_inherits(BlockComponent, _Component);
+		var InlineComponent = function (_Component) {
+			_inherits(InlineComponent, _Component);
 
-			function BlockComponent(renderer, node, subComponents) {
-				_classCallCheck(this, BlockComponent);
+			function InlineComponent(renderer, node, subComponents) {
+				_classCallCheck(this, InlineComponent);
 
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BlockComponent).call(this, renderer, node, subComponents));
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(InlineComponent).call(this, renderer, node, subComponents));
 
-				_this.blockType = true;
+				_this.blockType = false;
 				return _this;
 			}
 
-			_createClass(BlockComponent, [{
+			_createClass(InlineComponent, [{
 				key: 'getLength',
-				value: function getLength(offset) {
-
-					if (this.node.childrens) {
-						if (offset) {
-							if (offset <= this.node.childrens.length) {
-								var len = 0;
-
-								for (var index = 0; index < offset; index++) {
-									var subNode = this.node.childrens[index];
-									len += subNode.component.getLength();
-								}
-
-								return len;
-							}
-						}
-
-						return this.node.childrens.length;
-					}
-
-					return 1;
+				value: function getLength() {
+					return 0;
 				}
 			}, {
 				key: 'getCaretLength',
 				value: function getCaretLength(offset) {
 
-					if (offset == 0) return 0;
+					var len = this.getLength(offset);
 
-					if (this.node.childrens) {
-						var _offset = offset || this.node.childrens.length;
-
-						if (_offset <= this.node.childrens.length) {
-							var len = 0;
-
-							for (var index = 0; index < _offset; index++) {
-								var subNode = this.node.childrens[index];
-								len += subNode.component.getCaretLength();
-							}
-
-							return len + index + 1;
-						}
-
-						return 0;
-					}
-
-					return 0;
+					return len ? this.getLength(offset) + 1 : 0;
 				}
 			}, {
-				key: 'getOffset',
-				value: function getOffset(DOM, targetOffset) {
+				key: 'getRects',
+				value: function getRects(DOM) {
+					var _this2 = this;
 
-					if (!this.node.childrens) {
-						var targetDOM = DOM;
+					var rects = [];
 
-						// Figure out the correct offset
-						var offset = 0;
-						for (var index in this.dom.childNodes) {
-							var dom = this.dom.childNodes[index];
+					if (!DOM) {
+						var doms = this.getDOMs();
 
-							if (targetDOM == dom) {
-								break;
-							}
+						doms.forEach(function (DOM) {
+							rects = rects.concat(_this2.getRects(DOM));
+						});
 
-							offset += dom.length;
-						}
-
-						return offset + targetOffset;
+						return rects;
 					}
 
-					return targetOffset;
+					// traverse child nodes if node is not text node
+					if (DOM.nodeType != Node.TEXT_NODE) {
+
+						if (DOM.childNodes) {
+							for (var i = 0; i < DOM.childNodes.length; i++) {
+								rects = rects.concat(this.getRects(DOM.childNodes[i]));
+							}
+						}
+
+						return rects;
+					}
+
+					// Check this text node
+					var range = document.createRange();
+					range.selectNode(DOM);
+					var clientRects = range.getClientRects();
+
+					for (var index = 0; index < clientRects.length; index++) {
+						var rect = clientRects[index];
+						rects.push(rect);
+					}
+
+					return [{
+						DOM: DOM,
+						rects: rects
+					}];
 				}
 			}, {
 				key: 'getPosition',
 				value: function getPosition(offset) {
 
-					if (this.node.childrens) {
-						var node = _TreeOperator2.default.getChildrenNode(this.node, offset);
+					if (!this.node.text && this.node.childrens) {
+						var count = offset;
+						for (var index in this.node.childrens) {
+							var subNode = this.node.childrens[index];
 
-						// No such node
-						if (!node) {
-							node = _TreeOperator2.default.getLastNode(this.node);
-							return node.component.getPosition(node.component.getLength());
+							var pos = subNode.component.getPosition(count);
+							if (pos.DOM) {
+								return pos;
+							}
+
+							count = pos.offset;
+						}
+					}
+
+					// Overflow
+					if (this.node.text.length < offset) {
+						return {
+							DOM: null,
+							offset: offset - this.node.text.length
+						};
+					}
+
+					if (this.dom instanceof Array) {
+
+						if (offset == 0) {
+							return {
+								DOM: this.dom[0],
+								offset: 0
+							};
+						}
+
+						var dom;
+						var count = offset;
+						for (var index in this.dom) {
+							dom = this.dom[index];
+							var text = dom.childNodes[0];
+
+							if (text.length > count) {
+								break;
+							}
+
+							count -= text.length;
+
+							if (count == 0 && parseInt(index) + 1 == this.dom.length) {
+								return {
+									DOM: dom,
+									offset: text.length
+								};
+							}
 						}
 
 						return {
-							DOM: node.component.getDOM(),
-							offset: 0
+							DOM: dom,
+							offset: count
 						};
 					}
 
@@ -10716,57 +10490,11 @@
 					};
 				}
 			}, {
-				key: 'setCursor',
-				value: function setCursor(cursor, offset) {
-
-					if (!this.node.childrens) {
-						return _get(Object.getPrototypeOf(BlockComponent.prototype), 'setCursor', this).call(this, cursor, offset);
-					}
-
-					if (offset == 0) {
-						cursor.setPosition(this.node, 0);
-						return 0;
-					}
-
-					// ignore First empty node
-					var leftOffset = offset;
-					leftOffset--;
-
-					// Traverse node tree
-					var index = 0;
-					var target = _TreeOperator2.default.getChildrenNode(this.node, index);
-					while (target) {
-
-						var len = target.component.getCaretLength();
-						//			console.log('W', index, len, leftOffset, target);
-						if (leftOffset <= len) return target.component.setCursor(cursor, leftOffset ? leftOffset - 1 : 0);
-
-						leftOffset -= len;
-
-						// The area between children nodes
-						leftOffset--;
-						if (leftOffset == 0) {
-							cursor.setPosition(this.node, index + 1);
-							return 0;
-						}
-
-						target = _TreeOperator2.default.getNextNode(target);
-						index++;
-					}
-
-					return leftOffset;
-				}
-			}, {
 				key: 'move',
 				value: function move(cursor, offset) {
 
-					if (offset == 0) return 0;
-
-					console.log('MOVE', cursor, cursor.startNode, cursor.startOffset, this.getCaretLength(cursor.startOffset), offset);
-					var leftOffset = this.getCaretLength(cursor.startOffset) + offset;
-					if (leftOffset > 0) {
-						leftOffset = this.setCursor(cursor, leftOffset);
-					}
+					var pos = cursor.startOffset + offset;
+					var leftOffset = this.setCursor(cursor, pos);
 
 					return leftOffset;
 				}
@@ -10774,23 +10502,16 @@
 				key: 'adjustCursorPosition',
 				value: function adjustCursorPosition(cursor, direction) {
 
-					//		console.log('BLOCK NODE ADJUST CURSOR', this.node, cursor.startNode, cursor.startOffset);
+					//		console.log('INLINE NODE ADJUST CURSOR');
 
+					// Auto move back when cusor is working at head of content
 					if (cursor.startOffset == 0) {
-
 						if (!direction) {
 
 							var index = _TreeOperator2.default.getIndex(cursor.startNode);
 
 							// It's the first node
 							if (index == 0) {
-
-								// next node is the inline node inside
-								var nextNode = _TreeOperator2.default.getChildrenNode(this.node, 0);
-								if (!nextNode.component.blockType) {
-									return cursor.move(1);
-								}
-
 								// Do Nothing
 								return 0;
 							}
@@ -10798,72 +10519,16 @@
 							return cursor.move(-1);
 						}
 					}
-
-					// Check nodes
-					var prevNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset - 1);
-					var nextNode = _TreeOperator2.default.getChildrenNode(this.node, cursor.startOffset);
-
-					// It's last node
-					if (!nextNode) {
-						//			console.log('NO NEXT NODE SKIP', direction ? 'NEXT' : 'BACK');
-
-						// skip
-						if (direction) {
-							return cursor.move(1);
-						} else {
-							return cursor.move(-1);
-						}
-					}
-
-					// It's first node
-					if (!prevNode) {
-						//			console.log('NO PREV NODE SKIP', direction ? 'NEXT' : 'BACK');
-
-						// skip
-						if (direction) {
-							return cursor.move(1);
-						} else {
-
-							return;
-							// It's coming from next node which is inline component
-							if (!nextNode.component.blockType) {
-								return cursor.move(1);
-							}
-						}
-					}
-
-					if (prevNode && nextNode) {
-
-						// Should not stay between two inline nodes.
-						if (!prevNode.component.blockType && !nextNode.component.blockType) {
-							//				console.log('BETWEEN INLINE NODE SKIP', direction ? 'NEXT' : 'BACK');
-
-							// skip
-							if (direction) {
-								return cursor.move(2);
-							} else {
-								return cursor.move(-1);
-							}
-						} else if (prevNode.component.blockType && nextNode.component.blockType) {
-							//				console.log('BETWEEN BLOCK NODE SKIP', direction ? 'NEXT' : 'BACK');
-							// skip
-							if (direction) {
-								return cursor.move(1);
-							} else {
-								return cursor.move(-1);
-							}
-						}
-					}
 				}
 			}]);
 
-			return BlockComponent;
+			return InlineComponent;
 		}(_Component3.default);
 
-		exports.default = BlockComponent;
+		exports.default = InlineComponent;
 
 	/***/ },
-	/* 311 */
+	/* 310 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -10874,11 +10539,11 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _InlineComponent2 = __webpack_require__(307);
+		var _InlineComponent2 = __webpack_require__(309);
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
-		var _ImageLoader = __webpack_require__(312);
+		var _ImageLoader = __webpack_require__(311);
 
 		var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
@@ -11168,7 +10833,7 @@
 		exports.default = Image;
 
 	/***/ },
-	/* 312 */
+	/* 311 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11261,7 +10926,7 @@
 		exports.default = ImageLoader;
 
 	/***/ },
-	/* 313 */
+	/* 312 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11278,11 +10943,11 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _BlockComponent2 = __webpack_require__(310);
+		var _BlockComponent2 = __webpack_require__(305);
 
 		var _BlockComponent3 = _interopRequireDefault(_BlockComponent2);
 
-		var _inline = __webpack_require__(314);
+		var _inline = __webpack_require__(313);
 
 		var _inline2 = _interopRequireDefault(_inline);
 
@@ -11543,6 +11208,7 @@
 							var layout = new _inline2.default(_this4, offscreen);
 							try {
 								//this.lineViews = layout.grabLines($DOM[0]);
+								//					console.log('PPPP', this.node);
 								_this4.lineView = layout.grabLines($DOM[0]);
 							} catch (e) {
 								console.log(e);
@@ -11595,7 +11261,7 @@
 		exports.default = Paragraph;
 
 	/***/ },
-	/* 314 */
+	/* 313 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11606,7 +11272,7 @@
 
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		var _LineView = __webpack_require__(315);
+		var _LineView = __webpack_require__(314);
 
 		var _LineView2 = _interopRequireDefault(_LineView);
 
@@ -11826,7 +11492,7 @@
 		exports.default = Inline;
 
 	/***/ },
-	/* 315 */
+	/* 314 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -11939,7 +11605,7 @@
 		;
 
 	/***/ },
-	/* 316 */
+	/* 315 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -11947,6 +11613,8 @@
 		Object.defineProperty(exports, "__esModule", {
 			value: true
 		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 		var _events = __webpack_require__(298);
 
@@ -11956,15 +11624,15 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _Selection = __webpack_require__(317);
+		var _Selection = __webpack_require__(316);
 
 		var _Selection2 = _interopRequireDefault(_Selection);
 
-		var _input_handler = __webpack_require__(319);
+		var _input_handler = __webpack_require__(318);
 
 		var _input_handler2 = _interopRequireDefault(_input_handler);
 
-		var _cursor = __webpack_require__(302);
+		var _cursor = __webpack_require__(319);
 
 		var _cursor2 = _interopRequireDefault(_cursor);
 
@@ -11986,8 +11654,6 @@
 
 				_this.ctx = renderer.ctx;
 				_this.renderer = renderer;
-				_this.cursor = renderer.caret;
-				_this.inputHandler = new _input_handler2.default(_this);
 				_this.mousedown = false;
 				_this.dragging = false;
 
@@ -11998,8 +11664,23 @@
 				};
 
 				// Create selection for current user
-				var selection = new _Selection2.default(_this);
-				selection.addCursor(_this.cursor);
+				var selection = _this.selection = new _Selection2.default(_this);
+				selection.on('update', function () {
+					/*
+		   			// Update main cursor
+		   			var cursors = selection.getAllCursors();
+		   			if (cursors.length) {
+		   				this.cursor.release();
+		   				this.cursor = cursors[0];
+		   			}
+		   */
+				});
+
+				_this.inputHandler = new _input_handler2.default(_this);
+
+				// Create cursor
+				_this.cursor = new _cursor2.default(_this.renderer);
+				//		selection.addCursor(this.cursor);
 
 				_this.renderer.Selection.addSelection(selection);
 
@@ -12014,14 +11695,17 @@
 					_this.cursor.setEnd(null, null);
 					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
 					//			console.log('mouseDOWN', this.cursor);
-					_this.cursor.show();
+					//			this.cursor.show();
+
+					_this.updateCursor();
+
 					_this.mousedown = true;
 
 					// Reset anchor
 					_this.anchor.node = _this.cursor.startNode;
 					_this.anchor.offset = _this.cursor.startOffset;
 
-					_this.renderer.Selection.update(selection);
+					//			this.renderer.Selection.update(selection);
 				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mousemove', function (e) {
@@ -12048,16 +11732,36 @@
 						_this.cursor.setEnd(_this.anchor.node, _this.anchor.offset);
 					}
 
-					_this.renderer.Selection.update(selection);
+					//this.renderer.Selection.update(selection);
+					_this.updateCursor();
 				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {
 					_this.mousedown = false;
 					_this.dragging = false;
-					_this.cursor.show();
+					//			this.cursor.show();
 				}, false);
 				return _this;
 			}
+
+			_createClass(Input, [{
+				key: 'updateCursor',
+				value: function updateCursor() {
+
+					this.ctx.dispatch({
+						type: 'SET_SELECTION',
+						payload: {
+							targetId: this.selection.id,
+							cursors: [{
+								startNode: this.cursor.startNode.id,
+								startOffset: this.cursor.startOffset,
+								endNode: this.cursor.endNode ? this.cursor.endNode.id : undefined,
+								endOffset: this.cursor.endOffset
+							}]
+						}
+					});
+				}
+			}]);
 
 			return Input;
 		}(_events2.default.EventEmitter);
@@ -12065,7 +11769,7 @@
 		exports.default = Input;
 
 	/***/ },
-	/* 317 */
+	/* 316 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12084,7 +11788,7 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _Utils = __webpack_require__(318);
+		var _Utils = __webpack_require__(317);
 
 		var _Utils2 = _interopRequireDefault(_Utils);
 
@@ -12131,10 +11835,17 @@
 					});
 
 					this.cursors.push(cursor);
+
+					this.emit('added', cursor);
 				}
 			}, {
 				key: 'removeAllCursors',
 				value: function removeAllCursors() {
+
+					this.cursors.forEach(function (cursor) {
+						cursor.release();
+					});
+
 					this.cursors = [];
 				}
 			}, {
@@ -12146,6 +11857,7 @@
 			}, {
 				key: 'update',
 				value: function update() {
+					var _this2 = this;
 
 					this.cursors.forEach(function (cursor) {
 
@@ -12155,6 +11867,7 @@
 						var task = cursor.ancestorNode.component.refresh();
 						task.then(function () {
 							// Do nothing
+							_this2.emit('update');
 						});
 					});
 				}
@@ -12176,7 +11889,7 @@
 		exports.default = Selection;
 
 	/***/ },
-	/* 318 */
+	/* 317 */
 	/***/ function(module, exports) {
 
 		'use strict';
@@ -12217,7 +11930,7 @@
 		};
 
 	/***/ },
-	/* 319 */
+	/* 318 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12248,9 +11961,12 @@
 
 		var InputHandler = function () {
 			function InputHandler(input) {
+				var _this = this;
+
 				_classCallCheck(this, InputHandler);
 
 				this.ctx = input.ctx;
+				this.selection = input.selection;
 				this.input = input;
 				this.$inputBox = $('<iframe>').addClass('shiji-inputhandler').css({
 					position: 'absolute',
@@ -12276,58 +11992,51 @@
 				this.originContent = null;
 				this.preeditMode = false;
 				this.$inputBody.attr('contenteditable', true).attr('spellcheck', false).attr('aria-multiline', true).attr('role', 'textbox').on('blur', function (e) {
-					this.$inputBody.empty();
-				}.bind(this)).on('compositionstart', function (e) {
+					_this.$inputBody.empty();
+				}).on('compositionstart', function (e) {
 					// Display input box
-					this.$inputBox.css({
+					_this.$inputBox.css({
 						display: ''
 					});
 
-					this.preeditMode = true;
-					this.originContent = null;
+					_this.preeditMode = true;
+					_this.originContent = null;
 
-					this.cursor.hide();
-
-					//				console.log('COMP START');
-				}.bind(this)).on('compositionupdate', function (e) {
-					console.log('COMP UPDATE', e.originalEvent.data);
-					var task = this.updateText(e.originalEvent.data);
-					task.then(function () {
-
-						// Update position of cursor and input handler
-						this.cursor.update();
-					}.bind(this));
-				}.bind(this)).on('compositionend', function (e) {
-					this.preeditMode = false;
+					// Hide cursors
+					_this.selection.removeAllCursors();
+					_this.selection.update();
+				}).on('compositionupdate', function (e) {
+					//				console.log('COMP UPDATE', e.originalEvent.data);
+					var task = _this.updateText(e.originalEvent.data);
+					task.then(function () {});
+				}).on('compositionend', function (e) {
+					_this.preeditMode = false;
 
 					// Hide input box
-					this.$inputBox.css({
+					_this.$inputBox.css({
 						display: 'none'
 					});
 
 					console.log('COMP END', e.originalEvent.data, e);
-
-					var task = this.updateText(e.originalEvent.data);
+					var task = _this.updateText(e.originalEvent.data);
 					task.then(function () {
+						_this.originContent = null;
 
-						// Update position of cursor and input handler
-						this.cursor.update();
-					}.bind(this));
+						var cursor = _this.input.cursor;
+						cursor.move(e.originalEvent.data.length);
 
-					this.originContent = null;
+						_this.updateCursor();
+					});
 
-					// Set new position to caret
-					this.cursor.move(e.originalEvent.data.length);
-					this.cursor.show();
-
-					this.$inputBody.empty();
-				}.bind(this)).on('keydown', function (e) {
+					// Clear input box
+					_this.$inputBody.empty();
+				}).on('keydown', function (e) {
 
 					if (e.metaKey) return true;
 
-					var cursor = this.cursor;
-					//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
-					if (this.preeditMode) {
+					var cursor = _this.input.cursor;
+
+					if (_this.preeditMode) {
 						return;
 					}
 
@@ -12335,30 +12044,22 @@
 					switch (e.keyCode) {
 						case Key.Up:
 							cursor.moveUp();
+							_this.updateCursor();
 							break;
 
 						case Key.Down:
 							cursor.moveDown();
+							_this.updateCursor();
 							break;
 
 						case Key.Left:
-
 							cursor.move(-1);
-							cursor.show();
-							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
+							_this.updateCursor();
 							break;
 
 						case Key.Right:
-
 							cursor.move(1);
-							cursor.show();
-							//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
-							break;
-
-						case Key.Enter:
-
+							_this.updateCursor();
 							break;
 
 						case Key.Backspace:
@@ -12382,9 +12083,7 @@
 									// done everything so we update now
 									var task = cursor.startNode.component.refresh();
 									task.then(function () {
-
-										// Set new position to caret
-										cursor.show();
+										_this.updateCursor();
 									});
 								}
 								break;
@@ -12402,56 +12101,118 @@
 
 								// Set new position to caret
 								cursor.move(-1);
-								cursor.show();
-
-								//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-							}.bind(this));
+								_this.updateCursor();
+							});
 
 							break;
 
 						default:
-							this.$inputBody.empty();
+							_this.$inputBody.empty();
 					}
-				}.bind(this)).on('keypress', function (e) {
+				}).on('keypress', function (e) {
 
 					if (e.metaKey) return true;
 
-					var cursor = this.cursor;
-					console.log('TYPING', cursor.startNode, cursor.startOffset);
-					_TreeOperator2.default.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
+					var cursor = _this.input.cursor;
+					switch (e.keyCode) {
 
-					// done everything so we update now
-					var task = cursor.startNode.component.refresh();
-					task.then(function () {
-						this.$inputBody.empty();
+						case Key.Enter:
+							var action = _this.ctx.dispatch({
+								type: 'SPLIT_PARAGRAPH',
+								payload: {
+									targetId: cursor.startNode.id,
+									offset: cursor.startOffset
+								}
+							});
 
-						// Set new position to caret
-						cursor.move(1);
-						cursor.show();
+							return true;
 
-						//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-					}.bind(this));
+						default:
+
+							var action = _this.ctx.dispatch({
+								type: 'INSERT_TEXT',
+								payload: {
+									startNode: cursor.startNode.id,
+									startOffset: cursor.startOffset,
+									data: String.fromCharCode(e.keyCode)
+								}
+							});
+
+							action.then(function () {
+
+								// done everything so we update now
+								_this.$inputBody.empty();
+
+								// Update new position
+								cursor.move(1);
+								_this.updateCursor();
+							});
+
+							return true;
+					}
 
 					return false;
-				}.bind(this));
+				});
 			}
 
 			_createClass(InputHandler, [{
-				key: 'updateText',
-				value: function updateText(text) {
+				key: '_updateText',
+				value: function _updateText(text) {
+					var cursor = this.input.cursor;
 
 					if (!this.originContent) {
 						// Store original content
-						this.originContent = this.cursor.startNode.text.slice(0);
+						this.originContent = cursor.startNode.text.slice(0);
 					} else {
 						// Clone original content back and set to node
-						this.cursor.startNode.text = this.originContent.slice(0);
+						cursor.startNode.text = this.originContent.slice(0);
 					}
 
-					_TreeOperator2.default.insert(this.cursor.startNode, this.cursor.startOffset, text);
+					_TreeOperator2.default.insert(cursor.startNode, cursor.startOffset, text);
 
 					// done everything so we update now
-					return this.cursor.startNode.component.refresh();
+					return cursor.startNode.component.refresh();
+				}
+			}, {
+				key: 'updateText',
+				value: function updateText(text) {
+					var cursor = this.input.cursor;
+
+					var offset = 0;
+
+					// Replace old content in range
+					if (this.originContent) {
+						offset = this.originContent.length;
+					}
+
+					this.originContent = text;
+
+					return this.ctx.dispatch({
+						type: 'INSERT_TEXT',
+						payload: {
+							startNode: cursor.startNode.id,
+							startOffset: cursor.startOffset,
+							endNode: cursor.startNode.id,
+							endOffset: cursor.startOffset + offset,
+							data: text
+						}
+					});
+				}
+			}, {
+				key: 'updateCursor',
+				value: function updateCursor() {
+
+					// Update cursor
+					this.ctx.dispatch({
+						type: 'SET_SELECTION',
+						payload: {
+							targetId: this.selection.id,
+							cursors: [{
+								startNode: this.input.cursor.startNode.id,
+								startOffset: this.input.cursor.startOffset
+							}]
+						}
+					});
 				}
 			}, {
 				key: 'setCursorPosition',
@@ -12470,17 +12231,19 @@
 			}, {
 				key: 'focus',
 				value: function focus() {
+					var cursor = this.input.cursor;
+
 					this.$inputBox.outerWidth(this.ctx.$layout.width());
 
 					this.$inputBody.css({
 						lineHeight: 1.15,
-						height: this.cursor.caret.$dom.css('height'),
-						fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
-						fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
-						fontWeight: this.cursor.caret.$dom.css('font-weight') || 'intital',
-						fontStyle: this.cursor.caret.$dom.css('font-style') || 'intital',
-						textDecoration: this.cursor.caret.$dom.css('text-decoration') || 'intital',
-						color: this.cursor.caret.$dom.css('color') || 'red'
+						height: cursor.caret.$dom.css('height'),
+						fontSize: cursor.caret.$dom.css('font-size') || 'intital',
+						fontFamily: cursor.caret.$dom.css('font-family') || 'intital',
+						fontWeight: cursor.caret.$dom.css('font-weight') || 'intital',
+						fontStyle: cursor.caret.$dom.css('font-style') || 'intital',
+						textDecoration: cursor.caret.$dom.css('text-decoration') || 'intital',
+						color: cursor.caret.$dom.css('color') || 'red'
 					});
 					this.$inputBody.focus();
 					this.$inputBody.empty();
@@ -12501,18 +12264,28 @@
 		exports.default = InputHandler;
 
 	/***/ },
-	/* 320 */
+	/* 319 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
 
 		Object.defineProperty(exports, "__esModule", {
-		  value: true
+			value: true
 		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 		var _events = __webpack_require__(298);
 
 		var _events2 = _interopRequireDefault(_events);
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _caret = __webpack_require__(320);
+
+		var _caret2 = _interopRequireDefault(_caret);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12522,19 +12295,415 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		var ActionDispatcher = function (_events$EventEmitter) {
-		  _inherits(ActionDispatcher, _events$EventEmitter);
+		var Cursor = function (_events$EventEmitter) {
+			_inherits(Cursor, _events$EventEmitter);
 
-		  function ActionDispatcher() {
-		    _classCallCheck(this, ActionDispatcher);
+			function Cursor(renderer) {
+				_classCallCheck(this, Cursor);
 
-		    return _possibleConstructorReturn(this, Object.getPrototypeOf(ActionDispatcher).apply(this, arguments));
-		  }
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
 
-		  return ActionDispatcher;
+				_this.ctx = renderer.ctx;
+				_this.renderer = renderer;
+				_this.ancestorNode = null;
+				_this.startOffset = -1;
+				_this.startNode = null;
+				_this.endNode = null;
+				_this.endOffset = null;
+				_this.baseline = null;
+				_this.$dom = $('<div>').addClass('shijing-cursor').css({
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					zIndex: 10000
+				});
+
+				_this.caret = new _caret2.default();
+				_this.caret.$dom.appendTo(_this.$dom);
+
+				//		renderer.ctx.$overlay.append(this.$dom);
+				return _this;
+			}
+
+			_createClass(Cursor, [{
+				key: 'release',
+				value: function release() {
+					this.caret.release();
+					this.$dom.remove();
+				}
+			}, {
+				key: 'update',
+				value: function update() {
+
+					// Figure out position
+					var caret = this.startNode.component.getCaret(this.startOffset);
+
+					this.caret.move(caret.x, caret.y);
+					this.caret.setStyle(Object.assign({
+						height: caret.height,
+						fontSize: $(caret.DOM).css('font-size')
+					}, this.startNode.style || {}));
+
+					this.emit('update', this);
+				}
+			}, {
+				key: '_setPosition',
+				value: function _setPosition(node, offset) {
+					this.startOffset = offset;
+
+					// Change component
+					var old = this.startNode;
+					this.startNode = node;
+
+					var changed = false;
+					if (old && this.startNode) {
+						if (old.id != this.startNode.id) {
+							changed = true;
+						}
+					} else if (old != this.startNode) {
+						changed = true;
+					}
+
+					if (changed) {
+
+						// fire events
+						if (old) {
+							old.component.onBlur(this);
+						}
+
+						// trigger onFocus
+						if (this.startNode) {
+							this.startNode.component.onFocus(this);
+						}
+					}
+
+					setTimeout(function () {
+						this.emit('update', this);
+					}.bind(this), 0);
+				}
+			}, {
+				key: 'setPosition',
+				value: function setPosition(node, offset) {
+
+					// Figure out position
+					var caret = node.component.getCaret(offset);
+
+					this.caret.move(caret.x, caret.y);
+					this._setPosition(node, offset);
+
+					this.caret.setStyle(Object.assign({
+						height: caret.height,
+						fontSize: $(caret.DOM).css('font-size')
+					}, node.style || {}));
+				}
+			}, {
+				key: '_setPositionByAxis',
+				value: function _setPositionByAxis(x, y) {
+					var range = document.caretRangeFromPoint(x, y);
+					var textNode = range.startContainer;
+					var offset = this.startOffset = range.startOffset;
+
+					//		range.detach();
+
+					// We don't need text node, just getting its parent
+					var parentNode = textNode;
+					if (textNode.nodeType == Node.TEXT_NODE) {
+						parentNode = textNode.parentNode;
+					}
+
+					// Set position
+					this.setPositionByDOM(parentNode, offset);
+				}
+			}, {
+				key: 'setPositionByAxis',
+				value: function setPositionByAxis(x, y) {
+					this.baseline = null;
+					this._setPositionByAxis(x, y);
+				}
+			}, {
+				key: 'setPositionByDOM',
+				value: function setPositionByDOM(dom, offset) {
+
+					var _offset = offset;
+
+					var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
+
+					this.caret.move(point.x, point.y);
+
+					// Find out component
+					var component = this.renderer.getOwnerByDOM(dom);
+					if (!component) return;
+
+					// Getting the correct offset by using DOM and offset of DOM
+					_offset = component.getOffset(point.DOM, point.offset);
+
+					// Store it
+					this._setPosition(component.node, _offset);
+
+					// Apply styles
+					this.caret.setStyle(Object.assign({
+						height: point.height,
+						fontSize: $(dom).css('font-size')
+					}, component.node.style || {}));
+				}
+			}, {
+				key: 'getCurrentPosition',
+				value: function getCurrentPosition() {
+
+					return {
+						startNode: this.startNode,
+						startOffset: this.startOffset
+					};
+				}
+			}, {
+				key: 'moveUp',
+				value: function moveUp() {
+
+					var y;
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
+					if (lineView) {
+						// Previous line
+						if (lineView.index > 0) {
+							var $lineView = lineView.arr[lineView.index - 1];
+							y = $lineView.position().top;
+						}
+					}
+
+					var $container = this.ctx.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					if (y == undefined) {
+						y = this.caret.y - this.caret.$dom.height();
+						if (y < 0) {
+							y = 0;
+						}
+					}
+
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+				}
+			}, {
+				key: 'moveDown',
+				value: function moveDown() {
+
+					var y;
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
+					if (lineView) {
+						// Next line
+						if (lineView.index + 1 <= lineView.arr.length) {
+							var $lineView = lineView.arr[lineView.index + 1];
+							y = $lineView.position().top;
+						}
+					}
+
+					var $container = this.ctx.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					if (y == undefined) y = this.caret.y + this.caret.$dom.height();
+
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+				}
+			}, {
+				key: 'move',
+				value: function move(offset) {
+
+					if (offset == 0) return 0;
+
+					this.baseline = null;
+					//console.log('Cursor1', this, this.startNode, this.startOffset, offset);
+
+					// Call start node to move cursor
+					var leftOffset = this.startNode.component.move(this, offset);
+					//console.log('MOVED', this, this.startNode, this.startOffset, leftOffset);
+					if (leftOffset == 0) {
+						this.startNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
+						return 0;
+					}
+					//console.log('Cursor2', this.startNode, leftOffset);
+
+					// Getting target index of childrens
+					var index = _TreeOperator2.default.getIndex(this.startNode);
+					if (index == -1) {
+						return 0;
+					}
+
+					// Put curosr on parent
+					var parentNode = _TreeOperator2.default.getParentNode(this.startNode);
+					if (!parentNode) return 0;
+
+					//		console.log('PARENT', parentNode, index, leftOffset);
+					if (leftOffset > 0) {
+						this.setPosition(parentNode, index + 1);
+						leftOffset--;
+					} else {
+						this.setPosition(parentNode, index);
+						leftOffset++;
+					}
+
+					parentNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
+
+					return this.move(leftOffset);
+				}
+			}, {
+				key: 'setStart',
+				value: function setStart(node, offset) {
+					this.startNode = node;
+					this.startOffset = offset;
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
+				}
+			}, {
+				key: 'setEnd',
+				value: function setEnd(node, offset) {
+					this.endNode = node;
+					this.endOffset = offset;
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
+				}
+			}, {
+				key: 'deleteContents',
+				value: function deleteContents() {
+					var _this2 = this;
+
+					this.nodeList = [];
+
+					// Getting all nodes in range
+					_TreeOperator2.default.traverse(this.startNode, this.endNode, function (node) {
+						_this2.nodeList.push(node);
+					});
+				}
+			}, {
+				key: 'show',
+				value: function show() {
+					/*
+		   // Range was selected
+		   if (this.endNode != null && this.endOffset != null) {
+		   	treeOperator.getAncestorNode(this.startNode, this.endNode);
+		   }
+		   */
+					this.caret.show();
+				}
+			}, {
+				key: 'hide',
+				value: function hide() {
+					this.caret.hide();
+				}
+			}]);
+
+			return Cursor;
 		}(_events2.default.EventEmitter);
 
-		exports.default = ActionDispatcher;
+		exports.default = Cursor;
+
+	/***/ },
+	/* 320 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var Caret = function () {
+			function Caret() {
+				_classCallCheck(this, Caret);
+
+				this.timer = null;
+				this.x = 0;
+				this.y = 0;
+				this.$dom = $('<div>').css({
+					position: 'absolute',
+					background: 'red',
+					width: '2px',
+					height: '15px'
+				});
+				this.isShowed = false;
+			}
+
+			_createClass(Caret, [{
+				key: 'release',
+				value: function release() {
+					this.$dom.remove();
+				}
+			}, {
+				key: 'move',
+				value: function move(x, y) {
+
+					this.x = x;
+					this.y = y;
+
+					this.$dom.css({
+						left: x,
+						top: y
+					});
+				}
+			}, {
+				key: 'applyDefaultStyles',
+				value: function applyDefaultStyles() {
+
+					this.$dom.removeAttr('style', '');
+
+					if (this.isShowed) {
+						this.$dom.show();
+					} else {
+						this.$dom.hide();
+					}
+
+					this.$dom.css({
+						left: this.x,
+						top: this.y,
+						position: 'absolute',
+						background: 'black'
+					});
+				}
+			}, {
+				key: 'setStyle',
+				value: function setStyle(styles) {
+
+					this.applyDefaultStyles();
+
+					if (!styles.width) {
+						styles.width = '2px';
+					}
+
+					this.$dom.css(styles);
+
+					if (styles.color) {
+						this.$dom.css('background', styles.color);
+					}
+				}
+			}, {
+				key: 'show',
+				value: function show() {
+
+					clearInterval(this.timer);
+
+					this.isShowed = true;
+					this.$dom.show();
+
+					// Blinking
+					this.timer = setInterval(function () {
+						this.$dom.toggle();
+					}.bind(this), 400);
+				}
+			}, {
+				key: 'hide',
+				value: function hide() {
+					clearInterval(this.timer);
+
+					this.isShowed = false;
+					this.$dom.hide();
+				}
+			}]);
+
+			return Caret;
+		}();
+
+		exports.default = Caret;
 
 	/***/ },
 	/* 321 */
@@ -12779,59 +12948,127 @@
 			value: true
 		});
 
-		var _Text = __webpack_require__(323);
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		var _Text = __webpack_require__(330);
 
 		var _Text2 = _interopRequireDefault(_Text);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-		var Actions = function Actions(shiji) {
-			_classCallCheck(this, Actions);
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-			this.dispatcher = shiji.actionDispatcher;
-			this.ctx = shiji;
-			this.handlers = {
-				Text: _Text2.default
-			};
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-			// Waiting actions to do something
-			this.dispatcher.on('action', function (action) {
+		var Actions = function (_events$EventEmitter) {
+			_inherits(Actions, _events$EventEmitter);
 
-				for (var handlerName in this.handlers) {
-					var handler = this.handlers[handlerName][action.type] || null;
-					if (handler) {
-						handler.apply(this, [action]);
+			function Actions(shiji) {
+				_classCallCheck(this, Actions);
 
-						break;
-					}
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Actions).call(this));
+
+				_this.ctx = shiji;
+				_this.handlers = Object.assign({}, _Text2.default);
+				_this.tasks = [];
+				return _this;
+			}
+
+			_createClass(Actions, [{
+				key: 'dispatch',
+				value: function dispatch(action) {
+					var _this2 = this;
+
+					return new Promise(function (resolve) {
+						_this2.tasks.push({
+							action: action,
+							done: resolve
+						});
+
+						if (_this2.tasks.length == 1) {
+							_this2.doTasks();
+						}
+					});
 				}
-			}.bind(this));
-		};
+			}, {
+				key: 'doTasks',
+				value: function () {
+					var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+						var task, action, handler;
+						return regeneratorRuntime.wrap(function _callee$(_context) {
+							while (1) {
+								switch (_context.prev = _context.next) {
+									case 0:
+										task = this.tasks.shift();
+
+										if (task) {
+											_context.next = 3;
+											break;
+										}
+
+										return _context.abrupt('return');
+
+									case 3:
+										action = task.action;
+										handler = this.findHandler(action.type);
+
+										if (!handler) {
+											_context.next = 9;
+											break;
+										}
+
+										_context.next = 8;
+										return handler.apply(this, [action]);
+
+									case 8:
+										task.done();
+
+									case 9:
+										_context.next = 11;
+										return this.doTasks();
+
+									case 11:
+									case 'end':
+										return _context.stop();
+								}
+							}
+						}, _callee, this);
+					}));
+
+					function doTasks() {
+						return _ref.apply(this, arguments);
+					}
+
+					return doTasks;
+				}()
+			}, {
+				key: 'findHandler',
+				value: function findHandler(type) {
+
+					var handler = this.handlers[type] || null;
+					if (handler) {
+						return handler;
+					}
+
+					return null;
+				}
+			}]);
+
+			return Actions;
+		}(_events2.default.EventEmitter);
 
 		exports.default = Actions;
 
 	/***/ },
 	/* 323 */
-	/***/ function(module, exports) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-		exports.default = {
-			'INSERT_TEXT': function INSERT_TEXT(action) {
-				// Getting node which is focused
-
-				// Modify node
-				//		action.astHandler.setProperty();
-			}
-		};
-
-	/***/ },
-	/* 324 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -12925,16 +13162,16 @@
 		exports.default = DocumentTree;
 
 	/***/ },
-	/* 325 */
+	/* 324 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(326);
+		var content = __webpack_require__(325);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(328)(content, {});
+		var update = __webpack_require__(327)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -12951,10 +13188,10 @@
 		}
 
 	/***/ },
-	/* 326 */
+	/* 325 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(327)();
+		exports = module.exports = __webpack_require__(326)();
 		// imports
 
 
@@ -12965,7 +13202,7 @@
 
 
 	/***/ },
-	/* 327 */
+	/* 326 */
 	/***/ function(module, exports) {
 
 		/*
@@ -13021,7 +13258,7 @@
 
 
 	/***/ },
-	/* 328 */
+	/* 327 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -13273,16 +13510,16 @@
 
 
 	/***/ },
-	/* 329 */
+	/* 328 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(330);
+		var content = __webpack_require__(329);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(328)(content, {});
+		var update = __webpack_require__(327)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -13299,10 +13536,10 @@
 		}
 
 	/***/ },
-	/* 330 */
+	/* 329 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(327)();
+		exports = module.exports = __webpack_require__(326)();
 		// imports
 
 
@@ -13313,7 +13550,7 @@
 
 
 	/***/ },
-	/* 331 */
+	/* 330 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		'use strict';
@@ -13322,57 +13559,173 @@
 			value: true
 		});
 
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+		var _TreeOperator = __webpack_require__(300);
 
-		var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _BlockComponent = __webpack_require__(310);
+		var _cursor = __webpack_require__(319);
 
-		var _BlockComponent2 = _interopRequireDefault(_BlockComponent);
-
-		var _hiddenNode = __webpack_require__(309);
-
-		var _hiddenNode2 = _interopRequireDefault(_hiddenNode);
+		var _cursor2 = _interopRequireDefault(_cursor);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+		exports.default = {
+			'SET_SELECTION': function () {
+				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
+					var _this = this;
 
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+					var payload, renderer, selection;
+					return regeneratorRuntime.wrap(function _callee$(_context) {
+						while (1) {
+							switch (_context.prev = _context.next) {
+								case 0:
+									payload = action.payload;
 
-		var Root = function (_HiddenNode) {
-			_inherits(Root, _HiddenNode);
+									if (!(!payload.cursors || !payload.targetId)) {
+										_context.next = 3;
+										break;
+									}
 
-			function Root() {
-				_classCallCheck(this, Root);
+									return _context.abrupt('return');
 
-				return _possibleConstructorReturn(this, Object.getPrototypeOf(Root).apply(this, arguments));
-			}
+								case 3:
+									renderer = this.ctx.renderer;
+									selection = renderer.Selection.getSelectionById(payload.targetId);
 
-			_createClass(Root, [{
-				key: 'adjustCursorPosition',
-				value: function adjustCursorPosition(cursor, direction) {
+									if (selection) {
+										_context.next = 7;
+										break;
+									}
 
-					//		console.log('ROOT NODE ADJUST CURSOR');
+									return _context.abrupt('return');
 
-					// It's end of all nodes
-					if (cursor.startOffset == this.node.childrens.length) {
+								case 7:
 
-						if (direction) {
-							return cursor.move(-1);
+									// Clear cursors of selection
+									selection.removeAllCursors();
+
+									payload.cursors.forEach(function (cursor) {
+
+										// Create cursor
+										var newCursor = new _cursor2.default(renderer);
+
+										if (cursor.startNode) {
+											var startNode = _this.ctx.documentTree.getNodeById(cursor.startNode);
+											newCursor.setStart(startNode, cursor.startOffset || 0);
+										}
+
+										if (cursor.endNode) {
+											var endNode = _this.ctx.documentTree.getNodeById(cursor.endNode);
+											newCursor.setEnd(endNode, cursor.endOffset || 0);
+										}
+
+										newCursor.update();
+										newCursor.show();
+
+										// Add to selection
+										selection.addCursor(newCursor);
+									});
+
+									renderer.Selection.update(selection);
+
+								case 10:
+								case 'end':
+									return _context.stop();
+							}
 						}
-					}
+					}, _callee, this);
+				}));
 
-					_get(Object.getPrototypeOf(Root.prototype), 'adjustCursorPosition', this).call(this, cursor, direction);
+				function SET_SELECTION(_x) {
+					return _ref.apply(this, arguments);
 				}
-			}]);
 
-			return Root;
-		}(_hiddenNode2.default);
+				return SET_SELECTION;
+			}(),
+			'INSERT_TEXT': function () {
+				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
+					var payload, startNode, endNode;
+					return regeneratorRuntime.wrap(function _callee2$(_context2) {
+						while (1) {
+							switch (_context2.prev = _context2.next) {
+								case 0:
+									payload = action.payload;
+									startNode = this.ctx.documentTree.getNodeById(payload.startNode);
 
-		exports.default = Root;
+									if (startNode) {
+										_context2.next = 4;
+										break;
+									}
+
+									return _context2.abrupt('return');
+
+								case 4:
+
+									if (payload.endNode) {
+										console.log(payload);
+										endNode = this.ctx.documentTree.getNodeById(payload.endNode);
+
+										_TreeOperator2.default.replace(startNode, payload.startOffset, endNode, payload.endOffset, payload.data);
+									} else {
+										_TreeOperator2.default.insert(startNode, payload.startOffset, payload.data);
+									}
+
+									// done everything so we update now
+									_context2.next = 7;
+									return startNode.component.refresh();
+
+								case 7:
+								case 'end':
+									return _context2.stop();
+							}
+						}
+					}, _callee2, this);
+				}));
+
+				function INSERT_TEXT(_x2) {
+					return _ref2.apply(this, arguments);
+				}
+
+				return INSERT_TEXT;
+			}(),
+			'SPLIT_PARAGRAPH': function () {
+				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
+					var payload, node;
+					return regeneratorRuntime.wrap(function _callee3$(_context3) {
+						while (1) {
+							switch (_context3.prev = _context3.next) {
+								case 0:
+									payload = action.payload;
+									node = this.ctx.documentTree.getNodeById(payload.targetId);
+
+									if (node) {
+										_context3.next = 4;
+										break;
+									}
+
+									return _context3.abrupt('return');
+
+								case 4:
+
+									console.log('SPLIT PARAGRAPH', payload);
+
+								case 5:
+								case 'end':
+									return _context3.stop();
+							}
+						}
+					}, _callee3, this);
+				}));
+
+				function SPLIT_PARAGRAPH(_x3) {
+					return _ref3.apply(this, arguments);
+				}
+
+				return SPLIT_PARAGRAPH;
+			}()
+		};
 
 	/***/ }
 	/******/ ]);

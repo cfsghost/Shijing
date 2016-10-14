@@ -15,6 +15,7 @@ class InputHandler {
 	constructor(input) {
 
 		this.ctx = input.ctx;
+		this.selection = input.selection;
 		this.input = input;
 		this.$inputBox = $('<iframe>')
 			.addClass('shiji-inputhandler')
@@ -50,10 +51,10 @@ class InputHandler {
 			.attr('spellcheck', false)
 			.attr('aria-multiline', true)
 			.attr('role', 'textbox')
-			.on('blur', function(e) {
+			.on('blur', (e) => {
 				this.$inputBody.empty();
-			}.bind(this))
-			.on('compositionstart', function(e) {
+			})
+			.on('compositionstart', (e) => {
 				// Display input box
 				this.$inputBox.css({
 					display: ''
@@ -62,21 +63,17 @@ class InputHandler {
 				this.preeditMode = true;
 				this.originContent = null;
 
-				this.cursor.hide();
-
-//				console.log('COMP START');
-			}.bind(this))
-			.on('compositionupdate', function(e) {
-				console.log('COMP UPDATE', e.originalEvent.data);
+				// Hide cursors
+				this.selection.removeAllCursors();
+				this.selection.update();
+			})
+			.on('compositionupdate', (e) => {
+//				console.log('COMP UPDATE', e.originalEvent.data);
 				var task = this.updateText(e.originalEvent.data);
-				task.then(function() {
-
-					// Update position of cursor and input handler
-					this.cursor.update();
-
-				}.bind(this));
-			}.bind(this))
-			.on('compositionend', function(e) {
+				task.then(() => {
+				});
+			})
+			.on('compositionend', (e) => {
 				this.preeditMode = false;
 
 				// Hide input box
@@ -85,31 +82,27 @@ class InputHandler {
 				});
 
 				console.log('COMP END', e.originalEvent.data, e);
-
 				var task = this.updateText(e.originalEvent.data);
-				task.then(function() {
+				task.then(() => {
+					this.originContent = null;
 
-					// Update position of cursor and input handler
-					this.cursor.update();
+					var cursor = this.input.cursor;
+					cursor.move(e.originalEvent.data.length);
 
-				}.bind(this));
+					this.updateCursor();
+				});
 
-				this.originContent = null;
-
-				// Set new position to caret
-				this.cursor.move(e.originalEvent.data.length);
-				this.cursor.show();
-
+				// Clear input box
 				this.$inputBody.empty();
 
-			}.bind(this))
-			.on('keydown', function(e) {
+			})
+			.on('keydown', (e) => {
 
 				if (e.metaKey)
 					return true;
 
-				var cursor = this.cursor;
-//console.log('KEYDOWN', this.$inputBody.text(), e, preeditMode);
+				var cursor = this.input.cursor;
+
 				if (this.preeditMode) {
 					return;
 				}
@@ -118,30 +111,22 @@ class InputHandler {
 				switch(e.keyCode) {
 				case Key.Up:
 					cursor.moveUp();
+					this.updateCursor();
 					break;
 
 				case Key.Down:
 					cursor.moveDown();
+					this.updateCursor();
 					break;
 
 				case Key.Left:
-
 					cursor.move(-1);
-					cursor.show();
-//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
+					this.updateCursor();
 					break;
 
 				case Key.Right:
-
 					cursor.move(1);
-					cursor.show();
-//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-
-					break;
-
-				case Key.Enter:
-
+					this.updateCursor();
 					break;
 
 				case Key.Backspace:
@@ -168,9 +153,7 @@ class InputHandler {
 							// done everything so we update now
 							var task = cursor.startNode.component.refresh();
 							task.then(() => {
-
-								// Set new position to caret
-								cursor.show();
+								this.updateCursor();
 							});
 						}
 						break;
@@ -187,14 +170,12 @@ class InputHandler {
 
 					// done everything so we update now
 					var task = cursor.startNode.component.refresh();
-					task.then(function() {
+					task.then(() => {
 
 						// Set new position to caret
 						cursor.move(-1);
-						cursor.show();
-
-//						this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-					}.bind(this));
+						this.updateCursor();
+					});
 
 					break;
 
@@ -202,46 +183,110 @@ class InputHandler {
 					this.$inputBody.empty();
 				}
 
-			}.bind(this))
-			.on('keypress', function(e) {
+			})
+			.on('keypress', (e) => {
 
 				if (e.metaKey)
 					return true;
 
-				var cursor = this.cursor;
-console.log('TYPING', cursor.startNode, cursor.startOffset);
-				treeOperator.insert(cursor.startNode, cursor.startOffset, String.fromCharCode(e.keyCode));
+				var cursor = this.input.cursor;
+				switch(e.keyCode) {
 
-				// done everything so we update now
-				var task = cursor.startNode.component.refresh();
-				task.then(function() {
-					this.$inputBody.empty();
+				case Key.Enter:
+					var action = this.ctx.dispatch({
+						type: 'SPLIT_PARAGRAPH',
+						payload: {
+							targetId: cursor.startNode.id,
+							offset: cursor.startOffset
+						}
+					});
 
-					// Set new position to caret
-					cursor.move(1);
-					cursor.show();
+					return true;
 
-//					this.setCursorPosition(cursor.$caret.css('left'), cursor.$caret.css('top'));
-				}.bind(this));
+				default:
+
+					var action = this.ctx.dispatch({
+						type: 'INSERT_TEXT',
+						payload: {
+							startNode: cursor.startNode.id,
+							startOffset: cursor.startOffset,
+							data: String.fromCharCode(e.keyCode)
+						}
+					});
+
+					action.then(() => {
+
+						// done everything so we update now
+						this.$inputBody.empty();
+
+						// Update new position
+						cursor.move(1);
+						this.updateCursor();
+					});
+
+					return true;
+				}
 
 				return false;
-			}.bind(this));
+			});
 	}
 
-	updateText(text) {
+	_updateText(text) {
+		var cursor = this.input.cursor;
 
 		if (!this.originContent) {
 			// Store original content
-			this.originContent = this.cursor.startNode.text.slice(0);
+			this.originContent = cursor.startNode.text.slice(0);
 		} else {
 			// Clone original content back and set to node
-			this.cursor.startNode.text = this.originContent.slice(0);
+			cursor.startNode.text = this.originContent.slice(0);
 		}
 
-		treeOperator.insert(this.cursor.startNode, this.cursor.startOffset, text);
+		treeOperator.insert(cursor.startNode, cursor.startOffset, text);
 
 		// done everything so we update now
-		return this.cursor.startNode.component.refresh();
+		return cursor.startNode.component.refresh();
+	}
+
+	updateText(text) {
+		var cursor = this.input.cursor;
+
+		var offset = 0;
+
+		// Replace old content in range
+		if (this.originContent) {
+			offset = this.originContent.length;
+		}
+
+		this.originContent = text;
+
+		return this.ctx.dispatch({
+			type: 'INSERT_TEXT',
+			payload: {
+				startNode: cursor.startNode.id,
+				startOffset: cursor.startOffset,
+				endNode: cursor.startNode.id,
+				endOffset: cursor.startOffset + offset,
+				data: text
+			}
+		});
+	}
+
+	updateCursor() {
+
+		// Update cursor
+		this.ctx.dispatch({
+			type: 'SET_SELECTION',
+			payload: {
+				targetId: this.selection.id,
+				cursors: [
+					{
+						startNode: this.input.cursor.startNode.id,
+						startOffset: this.input.cursor.startOffset
+					}
+				]
+			}
+		});
 	}
 
 	setCursorPosition(x, y) {
@@ -258,18 +303,20 @@ console.log('TYPING', cursor.startNode, cursor.startOffset);
 	}
 
 	focus() {
+		var cursor = this.input.cursor;
+
 		this.$inputBox
 			.outerWidth(this.ctx.$layout.width());
 
 		this.$inputBody.css({
 			lineHeight: 1.15,
-			height: this.cursor.caret.$dom.css('height'),
-			fontSize: this.cursor.caret.$dom.css('font-size') || 'intital',
-			fontFamily: this.cursor.caret.$dom.css('font-family') || 'intital',
-			fontWeight: this.cursor.caret.$dom.css('font-weight') || 'intital',
-			fontStyle: this.cursor.caret.$dom.css('font-style') || 'intital',
-			textDecoration: this.cursor.caret.$dom.css('text-decoration') || 'intital',
-			color: this.cursor.caret.$dom.css('color') || 'red',
+			height: cursor.caret.$dom.css('height'),
+			fontSize: cursor.caret.$dom.css('font-size') || 'intital',
+			fontFamily: cursor.caret.$dom.css('font-family') || 'intital',
+			fontWeight: cursor.caret.$dom.css('font-weight') || 'intital',
+			fontStyle: cursor.caret.$dom.css('font-style') || 'intital',
+			textDecoration: cursor.caret.$dom.css('text-decoration') || 'intital',
+			color: cursor.caret.$dom.css('color') || 'red',
 		});
 		this.$inputBody.focus();
 		this.$inputBody.empty();

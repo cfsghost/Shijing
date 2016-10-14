@@ -31,9 +31,16 @@ class Selection extends events.EventEmitter {
 		});
 
 		this.cursors.push(cursor);
+
+		this.emit('added', cursor);
 	}
 
 	removeAllCursors() {
+
+		this.cursors.forEach((cursor) => {
+			cursor.release();
+		});
+
 		this.cursors = [];
 	}
 
@@ -54,6 +61,7 @@ class Selection extends events.EventEmitter {
 			var task = cursor.ancestorNode.component.refresh();
 			task.then(() => {
 				// Do nothing
+				this.emit('update');
 			});
 		});
 	}
