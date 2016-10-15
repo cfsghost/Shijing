@@ -35,6 +35,10 @@ class Actions extends events.EventEmitter {
 		var handler = this.findHandler(action.type);
 		if (handler) {
 			await handler.apply(this, [ action ]);
+
+			// Push to history
+			this.ctx.history.addAction(action);
+
 			task.done();
 		}
 

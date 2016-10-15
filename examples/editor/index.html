@@ -16,6 +16,64 @@
 				background: white;
 			}
 
+			#history {
+				font-family: "Courier New", Courier, monospace;
+				font-size: 10pt;
+				position: fixed;
+				width: 350px;
+				height: 95%;
+				bottom: 0;
+				right: 0;
+				padding-top: 35px;
+				overflow: hidden;
+				overflow-y: auto;
+				text-shadow: 0 1px 0 rgba(0,0,0,1);
+			}
+
+			#history .actionType {
+				font-family: Arial, Helvetica, sans-serif;
+				background: #3388bb;
+				color: white;
+				border-radius: 5px;
+				padding: 3px;
+				font-weight: bold;
+			}
+
+			#history .actionLabel {
+				font-family: Arial, Helvetica, sans-serif;
+				color: white;
+				background: #00ddaa;
+				border-radius: 15px;
+				display: inline-block;
+				padding: 5px;
+				margin-right: 5px;
+				text-shadow: none;
+			}
+
+			#history .actionPayload {
+				color: #ffffff;
+				font-size: 8pt;
+				white-space: pre;
+				padding: 2px;
+			}
+
+			#history .actionPayload .key {
+				color: #00ffbb;
+				display: inline-block;
+			}
+
+			#history .actionPayload .value {
+				color: #ffffff;
+				display: inline-block;
+			}
+
+			#history .actionItem {
+				border-left: 5px solid #33bbff;
+				background: rgba(0,20,20,.9);
+				border-radius: 5px;
+				margin: 1px;
+			}
+
 			.layout {
 				position: relative;
 				width: 100%;
@@ -99,6 +157,8 @@
 			</div>
 			<div id="editor"></div>
 		</div>
+
+		<div id="history"></div>
 		<script src="static/bundle.js"></script>
 	</body>
 </html>

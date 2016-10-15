@@ -13,7 +13,7 @@ class Cursor extends events.EventEmitter {
 		this.startOffset = -1;
 		this.startNode = null;
 		this.endNode = null;
-		this.endOffset = null;
+		this.endOffset = -1;
 		this.baseline = null;
 		this.$dom = $('<div>')
 			.addClass('shijing-cursor')
@@ -248,13 +248,13 @@ class Cursor extends events.EventEmitter {
 
 	setStart(node, offset) {
 		this.startNode = node;
-		this.startOffset = offset;
+		this.startOffset = (offset == null) ? -1 : offset;
 		this.ancestorNode = treeOperator.getAncestorNode(this.startNode, this.endNode);
 	}
 
 	setEnd(node, offset) {
 		this.endNode = node;
-		this.endOffset = offset;
+		this.endOffset = (offset == null) ? -1 : offset;
 		this.ancestorNode = treeOperator.getAncestorNode(this.startNode, this.endNode);
 	}
 

@@ -75,7 +75,38 @@
 		}];
 
 		var shijing = new _2.default('#editor');
+
 		shijing.setPaperSize(paperSize[0].width, paperSize[0].height);
+
+		// Getting history
+		shijing.history.on('added', function (action) {
+
+			var $actionItem = $('<div>').addClass('actionItem');
+			var $actionType = $('<div>').addClass('actionType').text(action.type).appendTo($actionItem);
+			var $actionLabel = $('<div>').addClass('actionLabel').text('ACTION').prependTo($actionType);
+
+			var $actionPayload = $('<div>').addClass('actionPayload').appendTo($actionItem);
+
+			for (var key in action.payload) {
+				var $info = $('<div>').appendTo($actionPayload);
+
+				var $key = $('<div>').addClass('key').text(key + ': ').appendTo($info);
+
+				var $value = $('<div>').addClass('value').appendTo($info);
+
+				if (action.payload[key] instanceof Array) {
+					$value.text(JSON.stringify(action.payload[key], null, 1));
+				} else {
+					$value.text(action.payload[key]);
+				}
+			}
+
+			$('#history').append($actionItem).stop(true, false).animate({
+				scrollTop: $('#history')[0].scrollHeight
+			}, 400);
+
+			$actionItem.hide().fadeIn(200);
+		});
 
 		// margin is set to  2.54 cm
 		shijing.setPaperMargin(96);
@@ -8318,6 +8349,10 @@
 
 		var _Actions2 = _interopRequireDefault(_Actions);
 
+		var _History = __webpack_require__(331);
+
+		var _History2 = _interopRequireDefault(_History);
+
 		var _TreeOperator = __webpack_require__(300);
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
@@ -8348,6 +8383,7 @@
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Shijing).call(this));
 
 				_this.actions = new _Actions2.default(_this);
+				_this.history = new _History2.default(_this);
 				_this.documentTree = new _DocumentTree2.default();
 
 				// APIs
@@ -11694,8 +11730,6 @@
 				_this.ctx.$origin[0].addEventListener('mousedown', function (e) {
 					_this.cursor.setEnd(null, null);
 					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
-					//			console.log('mouseDOWN', this.cursor);
-					//			this.cursor.show();
 
 					_this.updateCursor();
 
@@ -11704,20 +11738,26 @@
 					// Reset anchor
 					_this.anchor.node = _this.cursor.startNode;
 					_this.anchor.offset = _this.cursor.startOffset;
-
-					//			this.renderer.Selection.update(selection);
 				}, false);
 
 				_this.ctx.$origin[0].addEventListener('mousemove', function (e) {
 					if (!_this.mousedown) return;
 
 					_this.dragging = true;
-					_this.emit('dragging');
+					_this.emit('dragging', e);
+				}, false);
+
+				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {
+					_this.mousedown = false;
+					_this.dragging = false;
+				}, false);
+
+				_this.on('dragging', function (e) {
 
 					// Getting node and offset by using x and y
 					newCursor.setPositionByAxis(e.clientX, e.clientY);
 
-					// Nothing's changed
+					// User is mvoe cursor on the start point, so nothing's changed
 					if (newCursor.startNode == _this.cursor.startNode && newCursor.startOffset == _this.cursor.startOffset) {
 						return;
 					}
@@ -11725,22 +11765,21 @@
 					var compare = _TreeOperator2.default.compareBoundary(_this.anchor.node, _this.anchor.offset, newCursor.startNode, newCursor.startOffset);
 
 					if (compare > 0) {
+						// nothing's changed
+						if (_this.cursor.startNode == _this.anchor.node && _this.cursor.startOffset == _this.anchor.offset && _this.cursor.endNode == newCursor.startNode && _this.cursor.endOffset == newCursor.startOffset) return;
+
 						_this.cursor.setStart(_this.anchor.node, _this.anchor.offset);
 						_this.cursor.setEnd(newCursor.startNode, newCursor.startOffset);
 					} else {
+						// nothing's changed
+						if (_this.cursor.startNode == newCursor.startNode && _this.cursor.startOffset == newCursor.startOffset && _this.cursor.endNode == _this.anchor.node && _this.cursor.endOffset == _this.anchor.offset) return;
+
 						_this.cursor.setStart(newCursor.startNode, newCursor.startOffset);
 						_this.cursor.setEnd(_this.anchor.node, _this.anchor.offset);
 					}
 
-					//this.renderer.Selection.update(selection);
 					_this.updateCursor();
-				}, false);
-
-				_this.ctx.$origin[0].addEventListener('mouseup', function (e) {
-					_this.mousedown = false;
-					_this.dragging = false;
-					//			this.cursor.show();
-				}, false);
+				});
 				return _this;
 			}
 
@@ -11756,7 +11795,7 @@
 								startNode: this.cursor.startNode.id,
 								startOffset: this.cursor.startOffset,
 								endNode: this.cursor.endNode ? this.cursor.endNode.id : undefined,
-								endOffset: this.cursor.endOffset
+								endOffset: this.cursor.endOffset != -1 ? this.cursor.endOffset : undefined
 							}]
 						}
 					});
@@ -11817,6 +11856,13 @@
 			}
 
 			_createClass(Selection, [{
+				key: 'getCursorById',
+				value: function getCursorById(id) {
+					return this.cursors.find(function (cursor) {
+						return cursor.id == id;
+					});
+				}
+			}, {
 				key: 'getAllCursors',
 				value: function getAllCursors() {
 					return this.cursors;
@@ -12309,7 +12355,7 @@
 				_this.startOffset = -1;
 				_this.startNode = null;
 				_this.endNode = null;
-				_this.endOffset = null;
+				_this.endOffset = -1;
 				_this.baseline = null;
 				_this.$dom = $('<div>').addClass('shijing-cursor').css({
 					position: 'absolute',
@@ -12549,14 +12595,14 @@
 				key: 'setStart',
 				value: function setStart(node, offset) {
 					this.startNode = node;
-					this.startOffset = offset;
+					this.startOffset = offset == null ? -1 : offset;
 					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
 				}
 			}, {
 				key: 'setEnd',
 				value: function setEnd(node, offset) {
 					this.endNode = node;
-					this.endOffset = offset;
+					this.endOffset = offset == null ? -1 : offset;
 					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
 				}
 			}, {
@@ -13021,7 +13067,7 @@
 										handler = this.findHandler(action.type);
 
 										if (!handler) {
-											_context.next = 9;
+											_context.next = 10;
 											break;
 										}
 
@@ -13029,13 +13075,17 @@
 										return handler.apply(this, [action]);
 
 									case 8:
+
+										// Push to history
+										this.ctx.history.addAction(action);
+
 										task.done();
 
-									case 9:
-										_context.next = 11;
+									case 10:
+										_context.next = 12;
 										return this.doTasks();
 
-									case 11:
+									case 12:
 									case 'end':
 										return _context.stop();
 								}
@@ -13726,6 +13776,63 @@
 				return SPLIT_PARAGRAPH;
 			}()
 		};
+
+	/***/ },
+	/* 331 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var History = function (_events$EventEmitter) {
+			_inherits(History, _events$EventEmitter);
+
+			function History() {
+				_classCallCheck(this, History);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(History).call(this));
+
+				_this.histories = [];
+				return _this;
+			}
+
+			_createClass(History, [{
+				key: 'getHistory',
+				value: function getHistory() {
+					return this.histories;
+				}
+			}, {
+				key: 'addAction',
+				value: function addAction(action) {
+					this.histories.push(action);
+
+					this.emit('added', action);
+					this.emit('update');
+				}
+			}]);
+
+			return History;
+		}(_events2.default.EventEmitter);
+
+		exports.default = History;
+		;
 
 	/***/ }
 	/******/ ]);

@@ -23,7 +23,58 @@ $(function() {
 	];
 
 	var shijing = new Shijing('#editor');
+
 	shijing.setPaperSize(paperSize[0].width, paperSize[0].height);
+
+	// Getting history
+	shijing.history.on('added', function(action) {
+
+		var $actionItem = $('<div>')
+			.addClass('actionItem');
+		var $actionType = $('<div>')
+			.addClass('actionType')
+			.text(action.type)
+			.appendTo($actionItem);
+		var $actionLabel = $('<div>')
+			.addClass('actionLabel')
+			.text('ACTION')
+			.prependTo($actionType);
+
+		var $actionPayload = $('<div>')
+			.addClass('actionPayload')
+			.appendTo($actionItem);
+
+		for (var key in action.payload) {
+			var $info = $('<div>')
+				.appendTo($actionPayload);
+
+			var $key = $('<div>')
+				.addClass('key')
+				.text(key + ': ')
+				.appendTo($info);
+
+			var $value = $('<div>')
+				.addClass('value')
+				.appendTo($info);
+
+			if (action.payload[key] instanceof Array) {
+				$value.text(JSON.stringify(action.payload[key], null, 1));
+			} else {
+				$value.text(action.payload[key]);
+			}
+		}
+
+		$('#history')
+			.append($actionItem)
+			.stop(true, false)
+			.animate({
+				scrollTop: $('#history')[0].scrollHeight
+			}, 400);
+
+		$actionItem
+			.hide()
+			.fadeIn(200);
+	});
 	
 	// margin is set to  2.54 cm
 	shijing.setPaperMargin(96);

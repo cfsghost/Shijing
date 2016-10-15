@@ -2,6 +2,7 @@ import events from 'events';
 import Renderer from './renderer';
 import Misc from './Misc';
 import Actions from './Actions';
+import History from './History';
 import treeOperator from './TreeOperator';
 import DocumentTree from './DocumentTree';
 
@@ -14,6 +15,7 @@ class Shijing extends events.EventEmitter {
 		super();
 
 		this.actions = new Actions(this);
+		this.history = new History(this);
 		this.documentTree = new DocumentTree();
 
 		// APIs

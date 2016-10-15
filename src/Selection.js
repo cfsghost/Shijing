@@ -14,6 +14,12 @@ class Selection extends events.EventEmitter {
 		this.cursors = [];
 	}
 
+	getCursorById(id) {
+		return this.cursors.find((cursor) => {
+			return (cursor.id == id);
+		});
+	}
+
 	getAllCursors() {
 		return this.cursors;
 	}
