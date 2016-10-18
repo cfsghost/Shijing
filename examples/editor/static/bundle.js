@@ -8881,8 +8881,6 @@
 						newNode[key] = this._clone(node[key]);
 					}
 
-					console.log(newNode);
-
 					return newNode;
 				}
 			}, {
@@ -9104,7 +9102,6 @@
 			}, {
 				key: 'replace',
 				value: function replace(startNode, startOffset, endNode, endOffset, value) {
-					console.log(startNode);
 					startNode.text = [startNode.text.substr(0, startOffset), value, startNode.text.substring(endOffset, startNode.text.length)].join('');
 				}
 			}, {
@@ -9324,7 +9321,6 @@
 					var newNode;
 					if (!boundaryNode) {
 						newNode = this._split(node, boundaryOffset);
-						console.log('TREE', node, newNode, boundaryOffset);
 					} else {
 						newNode = this._split(boudaryNode, boundaryOffset);
 
@@ -10308,7 +10304,11 @@
 				key: 'split',
 				value: function split(offset) {
 
-					return _TreeOperator2.default.split(this.node, offset);
+					var newNode = _TreeOperator2.default.split(this.node, offset);
+
+					this.ctx.documentTree.registerNode(newNode);
+
+					return newNode;
 				}
 			}, {
 				key: 'refresh',
@@ -10479,6 +10479,7 @@
 					// Clone a new node
 					var newNode = _TreeOperator2.default.clone(this.node);
 					newNode.id = _TreeOperator2.default.generateId();
+					this.ctx.documentTree.registerNode(newNode);
 
 					// Split childrens
 					this.node.text = this.node.text.slice(0, offset);
@@ -10490,6 +10491,11 @@
 					_TreeOperator2.default.insertNode(parentNode, index + 1, newNode);
 
 					return parentNode.component.split(index + 1, targetNode);
+				}
+			}, {
+				key: 'insertText',
+				value: function insertText(offset, text) {
+					this.node.text = [this.node.text.substr(0, offset), text, this.node.text.substring(offset, this.node.text.length)].join('');
 				}
 			}, {
 				key: 'render',
@@ -12640,7 +12646,6 @@
 				value: function setPositionByDOM(dom, offset) {
 
 					var _offset = offset;
-
 					var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
 
 					this.caret.move(point.x, point.y);
@@ -13888,7 +13893,10 @@
 
 										_TreeOperator2.default.replace(startNode, payload.startOffset, endNode, payload.endOffset, payload.data);
 									} else {
-										_TreeOperator2.default.insert(startNode, payload.startOffset, payload.data);
+										if (startNode.component.insertText) {
+											startNode.component.insertText(payload.startOffset, payload.data);
+											//				treeOperator.insert(startNode, payload.startOffset, payload.data);
+										}
 									}
 
 									// done everything so we update now

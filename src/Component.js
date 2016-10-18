@@ -289,7 +289,11 @@ class Component extends events.EventEmitter {
 
 	split(offset) {
 
-		return treeOperator.split(this.node, offset);
+		var newNode = treeOperator.split(this.node, offset);
+
+		this.ctx.documentTree.registerNode(newNode);
+
+		return newNode;
 	}
 
 	refresh() {

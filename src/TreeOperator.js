@@ -31,8 +31,6 @@ class TreeOperator {
 			newNode[key] = this._clone(node[key]);
 		}
 
-		console.log(newNode);
-
 		return newNode;
 	}
 
@@ -245,7 +243,6 @@ class TreeOperator {
 	}
 
 	replace(startNode, startOffset, endNode, endOffset, value) {
-console.log(startNode);
 		startNode.text = [
 			startNode.text.substr(0, startOffset),
 			value,
@@ -473,7 +470,6 @@ console.log(startNode);
 		var newNode;
 		if (!boundaryNode) {
 			newNode = this._split(node, boundaryOffset);
-			console.log('TREE', node, newNode, boundaryOffset);
 		} else {
 			newNode = this._split(boudaryNode, boundaryOffset);
 

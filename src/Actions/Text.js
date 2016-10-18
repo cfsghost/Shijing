@@ -55,7 +55,10 @@ export default {
 			var endNode = this.ctx.documentTree.getNodeById(payload.endNode);
 			treeOperator.replace(startNode, payload.startOffset, endNode, payload.endOffset, payload.data);
 		} else {
-			treeOperator.insert(startNode, payload.startOffset, payload.data);
+			if (startNode.component.insertText) {
+				startNode.component.insertText(payload.startOffset, payload.data);
+//				treeOperator.insert(startNode, payload.startOffset, payload.data);
+			}
 		}
 
 		// done everything so we update now

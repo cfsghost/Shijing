@@ -16,6 +16,7 @@ export default class Inline extends InlineComponent {
 		// Clone a new node
 		var newNode = treeOperator.clone(this.node);
 		newNode.id = treeOperator.generateId();
+		this.ctx.documentTree.registerNode(newNode);
 
 		// Split childrens
 		this.node.text = this.node.text.slice(0, offset);
@@ -27,6 +28,14 @@ export default class Inline extends InlineComponent {
 		treeOperator.insertNode(parentNode, index + 1, newNode);
 
 		return parentNode.component.split(index + 1, targetNode);
+	}
+
+	insertText(offset, text) {
+		this.node.text = [
+			this.node.text.substr(0, offset),
+			text,
+			this.node.text.substring(offset, this.node.text.length)
+		].join('');
 	}
 
 	render() {

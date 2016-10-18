@@ -123,7 +123,6 @@ class Cursor extends events.EventEmitter {
 	setPositionByDOM(dom, offset) {
 
 		var _offset = offset;
-
 		var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
 
 		this.caret.move(point.x, point.y);
