@@ -61,14 +61,37 @@ export default {
 		// done everything so we update now
 		await startNode.component.refresh();
 	},
-	'SPLIT_PARAGRAPH': async function(action) {
+	'SPLIT_NODE': async function(action) {
 
 		var payload = action.payload;
 
-		var node = this.ctx.documentTree.getNodeById(payload.targetId);
+		if (payload.node == payload.boundaryNode) {
+			boundaryNode.component.split(payload.boundaryOffset);
+
+			await startNode.component.refresh();
+
+			return;
+		}
+
+		var node = this.ctx.documentTree.getNodeById(payload.node);
 		if (!node)
 			return;
 
-		console.log('SPLIT PARAGRAPH', payload);
+		var boundaryNode = this.ctx.documentTree.getNodeById(payload.boundaryNode);
+		if (!boundaryNode)
+			return;
+
+		console.log('SPLIT NODE', payload);
+		var newNode = boundaryNode.component.split(payload.boundaryOffset, node);
+
+		// Re-generate ID for new Node
+		newNode.id = treeOperator.generateId();
+
+		this.ctx.documentTree.registerNode(newNode);
+
+		console.log(this.ctx.documentTree.getRoot());
+
+		// Refresh component
+		await treeOperator.getParentNode(newNode).component.refresh();
 	}
 };

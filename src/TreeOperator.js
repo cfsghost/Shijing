@@ -15,6 +15,39 @@ class TreeOperator {
 		return Math.random().toString().substr(2) + Date.now();
 	}
 
+	_clone(node) {
+
+		if (typeof(node) == 'string') {
+			return node.slice(0);
+		} else if (node instanceof Array) {
+			return node.slice(0);
+		} else if (typeof(node) == 'number') {
+			return node;
+		}
+
+		// It's an object
+		var newNode = {};
+		for (var key in node) {
+			newNode[key] = this._clone(node[key]);
+		}
+
+		console.log(newNode);
+
+		return newNode;
+	}
+
+	clone(node) {
+
+		var newNode = this._clone(node);
+
+		// Copy hidden properties
+		this.setInternalProperty(newNode, 'parent', node.parent);
+		this.setInternalProperty(newNode, 'prevNode', node.prevNode);
+		this.setInternalProperty(newNode, 'nextNode', node.nextNode);
+
+		return newNode;
+	}
+
 	getParentNode(node) {
 		return node.parent;
 	}
@@ -191,17 +224,24 @@ class TreeOperator {
 		return compare;
 	}
 
-	insert(node, offset, value) {
+	insertNode(target, offset, node) {
 
-		// TODO: it should update sub nodes when it's not pure text
-		if (node.text == undefined)
-			return;
+		if (offset == 0) {
+			this.setInternalProperty(node, 'prevNode', null);
+		} else {
+			this.setInternalProperty(node, 'prevNode', target.childrens[offset - 1]);
+			this.setInternalProperty(target.childrens[offset - 1], 'nextNode', node);
+		}
 
-		node.text = [
-			node.text.substr(0, offset),
-			value,
-			node.text.substring(offset, node.text.length)
-		].join('');
+		if (offset == target.childrens.length) {
+			this.setInternalProperty(node, 'nextNode', null);
+		} else {
+			this.setInternalProperty(node, 'nextNode', target.childrens[offset]);
+			this.setInternalProperty(target.childrens[offset], 'prevNode', node);
+		}
+
+		// Insert now
+		target.childrens.splice(offset, 0, node);
 	}
 
 	replace(startNode, startOffset, endNode, endOffset, value) {
@@ -372,6 +412,80 @@ console.log(startNode);
 			return false;
 
 		return this.intersectsNode(containerNode, parentNode);
+	}
+
+	findParentNode(node, compare) {
+
+		if (!node)
+			return null;
+
+		if (compare(node))
+			return node;
+
+		return this.findParentNode(node.parent, compare);
+	}
+
+	_split(node, offset) {
+
+		if (node.childrens.length <= offset || offset < 0) {
+			return null;
+		}
+
+		// Clone a new node
+		var newNode = this.clone(node);
+		newNode.id = this.generateId();
+
+		// Split childrens
+		node.childrens = node.childrens.slice(0, offset);
+		newNode.childrens = newNode.childrens.slice(offset, newNode.childrens.length);
+
+		// Update parent and relationship of child nodes
+		node.childrens[node.childrens.length - 1].nextNode = null;
+		newNode.childrens[0].prevNode = null;
+		newNode.childrens.forEach((childNode) => {
+			// Change parent
+			this.setInternalProperty(childNode, 'parent', newNode);
+		});
+
+		// Add new node
+		var index = this.getIndex(node);
+		var parentNode = this.getParentNode(node);
+		this.insertNode(parentNode, index + 1, newNode);
+
+		return newNode;
+	}
+
+	split() {
+
+		var node = arguments[0];
+		var boundaryNode = undefined;
+		var boundaryOffset = undefined;
+
+		if (arguments.length == 2) {
+			boundaryOffset = arguments[1];
+		} else if (node == boundaryNode) {
+			boundaryOffset = arguments[1];
+		} else {
+			boundaryNode = arguments[1];
+			boundaryOffset = arguments[2];
+		}
+
+		var newNode;
+		if (!boundaryNode) {
+			newNode = this._split(node, boundaryOffset);
+			console.log('TREE', node, newNode, boundaryOffset);
+		} else {
+			newNode = this._split(boudaryNode, boundaryOffset);
+
+			var offset = this.getIndex(newNode);
+			if (offset > 0) {
+				var parentNode = this.getParentNode(newNode);
+
+				return this.split(parentNode, offset);
+			}
+		}
+
+		return newNode;
 	}
 }
 

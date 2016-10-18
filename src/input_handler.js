@@ -193,11 +193,21 @@ class InputHandler {
 				switch(e.keyCode) {
 
 				case Key.Enter:
+
+					// Finding paragraph where is current node stay at
+					var paragraphNode = treeOperator.findParentNode(cursor.startNode, (node) => {
+						return (node.type == 'paragraph');
+					});
+
+					if (!paragraphNode)
+						return;
+
 					var action = this.ctx.dispatch({
-						type: 'SPLIT_PARAGRAPH',
+						type: 'SPLIT_NODE',
 						payload: {
-							targetId: cursor.startNode.id,
-							offset: cursor.startOffset
+							node: paragraphNode.id,
+							boundaryNode: cursor.startNode.id,
+							boundaryOffset: cursor.startOffset,
 						}
 					});
 
@@ -242,7 +252,15 @@ class InputHandler {
 			cursor.startNode.text = this.originContent.slice(0);
 		}
 
-		treeOperator.insert(cursor.startNode, cursor.startOffset, text);
+//		treeOperator.insert(cursor.startNode, cursor.startOffset, text);
+		if (cursor.startNode.text == undefined)
+			return;
+
+		cursor.startNode.text = [
+			cursor.startNode.text.substr(0, cursor.startOffset),
+			text,
+			cursor.startNode.text.substring(cursor.startOffset, cursor.startNode.text.length)
+		].join('');
 
 		// done everything so we update now
 		return cursor.startNode.component.refresh();

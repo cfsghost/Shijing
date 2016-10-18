@@ -60,7 +60,6 @@ class DocumentTree {
 	getRoot() {
 		return this.ast.root;
 	}
-
 }
 
 export default DocumentTree;

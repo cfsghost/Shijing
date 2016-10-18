@@ -8864,6 +8864,41 @@
 					return Math.random().toString().substr(2) + Date.now();
 				}
 			}, {
+				key: '_clone',
+				value: function _clone(node) {
+
+					if (typeof node == 'string') {
+						return node.slice(0);
+					} else if (node instanceof Array) {
+						return node.slice(0);
+					} else if (typeof node == 'number') {
+						return node;
+					}
+
+					// It's an object
+					var newNode = {};
+					for (var key in node) {
+						newNode[key] = this._clone(node[key]);
+					}
+
+					console.log(newNode);
+
+					return newNode;
+				}
+			}, {
+				key: 'clone',
+				value: function clone(node) {
+
+					var newNode = this._clone(node);
+
+					// Copy hidden properties
+					this.setInternalProperty(newNode, 'parent', node.parent);
+					this.setInternalProperty(newNode, 'prevNode', node.prevNode);
+					this.setInternalProperty(newNode, 'nextNode', node.nextNode);
+
+					return newNode;
+				}
+			}, {
 				key: 'getParentNode',
 				value: function getParentNode(node) {
 					return node.parent;
@@ -9046,13 +9081,25 @@
 					return compare;
 				}
 			}, {
-				key: 'insert',
-				value: function insert(node, offset, value) {
+				key: 'insertNode',
+				value: function insertNode(target, offset, node) {
 
-					// TODO: it should update sub nodes when it's not pure text
-					if (node.text == undefined) return;
+					if (offset == 0) {
+						this.setInternalProperty(node, 'prevNode', null);
+					} else {
+						this.setInternalProperty(node, 'prevNode', target.childrens[offset - 1]);
+						this.setInternalProperty(target.childrens[offset - 1], 'nextNode', node);
+					}
 
-					node.text = [node.text.substr(0, offset), value, node.text.substring(offset, node.text.length)].join('');
+					if (offset == target.childrens.length) {
+						this.setInternalProperty(node, 'nextNode', null);
+					} else {
+						this.setInternalProperty(node, 'nextNode', target.childrens[offset]);
+						this.setInternalProperty(target.childrens[offset], 'prevNode', node);
+					}
+
+					// Insert now
+					target.childrens.splice(offset, 0, node);
 				}
 			}, {
 				key: 'replace',
@@ -9214,6 +9261,82 @@
 					if (!parentNode) return false;
 
 					return this.intersectsNode(containerNode, parentNode);
+				}
+			}, {
+				key: 'findParentNode',
+				value: function findParentNode(node, compare) {
+
+					if (!node) return null;
+
+					if (compare(node)) return node;
+
+					return this.findParentNode(node.parent, compare);
+				}
+			}, {
+				key: '_split',
+				value: function _split(node, offset) {
+					var _this = this;
+
+					if (node.childrens.length <= offset || offset < 0) {
+						return null;
+					}
+
+					// Clone a new node
+					var newNode = this.clone(node);
+					newNode.id = this.generateId();
+
+					// Split childrens
+					node.childrens = node.childrens.slice(0, offset);
+					newNode.childrens = newNode.childrens.slice(offset, newNode.childrens.length);
+
+					// Update parent and relationship of child nodes
+					node.childrens[node.childrens.length - 1].nextNode = null;
+					newNode.childrens[0].prevNode = null;
+					newNode.childrens.forEach(function (childNode) {
+						// Change parent
+						_this.setInternalProperty(childNode, 'parent', newNode);
+					});
+
+					// Add new node
+					var index = this.getIndex(node);
+					var parentNode = this.getParentNode(node);
+					this.insertNode(parentNode, index + 1, newNode);
+
+					return newNode;
+				}
+			}, {
+				key: 'split',
+				value: function split() {
+
+					var node = arguments[0];
+					var boundaryNode = undefined;
+					var boundaryOffset = undefined;
+
+					if (arguments.length == 2) {
+						boundaryOffset = arguments[1];
+					} else if (node == boundaryNode) {
+						boundaryOffset = arguments[1];
+					} else {
+						boundaryNode = arguments[1];
+						boundaryOffset = arguments[2];
+					}
+
+					var newNode;
+					if (!boundaryNode) {
+						newNode = this._split(node, boundaryOffset);
+						console.log('TREE', node, newNode, boundaryOffset);
+					} else {
+						newNode = this._split(boudaryNode, boundaryOffset);
+
+						var offset = this.getIndex(newNode);
+						if (offset > 0) {
+							var parentNode = this.getParentNode(newNode);
+
+							return this.split(parentNode, offset);
+						}
+					}
+
+					return newNode;
 				}
 			}]);
 
@@ -10182,6 +10305,12 @@
 				key: 'updateSelection',
 				value: function updateSelection() {}
 			}, {
+				key: 'split',
+				value: function split(offset) {
+
+					return _TreeOperator2.default.split(this.node, offset);
+				}
+			}, {
 				key: 'refresh',
 				value: function refresh() {
 					var _this3 = this;
@@ -10313,6 +10442,10 @@
 
 		var _InlineComponent3 = _interopRequireDefault(_InlineComponent2);
 
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10336,13 +10469,37 @@
 					return offset ? offset : this.node.text.length;
 				}
 			}, {
+				key: 'split',
+				value: function split(offset, targetNode) {
+
+					if (this.node.text.length <= offset || offset < 0) {
+						return null;
+					}
+
+					// Clone a new node
+					var newNode = _TreeOperator2.default.clone(this.node);
+					newNode.id = _TreeOperator2.default.generateId();
+
+					// Split childrens
+					this.node.text = this.node.text.slice(0, offset);
+					newNode.text = newNode.text.slice(offset, newNode.text.length);
+
+					// Add new node
+					var index = _TreeOperator2.default.getIndex(this.node);
+					var parentNode = _TreeOperator2.default.getParentNode(this.node);
+					_TreeOperator2.default.insertNode(parentNode, index + 1, newNode);
+
+					return parentNode.component.split(index + 1, targetNode);
+				}
+			}, {
 				key: 'render',
 				value: function render() {
+					var _this2 = this;
 
 					return new Promise(function (resolve) {
 
-						var node = this.node;
-						var text = this.node.text || '';
+						var node = _this2.node;
+						var text = _this2.node.text || '';
 						var defStyle = {
 							whiteSpace: 'pre-wrap',
 							wordBreak: 'break-all'
@@ -10350,10 +10507,10 @@
 
 						var $DOM = $('<span>').addClass('inline-component').html(text.replace(/ /g, '&nbsp')).css(node.style ? Object.assign(defStyle, node.style) : defStyle);
 
-						this.dom = $DOM[0];
+						_this2.dom = $DOM[0];
 
 						resolve();
-					}.bind(this));
+					});
 				}
 			}]);
 
@@ -12163,11 +12320,20 @@
 					switch (e.keyCode) {
 
 						case Key.Enter:
+
+							// Finding paragraph where is current node stay at
+							var paragraphNode = _TreeOperator2.default.findParentNode(cursor.startNode, function (node) {
+								return node.type == 'paragraph';
+							});
+
+							if (!paragraphNode) return;
+
 							var action = _this.ctx.dispatch({
-								type: 'SPLIT_PARAGRAPH',
+								type: 'SPLIT_NODE',
 								payload: {
-									targetId: cursor.startNode.id,
-									offset: cursor.startOffset
+									node: paragraphNode.id,
+									boundaryNode: cursor.startNode.id,
+									boundaryOffset: cursor.startOffset
 								}
 							});
 
@@ -12214,7 +12380,10 @@
 						cursor.startNode.text = this.originContent.slice(0);
 					}
 
-					_TreeOperator2.default.insert(cursor.startNode, cursor.startOffset, text);
+					//		treeOperator.insert(cursor.startNode, cursor.startOffset, text);
+					if (cursor.startNode.text == undefined) return;
+
+					cursor.startNode.text = [cursor.startNode.text.substr(0, cursor.startOffset), text, cursor.startNode.text.substring(cursor.startOffset, cursor.startNode.text.length)].join('');
 
 					// done everything so we update now
 					return cursor.startNode.component.refresh();
@@ -13740,28 +13909,66 @@
 
 				return INSERT_TEXT;
 			}(),
-			'SPLIT_PARAGRAPH': function () {
+			'SPLIT_NODE': function () {
 				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
-					var payload, node;
+					var payload, node, boundaryNode, newNode;
 					return regeneratorRuntime.wrap(function _callee3$(_context3) {
 						while (1) {
 							switch (_context3.prev = _context3.next) {
 								case 0:
 									payload = action.payload;
-									node = this.ctx.documentTree.getNodeById(payload.targetId);
+
+									if (!(payload.node == payload.boundaryNode)) {
+										_context3.next = 6;
+										break;
+									}
+
+									boundaryNode.component.split(payload.boundaryOffset);
+
+									_context3.next = 5;
+									return startNode.component.refresh();
+
+								case 5:
+									return _context3.abrupt('return');
+
+								case 6:
+									node = this.ctx.documentTree.getNodeById(payload.node);
 
 									if (node) {
-										_context3.next = 4;
+										_context3.next = 9;
 										break;
 									}
 
 									return _context3.abrupt('return');
 
-								case 4:
+								case 9:
+									boundaryNode = this.ctx.documentTree.getNodeById(payload.boundaryNode);
 
-									console.log('SPLIT PARAGRAPH', payload);
+									if (boundaryNode) {
+										_context3.next = 12;
+										break;
+									}
 
-								case 5:
+									return _context3.abrupt('return');
+
+								case 12:
+
+									console.log('SPLIT NODE', payload);
+									newNode = boundaryNode.component.split(payload.boundaryOffset, node);
+
+									// Re-generate ID for new Node
+
+									newNode.id = _TreeOperator2.default.generateId();
+
+									this.ctx.documentTree.registerNode(newNode);
+
+									console.log(this.ctx.documentTree.getRoot());
+
+									// Refresh component
+									_context3.next = 19;
+									return _TreeOperator2.default.getParentNode(newNode).component.refresh();
+
+								case 19:
 								case 'end':
 									return _context3.stop();
 							}
@@ -13769,11 +13976,11 @@
 					}, _callee3, this);
 				}));
 
-				function SPLIT_PARAGRAPH(_x3) {
+				function SPLIT_NODE(_x3) {
 					return _ref3.apply(this, arguments);
 				}
 
-				return SPLIT_PARAGRAPH;
+				return SPLIT_NODE;
 			}()
 		};
 

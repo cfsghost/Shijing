@@ -287,6 +287,11 @@ class Component extends events.EventEmitter {
 	updateSelection() {
 	}
 
+	split(offset) {
+
+		return treeOperator.split(this.node, offset);
+	}
+
 	refresh() {
 
 		if (!this.blockType) {
