@@ -318,7 +318,9 @@
 		shijing.load({
 			root: {
 				childrens: [{
-					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
+					type: 'paragraph', childrens: [{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '先聲明，async 異步函數是 ECMAScript 第七版（ES7）才被支援的語法和特性，目前 ES7 還沒有被大多數的 JavaScript Engine 所實作，如果你要使用，需要用到 babel 這類工具，先把此程式編譯轉換，讓其可在舊版本 JavaScript Engine 上執行。' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' }, { type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' }, { type: 'inline', style: { color: 'green' }, text: '這是' }, { type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' }]
+				}, {
+					type: 'paragraph', childrens: [{ type: 'inline', text: '如果你覺得以 co 模組來操作 Generator 很好用，你可以想像 async 異步函數就是原生的 co，幾乎是同樣的使用方式，同樣的使用概念，只不過不再需要使用 generator 和 yield 這類語法。如果你是個過不了在函數上有個醜陋「*」符號這一關的人，async 異步函數的使用方式應該會讓你感覺到舒服許多。' }]
 				},
 				/*
 	   				{
@@ -13911,22 +13913,41 @@
 		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
 		exports.default = {
-			'INSERT_TEXT': function () {
+			'WRAP_TEXT': function () {
 				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
-					var payload, startNode, endNode;
 					return regeneratorRuntime.wrap(function _callee$(_context) {
 						while (1) {
 							switch (_context.prev = _context.next) {
+								case 0:
+								case 'end':
+									return _context.stop();
+							}
+						}
+					}, _callee, this);
+				}));
+
+				function WRAP_TEXT(_x) {
+					return _ref.apply(this, arguments);
+				}
+
+				return WRAP_TEXT;
+			}(),
+			'INSERT_TEXT': function () {
+				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
+					var payload, startNode, endNode;
+					return regeneratorRuntime.wrap(function _callee2$(_context2) {
+						while (1) {
+							switch (_context2.prev = _context2.next) {
 								case 0:
 									payload = action.payload;
 									startNode = this.ctx.documentTree.getNodeById(payload.startNode);
 
 									if (startNode) {
-										_context.next = 4;
+										_context2.next = 4;
 										break;
 									}
 
-									return _context.abrupt('return');
+									return _context2.abrupt('return');
 
 								case 4:
 
@@ -13943,64 +13964,64 @@
 									}
 
 									// done everything so we update now
-									_context.next = 7;
+									_context2.next = 7;
 									return startNode.component.refresh();
 
 								case 7:
 								case 'end':
-									return _context.stop();
+									return _context2.stop();
 							}
 						}
-					}, _callee, this);
+					}, _callee2, this);
 				}));
 
-				function INSERT_TEXT(_x) {
-					return _ref.apply(this, arguments);
+				function INSERT_TEXT(_x2) {
+					return _ref2.apply(this, arguments);
 				}
 
 				return INSERT_TEXT;
 			}(),
 			'SPLIT_NODE': function () {
-				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
+				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
 					var payload, node, boundaryNode, newNode;
-					return regeneratorRuntime.wrap(function _callee2$(_context2) {
+					return regeneratorRuntime.wrap(function _callee3$(_context3) {
 						while (1) {
-							switch (_context2.prev = _context2.next) {
+							switch (_context3.prev = _context3.next) {
 								case 0:
 									payload = action.payload;
 
 									if (!(payload.node == payload.boundaryNode)) {
-										_context2.next = 6;
+										_context3.next = 6;
 										break;
 									}
 
 									boundaryNode.component.split(payload.boundaryOffset);
 
-									_context2.next = 5;
+									_context3.next = 5;
 									return startNode.component.refresh();
 
 								case 5:
-									return _context2.abrupt('return');
+									return _context3.abrupt('return');
 
 								case 6:
 									node = this.ctx.documentTree.getNodeById(payload.node);
 
 									if (node) {
-										_context2.next = 9;
+										_context3.next = 9;
 										break;
 									}
 
-									return _context2.abrupt('return');
+									return _context3.abrupt('return');
 
 								case 9:
 									boundaryNode = this.ctx.documentTree.getNodeById(payload.boundaryNode);
 
 									if (boundaryNode) {
-										_context2.next = 12;
+										_context3.next = 12;
 										break;
 									}
 
-									return _context2.abrupt('return');
+									return _context3.abrupt('return');
 
 								case 12:
 
@@ -14016,19 +14037,19 @@
 									console.log(this.ctx.documentTree.getRoot());
 
 									// Refresh component
-									_context2.next = 19;
+									_context3.next = 19;
 									return _TreeOperator2.default.getParentNode(newNode).component.refresh();
 
 								case 19:
 								case 'end':
-									return _context2.stop();
+									return _context3.stop();
 							}
 						}
-					}, _callee2, this);
+					}, _callee3, this);
 				}));
 
-				function SPLIT_NODE(_x2) {
-					return _ref2.apply(this, arguments);
+				function SPLIT_NODE(_x3) {
+					return _ref3.apply(this, arguments);
 				}
 
 				return SPLIT_NODE;

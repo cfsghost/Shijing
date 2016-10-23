@@ -1,6 +1,8 @@
 import treeOperator from '../TreeOperator';
 
 export default {
+	'WRAP_TEXT': async function(action) {
+	},
 	'INSERT_TEXT': async function(action) {
 		var payload = action.payload;
 

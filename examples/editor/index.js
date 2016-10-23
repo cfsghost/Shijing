@@ -89,13 +89,18 @@ $(function() {
 						{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
-						{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
+						{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '先聲明，async 異步函數是 ECMAScript 第七版（ES7）才被支援的語法和特性，目前 ES7 還沒有被大多數的 JavaScript Engine 所實作，如果你要使用，需要用到 babel 這類工具，先把此程式編譯轉換，讓其可在舊版本 JavaScript Engine 上執行。' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 						{ type: 'inline', style: { color: 'blue' }, text: '這是藍色顏色的字' },
 						{ type: 'inline', style: { color: 'red', fontStyle: 'italic' }, text: '這是紅色顏色的字' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是綠色顏色的字' },
 						{ type: 'inline', style: { color: 'green' }, text: '這是' },
 						{ type: 'inline', style: { color: 'red' }, text: '這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字這是紅色顏色的字' },
+					]
+				},
+				{
+					type: 'paragraph', childrens: [
+						{ type: 'inline', text: '如果你覺得以 co 模組來操作 Generator 很好用，你可以想像 async 異步函數就是原生的 co，幾乎是同樣的使用方式，同樣的使用概念，只不過不再需要使用 generator 和 yield 這類語法。如果你是個過不了在函數上有個醜陋「*」符號這一關的人，async 異步函數的使用方式應該會讓你感覺到舒服許多。' }
 					]
 				},
 /*
