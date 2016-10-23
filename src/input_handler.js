@@ -209,7 +209,7 @@ class InputHandler {
 							boundaryNode: cursor.startNode.id,
 							boundaryOffset: cursor.startOffset,
 						}
-					});
+					}, true);
 
 					return true;
 
@@ -222,7 +222,7 @@ class InputHandler {
 							startOffset: cursor.startOffset,
 							data: String.fromCharCode(e.keyCode)
 						}
-					});
+					}, true);
 
 					action.then(() => {
 
@@ -287,7 +287,7 @@ class InputHandler {
 				endOffset: cursor.startOffset + offset,
 				data: text
 			}
-		});
+		}, true);
 	}
 
 	updateCursor() {
@@ -304,7 +304,7 @@ class InputHandler {
 					}
 				]
 			}
-		});
+		}, true);
 	}
 
 	setCursorPosition(x, y) {

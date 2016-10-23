@@ -1,4 +1,5 @@
 import Shijing from '../../';
+import CollaborationClient from './CollaborationClient';
 
 $(function() {
 	var $window = $(window);
@@ -188,4 +189,72 @@ $(function() {
 			]
 		}
 	});
+
+	// Connect to server
+	var client = new CollaborationClient();
+
+ 	var actionHandler = (action) => {
+		console.log('ACTION', action);
+		client.send('action', action);
+	};
+
+	client.on('ready', () => {
+
+		client.send('service', {
+			type: 'SIGN_IN',
+			id: shijing.inputs.getInput().id
+		});
+	});
+
+	client.on('signout', () => {
+		shijing.actions.removeListener('internal', actionHandler);
+	});
+
+	client.on('authorized', (id) => {
+
+		client.send('collaborator', {
+			type: 'REQUEST_LIST'
+		});
+
+		client.send('document', {
+			type: 'GET'
+		});
+
+		shijing.actions.on('internal', actionHandler);
+	});
+
+	client.on('update_document', (doc) => {
+		if (doc) {
+			console.log(doc);
+			return shijing.load(doc);
+		}
+
+		// no existed document, upload it
+		client.send('document', {
+			type: 'CREATE',
+			doc: shijing.getSource()
+		});
+	});
+
+	client.collaborators.on('added', (collaborator) => {
+		console.log('ADDED', collaborator);
+
+		if (collaborator.id == client.connectionId)
+			return;
+
+		shijing.dispatch({
+			type: 'ADD_SELECTION',
+			payload: {
+				id: collaborator.id
+			}
+		}, true);
+	});
+
+	client.on('action', (action) => {
+		console.log(action);
+		shijing.dispatch(action);
+	});
+
+	client.connect('ws://localhost:3000/example');
+
 });

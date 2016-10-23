@@ -27,7 +27,11 @@ export default class Inline extends InlineComponent {
 		var parentNode = treeOperator.getParentNode(this.node);
 		treeOperator.insertNode(parentNode, index + 1, newNode);
 
-		return parentNode.component.split(index + 1, targetNode);
+		if (targetNode) {
+			return parentNode.component.split(index + 1, targetNode);
+		} else {
+			return newNode;
+		}
 	}
 
 	insertText(offset, text) {

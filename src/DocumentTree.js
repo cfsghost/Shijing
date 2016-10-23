@@ -10,9 +10,14 @@ class DocumentTree {
 	}
 
 	load(ast) {
+		this.nodes = {};
 		this.ast = ast;
-		this.ast.root.id = treeOperator.generateId();
+
+		if (!this.ast.root.id)
+			this.ast.root.id = treeOperator.generateId();
+
 		treeOperator.setInternalProperty(this.ast.root, 'isRoot', true);
+
 		this.initializeNodes(this.ast.root);
 	}
 

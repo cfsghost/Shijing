@@ -1,10 +1,12 @@
 import events from 'events';
 import Renderer from './renderer';
+import Input from './input';
 import Misc from './Misc';
 import Actions from './Actions';
 import History from './History';
 import treeOperator from './TreeOperator';
 import DocumentTree from './DocumentTree';
+import InputManager from './InputManager';
 
 require('./css/main.css');
 require('./css/loader.css');
@@ -17,6 +19,7 @@ class Shijing extends events.EventEmitter {
 		this.actions = new Actions(this);
 		this.history = new History(this);
 		this.documentTree = new DocumentTree();
+		this.inputs = new InputManager();
 
 		// APIs
 		this.Misc = new Misc(this);
@@ -72,6 +75,10 @@ class Shijing extends events.EventEmitter {
 
 		this.renderer = new Renderer(this);
 
+		// Input for user who stay in front of screen
+		var input = new Input(this);
+		this.inputs.add(input);
+
 		this.render();
 	}
 
@@ -121,15 +128,19 @@ class Shijing extends events.EventEmitter {
 		});
 	}
 
-	dispatch(action) {
+	dispatch(action, internal) {
 
-		return this.actions.dispatch(action);
+		return this.actions.dispatch(action, internal || false);
 	}
 
 	load(source) {
 		this.documentTree.load(source);
 
 		return this.render();
+	}
+
+	getSource() {
+		return this.documentTree.ast;
 	}
 
 	render() {
@@ -155,7 +166,9 @@ class Shijing extends events.EventEmitter {
 					});
 
 					// Put root DOM to workarea
-					this.$workarea.append(rootComponent.dom);
+					this.$workarea
+						.empty()
+						.append(rootComponent.dom);
 
 					await rootComponent.componentDidMount();
 

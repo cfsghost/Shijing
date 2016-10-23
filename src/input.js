@@ -6,11 +6,11 @@ import Cursor from './cursor';
 
 class Input extends events.EventEmitter {
 
-	constructor(renderer) {
+	constructor(context) {
 		super();
 
-		this.ctx = renderer.ctx;
-		this.renderer = renderer;
+		this.ctx = context;
+		this.renderer = context.renderer;
 		this.mousedown = false;
 		this.dragging = false;
 
@@ -33,6 +33,7 @@ class Input extends events.EventEmitter {
 */
 		});
 
+		this.id = selection.id;
 		this.inputHandler = new InputHandler(this);
 
 		// Create cursor
@@ -47,7 +48,7 @@ class Input extends events.EventEmitter {
 		});
 
 		// Set cursor position
-		var newCursor = new Cursor(renderer);
+		var newCursor = new Cursor(this.renderer);
 		this.ctx.$origin[0].addEventListener('mousedown', (e) => {
 			this.cursor.setEnd(null, null);
 			this.cursor.setPositionByAxis(e.clientX, e.clientY);
@@ -124,7 +125,7 @@ class Input extends events.EventEmitter {
 					}
 				]
 			}
-		});
+		}, true);
 	}
 }
 

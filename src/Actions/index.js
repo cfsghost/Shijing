@@ -1,5 +1,6 @@
 import events from 'events';
 import Text from './Text';
+import Selection from './Selection';
 
 class Actions extends events.EventEmitter {
 
@@ -7,15 +8,16 @@ class Actions extends events.EventEmitter {
 		super();
 
 		this.ctx = shiji;
-		this.handlers = Object.assign({}, Text);
+		this.handlers = Object.assign({}, Text, Selection);
 		this.tasks = [];
 	}
 
-	dispatch(action) {
+	dispatch(action, internal) {
 
 		return new Promise((resolve) => {
 			this.tasks.push({
 				action: action,
+				internal: internal ? true : false,
 				done: resolve
 			});
 
@@ -38,6 +40,9 @@ class Actions extends events.EventEmitter {
 
 			// Push to history
 			this.ctx.history.addAction(action);
+
+			if (task.internal)
+				this.emit('internal', action);
 
 			task.done();
 		}

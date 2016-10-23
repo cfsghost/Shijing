@@ -2,7 +2,6 @@ import treeOperator from './TreeOperator';
 import Offscreen from './offscreen';
 import SelectionManager from './SelectionManager';
 import Components from './Components';
-import Input from './input';
 import Utils from './Utils';
 
 class Renderer {
@@ -12,14 +11,10 @@ class Renderer {
 		this.Components = Components;
 		this.Selection = new SelectionManager(this);
 
-
 		// Initializing offscreen buffer
 		this.offscreen = new Offscreen(this);
 		var rules = Utils.getCurrentStyleRules();
 		this.offscreen.addStyleRules(rules);
-
-		// Input for user who stay infront of screen
-		this.input = new Input(this);
 /*
 		this.ctx.on('paperSizeChanged', (width, height) => {
 		});

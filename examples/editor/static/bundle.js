@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(1);
+	module.exports = __webpack_require__(2);
 
 
 /***/ },
@@ -53,9 +53,213 @@
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _events = __webpack_require__(3);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Collaborators = function (_events$EventEmitter) {
+		_inherits(Collaborators, _events$EventEmitter);
+
+		function Collaborators() {
+			_classCallCheck(this, Collaborators);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Collaborators).call(this));
+
+			_this.collaborators = {};
+			return _this;
+		}
+
+		_createClass(Collaborators, [{
+			key: 'add',
+			value: function add(collaborator) {
+				this.collaborators[collaborator.id] = collaborator;
+				this.emit('added', collaborator);
+			}
+		}, {
+			key: 'remove',
+			value: function remove(id) {
+				var collaborator = this.collaborators[id];
+				if (collaborator) {
+					delete this.collaborator[id];
+					this.emit('deleted', collaborator);
+				}
+			}
+		}]);
+
+		return Collaborators;
+	}(_events2.default.EventEmitter);
+
+	var CollaborationClient = function (_events$EventEmitter2) {
+		_inherits(CollaborationClient, _events$EventEmitter2);
+
+		function CollaborationClient() {
+			_classCallCheck(this, CollaborationClient);
+
+			var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(CollaborationClient).call(this));
+
+			_this2.websocket = null;
+			_this2.conencted = false;
+			_this2.authorized = false;
+			_this2.connectionId = null;
+			_this2.collaborators = new Collaborators();
+
+			_this2.on('collabortor', function (e) {
+				_this2.send('collaborator', e);
+			});
+			return _this2;
+		}
+
+		_createClass(CollaborationClient, [{
+			key: 'connect',
+			value: function connect(url) {
+				var _this3 = this;
+
+				this.websocket = new WebSocket(url);
+				this.websocket.onopen = function () {
+					_this3.connected = true;
+					_this3.emit('online');
+				};
+
+				this.websocket.onclose = function () {
+					_this3.connected = false;
+
+					if (_this3.authorized) _this3.emit('signout');
+
+					_this3.emit('offline');
+				};
+
+				this.websocket.onmessage = function (e) {
+					_this3.handleMessage(e.data);
+				};
+			}
+		}, {
+			key: 'disconnect',
+			value: function disconnect() {
+
+				if (!this.websocket) {
+					this.connected = false;
+					return;
+				}
+
+				this.websocket.close();
+				this.websocket = null;
+
+				if (this.collaborators[this.connectionId]) delete this.collaborators[this.connectionId];
+
+				this.connectionId = null;
+			}
+		}, {
+			key: 'send',
+			value: function send(eventName, payload) {
+				if (!this.websocket) return;
+
+				this.websocket.send(JSON.stringify({
+					type: eventName,
+					payload: payload
+				}));
+			}
+		}, {
+			key: 'handleMessage',
+			value: function handleMessage(msg) {
+
+				try {
+					var msgObj = JSON.parse(msg);
+				} catch (e) {
+					// Do nothing if we got invalid format
+					return;
+				}
+
+				console.log('handleMessage', msgObj);
+
+				// Process events
+				switch (msgObj.type) {
+					case 'document':
+						this.handleDocumentEvent(msgObj.payload);
+						break;
+					case 'collaborator':
+						this.handleCollaboratorEvent(msgObj.payload);
+						break;
+					case 'service':
+						this.handleServiceEvent(msgObj.payload);
+						break;
+					case 'action':
+						this.emit('action', msgObj.payload);
+						break;
+				}
+			}
+		}, {
+			key: 'handleDocumentEvent',
+			value: function handleDocumentEvent(event) {
+				switch (event.type) {
+					case 'UPDATE':
+						this.emit('update_document', event.doc);
+						break;
+				}
+			}
+		}, {
+			key: 'handleServiceEvent',
+			value: function handleServiceEvent(event) {
+				switch (event.type) {
+					case 'READY':
+
+						this.emit('ready');
+						break;
+
+					case 'AUTHORIZED':
+
+						this.connectionId = event.collaborator.id;
+						this.authorized = true;
+						this.emit('authorized');
+						break;
+				}
+			}
+		}, {
+			key: 'handleCollaboratorEvent',
+			value: function handleCollaboratorEvent(event) {
+				console.log('handleCollaboratorEvent', event);
+				switch (event.type) {
+					case 'ADD':
+						this.collaborators.add(event.collaborator);
+						break;
+					case 'REMOVE':
+						this.collaborators.remove(event.id);
+						break;
+				}
+			}
+		}]);
+
+		return CollaborationClient;
+	}(_events2.default.EventEmitter);
+
+	exports.default = CollaborationClient;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(5);
 
 	var _2 = _interopRequireDefault(_);
+
+	var _CollaborationClient = __webpack_require__(1);
+
+	var _CollaborationClient2 = _interopRequireDefault(_CollaborationClient);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -198,10 +402,384 @@
 				}]
 			}
 		});
+
+		// Connect to server
+		var client = new _CollaborationClient2.default();
+
+		var actionHandler = function actionHandler(action) {
+			console.log('ACTION', action);
+			client.send('action', action);
+		};
+
+		client.on('ready', function () {
+
+			client.send('service', {
+				type: 'SIGN_IN',
+				id: shijing.inputs.getInput().id
+			});
+		});
+
+		client.on('signout', function () {
+			shijing.actions.removeListener('internal', actionHandler);
+		});
+
+		client.on('authorized', function (id) {
+
+			client.send('collaborator', {
+				type: 'REQUEST_LIST'
+			});
+
+			client.send('document', {
+				type: 'GET'
+			});
+
+			shijing.actions.on('internal', actionHandler);
+		});
+
+		client.on('update_document', function (doc) {
+			if (doc) {
+				console.log(doc);
+				return shijing.load(doc);
+			}
+
+			// no existed document, upload it
+			client.send('document', {
+				type: 'CREATE',
+				doc: shijing.getSource()
+			});
+		});
+
+		client.collaborators.on('added', function (collaborator) {
+			console.log('ADDED', collaborator);
+
+			if (collaborator.id == client.connectionId) return;
+
+			shijing.dispatch({
+				type: 'ADD_SELECTION',
+				payload: {
+					id: collaborator.id
+				}
+			}, true);
+		});
+
+		client.on('action', function (action) {
+			console.log(action);
+			shijing.dispatch(action);
+		});
+
+		client.connect('ws://localhost:3000/example');
 	});
 
 /***/ },
-/* 2 */
+/* 3 */
+/***/ function(module, exports) {
+
+	// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	function EventEmitter() {
+	  this._events = this._events || {};
+	  this._maxListeners = this._maxListeners || undefined;
+	}
+	module.exports = EventEmitter;
+
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function(n) {
+	  if (!isNumber(n) || n < 0 || isNaN(n))
+	    throw TypeError('n must be a positive number');
+	  this._maxListeners = n;
+	  return this;
+	};
+
+	EventEmitter.prototype.emit = function(type) {
+	  var er, handler, len, args, i, listeners;
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // If there is no 'error' event listener then throw.
+	  if (type === 'error') {
+	    if (!this._events.error ||
+	        (isObject(this._events.error) && !this._events.error.length)) {
+	      er = arguments[1];
+	      if (er instanceof Error) {
+	        throw er; // Unhandled 'error' event
+	      } else {
+	        // At least give some kind of context to the user
+	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	        err.context = er;
+	        throw err;
+	      }
+	    }
+	  }
+
+	  handler = this._events[type];
+
+	  if (isUndefined(handler))
+	    return false;
+
+	  if (isFunction(handler)) {
+	    switch (arguments.length) {
+	      // fast cases
+	      case 1:
+	        handler.call(this);
+	        break;
+	      case 2:
+	        handler.call(this, arguments[1]);
+	        break;
+	      case 3:
+	        handler.call(this, arguments[1], arguments[2]);
+	        break;
+	      // slower
+	      default:
+	        args = Array.prototype.slice.call(arguments, 1);
+	        handler.apply(this, args);
+	    }
+	  } else if (isObject(handler)) {
+	    args = Array.prototype.slice.call(arguments, 1);
+	    listeners = handler.slice();
+	    len = listeners.length;
+	    for (i = 0; i < len; i++)
+	      listeners[i].apply(this, args);
+	  }
+
+	  return true;
+	};
+
+	EventEmitter.prototype.addListener = function(type, listener) {
+	  var m;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events)
+	    this._events = {};
+
+	  // To avoid recursion in the case that type === "newListener"! Before
+	  // adding it to the listeners, first emit "newListener".
+	  if (this._events.newListener)
+	    this.emit('newListener', type,
+	              isFunction(listener.listener) ?
+	              listener.listener : listener);
+
+	  if (!this._events[type])
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    this._events[type] = listener;
+	  else if (isObject(this._events[type]))
+	    // If we've already got an array, just append.
+	    this._events[type].push(listener);
+	  else
+	    // Adding the second element, need to change to array.
+	    this._events[type] = [this._events[type], listener];
+
+	  // Check for listener leak
+	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    if (!isUndefined(this._maxListeners)) {
+	      m = this._maxListeners;
+	    } else {
+	      m = EventEmitter.defaultMaxListeners;
+	    }
+
+	    if (m && m > 0 && this._events[type].length > m) {
+	      this._events[type].warned = true;
+	      console.error('(node) warning: possible EventEmitter memory ' +
+	                    'leak detected. %d listeners added. ' +
+	                    'Use emitter.setMaxListeners() to increase limit.',
+	                    this._events[type].length);
+	      if (typeof console.trace === 'function') {
+	        // not supported in IE 10
+	        console.trace();
+	      }
+	    }
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+	EventEmitter.prototype.once = function(type, listener) {
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  var fired = false;
+
+	  function g() {
+	    this.removeListener(type, g);
+
+	    if (!fired) {
+	      fired = true;
+	      listener.apply(this, arguments);
+	    }
+	  }
+
+	  g.listener = listener;
+	  this.on(type, g);
+
+	  return this;
+	};
+
+	// emits a 'removeListener' event iff the listener was removed
+	EventEmitter.prototype.removeListener = function(type, listener) {
+	  var list, position, length, i;
+
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+
+	  if (!this._events || !this._events[type])
+	    return this;
+
+	  list = this._events[type];
+	  length = list.length;
+	  position = -1;
+
+	  if (list === listener ||
+	      (isFunction(list.listener) && list.listener === listener)) {
+	    delete this._events[type];
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+
+	  } else if (isObject(list)) {
+	    for (i = length; i-- > 0;) {
+	      if (list[i] === listener ||
+	          (list[i].listener && list[i].listener === listener)) {
+	        position = i;
+	        break;
+	      }
+	    }
+
+	    if (position < 0)
+	      return this;
+
+	    if (list.length === 1) {
+	      list.length = 0;
+	      delete this._events[type];
+	    } else {
+	      list.splice(position, 1);
+	    }
+
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+	  }
+
+	  return this;
+	};
+
+	EventEmitter.prototype.removeAllListeners = function(type) {
+	  var key, listeners;
+
+	  if (!this._events)
+	    return this;
+
+	  // not listening for removeListener, no need to emit
+	  if (!this._events.removeListener) {
+	    if (arguments.length === 0)
+	      this._events = {};
+	    else if (this._events[type])
+	      delete this._events[type];
+	    return this;
+	  }
+
+	  // emit removeListener for all listeners on all events
+	  if (arguments.length === 0) {
+	    for (key in this._events) {
+	      if (key === 'removeListener') continue;
+	      this.removeAllListeners(key);
+	    }
+	    this.removeAllListeners('removeListener');
+	    this._events = {};
+	    return this;
+	  }
+
+	  listeners = this._events[type];
+
+	  if (isFunction(listeners)) {
+	    this.removeListener(type, listeners);
+	  } else if (listeners) {
+	    // LIFO order
+	    while (listeners.length)
+	      this.removeListener(type, listeners[listeners.length - 1]);
+	  }
+	  delete this._events[type];
+
+	  return this;
+	};
+
+	EventEmitter.prototype.listeners = function(type) {
+	  var ret;
+	  if (!this._events || !this._events[type])
+	    ret = [];
+	  else if (isFunction(this._events[type]))
+	    ret = [this._events[type]];
+	  else
+	    ret = this._events[type].slice();
+	  return ret;
+	};
+
+	EventEmitter.prototype.listenerCount = function(type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+
+	    if (isFunction(evlistener))
+	      return 1;
+	    else if (evlistener)
+	      return evlistener.length;
+	  }
+	  return 0;
+	};
+
+	EventEmitter.listenerCount = function(emitter, type) {
+	  return emitter.listenerCount(type);
+	};
+
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
+
+
+/***/ },
+/* 4 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -326,7 +904,7 @@
 
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {module.exports =
@@ -8341,6 +8919,10 @@
 
 		var _renderer2 = _interopRequireDefault(_renderer);
 
+		var _input = __webpack_require__(315);
+
+		var _input2 = _interopRequireDefault(_input);
+
 		var _Misc = __webpack_require__(321);
 
 		var _Misc2 = _interopRequireDefault(_Misc);
@@ -8349,7 +8931,7 @@
 
 		var _Actions2 = _interopRequireDefault(_Actions);
 
-		var _History = __webpack_require__(331);
+		var _History = __webpack_require__(325);
 
 		var _History2 = _interopRequireDefault(_History);
 
@@ -8357,9 +8939,13 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
-		var _DocumentTree = __webpack_require__(323);
+		var _DocumentTree = __webpack_require__(326);
 
 		var _DocumentTree2 = _interopRequireDefault(_DocumentTree);
+
+		var _InputManager = __webpack_require__(327);
+
+		var _InputManager2 = _interopRequireDefault(_InputManager);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8371,8 +8957,8 @@
 
 		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-		__webpack_require__(324);
 		__webpack_require__(328);
+		__webpack_require__(332);
 
 		var Shijing = function (_events$EventEmitter) {
 			_inherits(Shijing, _events$EventEmitter);
@@ -8385,6 +8971,7 @@
 				_this.actions = new _Actions2.default(_this);
 				_this.history = new _History2.default(_this);
 				_this.documentTree = new _DocumentTree2.default();
+				_this.inputs = new _InputManager2.default();
 
 				// APIs
 				_this.Misc = new _Misc2.default(_this);
@@ -8426,6 +9013,10 @@
 				_this.$layout.append(_this.$workarea).append(_this.$overlay);
 
 				_this.renderer = new _renderer2.default(_this);
+
+				// Input for user who stay in front of screen
+				var input = new _input2.default(_this);
+				_this.inputs.add(input);
 
 				_this.render();
 				return _this;
@@ -8475,9 +9066,9 @@
 				}
 			}, {
 				key: 'dispatch',
-				value: function dispatch(action) {
+				value: function dispatch(action, internal) {
 
-					return this.actions.dispatch(action);
+					return this.actions.dispatch(action, internal || false);
 				}
 			}, {
 				key: 'load',
@@ -8485,6 +9076,11 @@
 					this.documentTree.load(source);
 
 					return this.render();
+				}
+			}, {
+				key: 'getSource',
+				value: function getSource() {
+					return this.documentTree.ast;
 				}
 			}, {
 				key: 'render',
@@ -8514,7 +9110,7 @@
 												});
 
 												// Put root DOM to workarea
-												_this2.$workarea.append(rootComponent.dom);
+												_this2.$workarea.empty().append(rootComponent.dom);
 
 												_context.next = 4;
 												return rootComponent.componentDidMount();
@@ -8548,7 +9144,7 @@
 	/* 298 */
 	/***/ function(module, exports) {
 
-		module.exports = __webpack_require__(4);
+		module.exports = __webpack_require__(6);
 
 	/***/ },
 	/* 299 */
@@ -8578,10 +9174,6 @@
 
 		var _Components2 = _interopRequireDefault(_Components);
 
-		var _input = __webpack_require__(315);
-
-		var _input2 = _interopRequireDefault(_input);
-
 		var _Utils = __webpack_require__(317);
 
 		var _Utils2 = _interopRequireDefault(_Utils);
@@ -8602,9 +9194,6 @@
 				this.offscreen = new _offscreen2.default(this);
 				var rules = _Utils2.default.getCurrentStyleRules();
 				this.offscreen.addStyleRules(rules);
-
-				// Input for user who stay infront of screen
-				this.input = new _input2.default(this);
 				/*
 		  		this.ctx.on('paperSizeChanged', (width, height) => {
 		  		});
@@ -10490,7 +11079,11 @@
 					var parentNode = _TreeOperator2.default.getParentNode(this.node);
 					_TreeOperator2.default.insertNode(parentNode, index + 1, newNode);
 
-					return parentNode.component.split(index + 1, targetNode);
+					if (targetNode) {
+						return parentNode.component.split(index + 1, targetNode);
+					} else {
+						return newNode;
+					}
 				}
 			}, {
 				key: 'insertText',
@@ -11846,13 +12439,13 @@
 		var Input = function (_events$EventEmitter) {
 			_inherits(Input, _events$EventEmitter);
 
-			function Input(renderer) {
+			function Input(context) {
 				_classCallCheck(this, Input);
 
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Input).call(this));
 
-				_this.ctx = renderer.ctx;
-				_this.renderer = renderer;
+				_this.ctx = context;
+				_this.renderer = context.renderer;
 				_this.mousedown = false;
 				_this.dragging = false;
 
@@ -11875,6 +12468,7 @@
 		   */
 				});
 
+				_this.id = selection.id;
 				_this.inputHandler = new _input_handler2.default(_this);
 
 				// Create cursor
@@ -11889,7 +12483,7 @@
 				});
 
 				// Set cursor position
-				var newCursor = new _cursor2.default(renderer);
+				var newCursor = new _cursor2.default(_this.renderer);
 				_this.ctx.$origin[0].addEventListener('mousedown', function (e) {
 					_this.cursor.setEnd(null, null);
 					_this.cursor.setPositionByAxis(e.clientX, e.clientY);
@@ -11961,7 +12555,7 @@
 								endOffset: this.cursor.endOffset != -1 ? this.cursor.endOffset : undefined
 							}]
 						}
-					});
+					}, true);
 				}
 			}]);
 
@@ -12341,7 +12935,7 @@
 									boundaryNode: cursor.startNode.id,
 									boundaryOffset: cursor.startOffset
 								}
-							});
+							}, true);
 
 							return true;
 
@@ -12354,7 +12948,7 @@
 									startOffset: cursor.startOffset,
 									data: String.fromCharCode(e.keyCode)
 								}
-							});
+							}, true);
 
 							action.then(function () {
 
@@ -12417,7 +13011,7 @@
 							endOffset: cursor.startOffset + offset,
 							data: text
 						}
-					});
+					}, true);
 				}
 			}, {
 				key: 'updateCursor',
@@ -12433,7 +13027,7 @@
 								startOffset: this.input.cursor.startOffset
 							}]
 						}
-					});
+					}, true);
 				}
 			}, {
 				key: 'setCursorPosition',
@@ -13174,9 +13768,13 @@
 
 		var _events2 = _interopRequireDefault(_events);
 
-		var _Text = __webpack_require__(330);
+		var _Text = __webpack_require__(323);
 
 		var _Text2 = _interopRequireDefault(_Text);
+
+		var _Selection = __webpack_require__(324);
+
+		var _Selection2 = _interopRequireDefault(_Selection);
 
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13197,19 +13795,20 @@
 				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Actions).call(this));
 
 				_this.ctx = shiji;
-				_this.handlers = Object.assign({}, _Text2.default);
+				_this.handlers = Object.assign({}, _Text2.default, _Selection2.default);
 				_this.tasks = [];
 				return _this;
 			}
 
 			_createClass(Actions, [{
 				key: 'dispatch',
-				value: function dispatch(action) {
+				value: function dispatch(action, internal) {
 					var _this2 = this;
 
 					return new Promise(function (resolve) {
 						_this2.tasks.push({
 							action: action,
+							internal: internal ? true : false,
 							done: resolve
 						});
 
@@ -13241,7 +13840,7 @@
 										handler = this.findHandler(action.type);
 
 										if (!handler) {
-											_context.next = 10;
+											_context.next = 11;
 											break;
 										}
 
@@ -13253,13 +13852,15 @@
 										// Push to history
 										this.ctx.history.addAction(action);
 
+										if (task.internal) this.emit('internal', action);
+
 										task.done();
 
-									case 10:
-										_context.next = 12;
+									case 11:
+										_context.next = 13;
 										return this.doTasks();
 
-									case 12:
+									case 13:
 									case 'end':
 										return _context.stop();
 								}
@@ -13301,6 +13902,362 @@
 			value: true
 		});
 
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _cursor = __webpack_require__(319);
+
+		var _cursor2 = _interopRequireDefault(_cursor);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+		exports.default = {
+			'SET_SELECTION': function () {
+				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
+					var _this = this;
+
+					var payload, renderer, selection;
+					return regeneratorRuntime.wrap(function _callee$(_context) {
+						while (1) {
+							switch (_context.prev = _context.next) {
+								case 0:
+									payload = action.payload;
+
+									if (!(!payload.cursors || !payload.targetId)) {
+										_context.next = 3;
+										break;
+									}
+
+									return _context.abrupt('return');
+
+								case 3:
+									renderer = this.ctx.renderer;
+									selection = renderer.Selection.getSelectionById(payload.targetId);
+
+									if (selection) {
+										_context.next = 7;
+										break;
+									}
+
+									return _context.abrupt('return');
+
+								case 7:
+
+									// Clear cursors of selection
+									selection.removeAllCursors();
+
+									payload.cursors.forEach(function (cursor) {
+
+										// Create cursor
+										var newCursor = new _cursor2.default(renderer);
+
+										if (cursor.startNode) {
+											var startNode = _this.ctx.documentTree.getNodeById(cursor.startNode);
+											newCursor.setStart(startNode, cursor.startOffset || 0);
+										}
+
+										if (cursor.endNode) {
+											var endNode = _this.ctx.documentTree.getNodeById(cursor.endNode);
+											newCursor.setEnd(endNode, cursor.endOffset || 0);
+										}
+
+										newCursor.update();
+										newCursor.show();
+
+										// Add to selection
+										selection.addCursor(newCursor);
+									});
+
+									renderer.Selection.update(selection);
+
+								case 10:
+								case 'end':
+									return _context.stop();
+							}
+						}
+					}, _callee, this);
+				}));
+
+				function SET_SELECTION(_x) {
+					return _ref.apply(this, arguments);
+				}
+
+				return SET_SELECTION;
+			}(),
+			'INSERT_TEXT': function () {
+				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
+					var payload, startNode, endNode;
+					return regeneratorRuntime.wrap(function _callee2$(_context2) {
+						while (1) {
+							switch (_context2.prev = _context2.next) {
+								case 0:
+									payload = action.payload;
+									startNode = this.ctx.documentTree.getNodeById(payload.startNode);
+
+									if (startNode) {
+										_context2.next = 4;
+										break;
+									}
+
+									return _context2.abrupt('return');
+
+								case 4:
+
+									if (payload.endNode) {
+										console.log(payload);
+										endNode = this.ctx.documentTree.getNodeById(payload.endNode);
+
+										_TreeOperator2.default.replace(startNode, payload.startOffset, endNode, payload.endOffset, payload.data);
+									} else {
+										if (startNode.component.insertText) {
+											startNode.component.insertText(payload.startOffset, payload.data);
+											//				treeOperator.insert(startNode, payload.startOffset, payload.data);
+										}
+									}
+
+									// done everything so we update now
+									_context2.next = 7;
+									return startNode.component.refresh();
+
+								case 7:
+								case 'end':
+									return _context2.stop();
+							}
+						}
+					}, _callee2, this);
+				}));
+
+				function INSERT_TEXT(_x2) {
+					return _ref2.apply(this, arguments);
+				}
+
+				return INSERT_TEXT;
+			}(),
+			'SPLIT_NODE': function () {
+				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
+					var payload, node, boundaryNode, newNode;
+					return regeneratorRuntime.wrap(function _callee3$(_context3) {
+						while (1) {
+							switch (_context3.prev = _context3.next) {
+								case 0:
+									payload = action.payload;
+
+									if (!(payload.node == payload.boundaryNode)) {
+										_context3.next = 6;
+										break;
+									}
+
+									boundaryNode.component.split(payload.boundaryOffset);
+
+									_context3.next = 5;
+									return startNode.component.refresh();
+
+								case 5:
+									return _context3.abrupt('return');
+
+								case 6:
+									node = this.ctx.documentTree.getNodeById(payload.node);
+
+									if (node) {
+										_context3.next = 9;
+										break;
+									}
+
+									return _context3.abrupt('return');
+
+								case 9:
+									boundaryNode = this.ctx.documentTree.getNodeById(payload.boundaryNode);
+
+									if (boundaryNode) {
+										_context3.next = 12;
+										break;
+									}
+
+									return _context3.abrupt('return');
+
+								case 12:
+
+									console.log('SPLIT NODE', payload);
+									newNode = boundaryNode.component.split(payload.boundaryOffset, node);
+
+									// Re-generate ID for new Node
+
+									newNode.id = _TreeOperator2.default.generateId();
+
+									this.ctx.documentTree.registerNode(newNode);
+
+									console.log(this.ctx.documentTree.getRoot());
+
+									// Refresh component
+									_context3.next = 19;
+									return _TreeOperator2.default.getParentNode(newNode).component.refresh();
+
+								case 19:
+								case 'end':
+									return _context3.stop();
+							}
+						}
+					}, _callee3, this);
+				}));
+
+				function SPLIT_NODE(_x3) {
+					return _ref3.apply(this, arguments);
+				}
+
+				return SPLIT_NODE;
+			}()
+		};
+
+	/***/ },
+	/* 324 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _Selection = __webpack_require__(316);
+
+		var _Selection2 = _interopRequireDefault(_Selection);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
+		exports.default = {
+			'UPDATE_CURRENT_USER': function () {
+				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
+					var input;
+					return regeneratorRuntime.wrap(function _callee$(_context) {
+						while (1) {
+							switch (_context.prev = _context.next) {
+								case 0:
+									input = this.ctx.inputs.getInput();
+
+
+									input.id = payload.id;
+
+								case 2:
+								case 'end':
+									return _context.stop();
+							}
+						}
+					}, _callee, this);
+				}));
+
+				function UPDATE_CURRENT_USER(_x) {
+					return _ref.apply(this, arguments);
+				}
+
+				return UPDATE_CURRENT_USER;
+			}(),
+			'ADD_SELECTION': function () {
+				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
+					var renderer, payload, selection;
+					return regeneratorRuntime.wrap(function _callee2$(_context2) {
+						while (1) {
+							switch (_context2.prev = _context2.next) {
+								case 0:
+									renderer = this.ctx.renderer;
+									payload = action.payload;
+									selection = new _Selection2.default();
+
+									selection.id = payload.id;
+
+									renderer.Selection.addSelection(selection);
+
+								case 5:
+								case 'end':
+									return _context2.stop();
+							}
+						}
+					}, _callee2, this);
+				}));
+
+				function ADD_SELECTION(_x2) {
+					return _ref2.apply(this, arguments);
+				}
+
+				return ADD_SELECTION;
+			}()
+		};
+
+	/***/ },
+	/* 325 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var History = function (_events$EventEmitter) {
+			_inherits(History, _events$EventEmitter);
+
+			function History() {
+				_classCallCheck(this, History);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(History).call(this));
+
+				_this.histories = [];
+				return _this;
+			}
+
+			_createClass(History, [{
+				key: 'getHistory',
+				value: function getHistory() {
+					return this.histories;
+				}
+			}, {
+				key: 'addAction',
+				value: function addAction(action) {
+					this.histories.push(action);
+
+					this.emit('added', action);
+					this.emit('update');
+				}
+			}]);
+
+			return History;
+		}(_events2.default.EventEmitter);
+
+		exports.default = History;
+		;
+
+	/***/ },
+	/* 326 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
 		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 		var _TreeOperator = __webpack_require__(300);
@@ -13324,9 +14281,13 @@
 			_createClass(DocumentTree, [{
 				key: 'load',
 				value: function load(ast) {
+					this.nodes = {};
 					this.ast = ast;
-					this.ast.root.id = _TreeOperator2.default.generateId();
+
+					if (!this.ast.root.id) this.ast.root.id = _TreeOperator2.default.generateId();
+
 					_TreeOperator2.default.setInternalProperty(this.ast.root, 'isRoot', true);
+
 					this.initializeNodes(this.ast.root);
 				}
 			}, {
@@ -13386,16 +14347,84 @@
 		exports.default = DocumentTree;
 
 	/***/ },
-	/* 324 */
+	/* 327 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var InputManager = function (_events$EventEmitter) {
+			_inherits(InputManager, _events$EventEmitter);
+
+			function InputManager() {
+				_classCallCheck(this, InputManager);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(InputManager).call(this));
+
+				_this.inputs = {};
+				return _this;
+			}
+
+			_createClass(InputManager, [{
+				key: 'getInput',
+				value: function getInput(id) {
+					if (id) return this.inputs[id];
+
+					var ids = Object.keys(this.inputs);
+					if (ids.length) return this.inputs[ids[0]];
+
+					return null;
+				}
+			}, {
+				key: 'add',
+				value: function add(input) {
+					this.inputs[input.id] = input;
+					this.emit('added', input);
+				}
+			}, {
+				key: 'remove',
+				value: function remove(id) {
+					var input = this.inputs[id];
+					if (input) {
+						delete this.inputs[id];
+						this.emit('deleted', input);
+					}
+				}
+			}]);
+
+			return InputManager;
+		}(_events2.default.EventEmitter);
+
+		exports.default = InputManager;
+
+	/***/ },
+	/* 328 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(325);
+		var content = __webpack_require__(329);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(327)(content, {});
+		var update = __webpack_require__(331)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -13412,10 +14441,10 @@
 		}
 
 	/***/ },
-	/* 325 */
+	/* 329 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(326)();
+		exports = module.exports = __webpack_require__(330)();
 		// imports
 
 
@@ -13426,7 +14455,7 @@
 
 
 	/***/ },
-	/* 326 */
+	/* 330 */
 	/***/ function(module, exports) {
 
 		/*
@@ -13482,7 +14511,7 @@
 
 
 	/***/ },
-	/* 327 */
+	/* 331 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		/*
@@ -13734,16 +14763,16 @@
 
 
 	/***/ },
-	/* 328 */
+	/* 332 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// style-loader: Adds some css to the DOM by adding a <style> tag
 
 		// load the styles
-		var content = __webpack_require__(329);
+		var content = __webpack_require__(333);
 		if(typeof content === 'string') content = [[module.id, content, '']];
 		// add the styles to the DOM
-		var update = __webpack_require__(327)(content, {});
+		var update = __webpack_require__(331)(content, {});
 		if(content.locals) module.exports = content.locals;
 		// Hot Module Replacement
 		if(false) {
@@ -13760,10 +14789,10 @@
 		}
 
 	/***/ },
-	/* 329 */
+	/* 333 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		exports = module.exports = __webpack_require__(326)();
+		exports = module.exports = __webpack_require__(330)();
 		// imports
 
 
@@ -13773,288 +14802,12 @@
 		// exports
 
 
-	/***/ },
-	/* 330 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _TreeOperator = __webpack_require__(300);
-
-		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
-
-		var _cursor = __webpack_require__(319);
-
-		var _cursor2 = _interopRequireDefault(_cursor);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
-		exports.default = {
-			'SET_SELECTION': function () {
-				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
-					var _this = this;
-
-					var payload, renderer, selection;
-					return regeneratorRuntime.wrap(function _callee$(_context) {
-						while (1) {
-							switch (_context.prev = _context.next) {
-								case 0:
-									payload = action.payload;
-
-									if (!(!payload.cursors || !payload.targetId)) {
-										_context.next = 3;
-										break;
-									}
-
-									return _context.abrupt('return');
-
-								case 3:
-									renderer = this.ctx.renderer;
-									selection = renderer.Selection.getSelectionById(payload.targetId);
-
-									if (selection) {
-										_context.next = 7;
-										break;
-									}
-
-									return _context.abrupt('return');
-
-								case 7:
-
-									// Clear cursors of selection
-									selection.removeAllCursors();
-
-									payload.cursors.forEach(function (cursor) {
-
-										// Create cursor
-										var newCursor = new _cursor2.default(renderer);
-
-										if (cursor.startNode) {
-											var startNode = _this.ctx.documentTree.getNodeById(cursor.startNode);
-											newCursor.setStart(startNode, cursor.startOffset || 0);
-										}
-
-										if (cursor.endNode) {
-											var endNode = _this.ctx.documentTree.getNodeById(cursor.endNode);
-											newCursor.setEnd(endNode, cursor.endOffset || 0);
-										}
-
-										newCursor.update();
-										newCursor.show();
-
-										// Add to selection
-										selection.addCursor(newCursor);
-									});
-
-									renderer.Selection.update(selection);
-
-								case 10:
-								case 'end':
-									return _context.stop();
-							}
-						}
-					}, _callee, this);
-				}));
-
-				function SET_SELECTION(_x) {
-					return _ref.apply(this, arguments);
-				}
-
-				return SET_SELECTION;
-			}(),
-			'INSERT_TEXT': function () {
-				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
-					var payload, startNode, endNode;
-					return regeneratorRuntime.wrap(function _callee2$(_context2) {
-						while (1) {
-							switch (_context2.prev = _context2.next) {
-								case 0:
-									payload = action.payload;
-									startNode = this.ctx.documentTree.getNodeById(payload.startNode);
-
-									if (startNode) {
-										_context2.next = 4;
-										break;
-									}
-
-									return _context2.abrupt('return');
-
-								case 4:
-
-									if (payload.endNode) {
-										console.log(payload);
-										endNode = this.ctx.documentTree.getNodeById(payload.endNode);
-
-										_TreeOperator2.default.replace(startNode, payload.startOffset, endNode, payload.endOffset, payload.data);
-									} else {
-										if (startNode.component.insertText) {
-											startNode.component.insertText(payload.startOffset, payload.data);
-											//				treeOperator.insert(startNode, payload.startOffset, payload.data);
-										}
-									}
-
-									// done everything so we update now
-									_context2.next = 7;
-									return startNode.component.refresh();
-
-								case 7:
-								case 'end':
-									return _context2.stop();
-							}
-						}
-					}, _callee2, this);
-				}));
-
-				function INSERT_TEXT(_x2) {
-					return _ref2.apply(this, arguments);
-				}
-
-				return INSERT_TEXT;
-			}(),
-			'SPLIT_NODE': function () {
-				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
-					var payload, node, boundaryNode, newNode;
-					return regeneratorRuntime.wrap(function _callee3$(_context3) {
-						while (1) {
-							switch (_context3.prev = _context3.next) {
-								case 0:
-									payload = action.payload;
-
-									if (!(payload.node == payload.boundaryNode)) {
-										_context3.next = 6;
-										break;
-									}
-
-									boundaryNode.component.split(payload.boundaryOffset);
-
-									_context3.next = 5;
-									return startNode.component.refresh();
-
-								case 5:
-									return _context3.abrupt('return');
-
-								case 6:
-									node = this.ctx.documentTree.getNodeById(payload.node);
-
-									if (node) {
-										_context3.next = 9;
-										break;
-									}
-
-									return _context3.abrupt('return');
-
-								case 9:
-									boundaryNode = this.ctx.documentTree.getNodeById(payload.boundaryNode);
-
-									if (boundaryNode) {
-										_context3.next = 12;
-										break;
-									}
-
-									return _context3.abrupt('return');
-
-								case 12:
-
-									console.log('SPLIT NODE', payload);
-									newNode = boundaryNode.component.split(payload.boundaryOffset, node);
-
-									// Re-generate ID for new Node
-
-									newNode.id = _TreeOperator2.default.generateId();
-
-									this.ctx.documentTree.registerNode(newNode);
-
-									console.log(this.ctx.documentTree.getRoot());
-
-									// Refresh component
-									_context3.next = 19;
-									return _TreeOperator2.default.getParentNode(newNode).component.refresh();
-
-								case 19:
-								case 'end':
-									return _context3.stop();
-							}
-						}
-					}, _callee3, this);
-				}));
-
-				function SPLIT_NODE(_x3) {
-					return _ref3.apply(this, arguments);
-				}
-
-				return SPLIT_NODE;
-			}()
-		};
-
-	/***/ },
-	/* 331 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		var _events = __webpack_require__(298);
-
-		var _events2 = _interopRequireDefault(_events);
-
-		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-		var History = function (_events$EventEmitter) {
-			_inherits(History, _events$EventEmitter);
-
-			function History() {
-				_classCallCheck(this, History);
-
-				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(History).call(this));
-
-				_this.histories = [];
-				return _this;
-			}
-
-			_createClass(History, [{
-				key: 'getHistory',
-				value: function getHistory() {
-					return this.histories;
-				}
-			}, {
-				key: 'addAction',
-				value: function addAction(action) {
-					this.histories.push(action);
-
-					this.emit('added', action);
-					this.emit('update');
-				}
-			}]);
-
-			return History;
-		}(_events2.default.EventEmitter);
-
-		exports.default = History;
-		;
-
 	/***/ }
 	/******/ ]);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(2)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
