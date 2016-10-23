@@ -10,6 +10,8 @@ Usage
 Here is the sample code to explain how to create a simple editor:
 
 ```js
+var Shijing = require('lib/Shijing.js');
+
 // Create a instance of editor and given a condition of selector to determine specific DOM we want to use
 var editor = new Shijing('#editor');
 
