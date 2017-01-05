@@ -38,7 +38,10 @@ editor.load({
 Example
 -
 
-There is example you can found in `examples` directory to know how to create an editor by using Shijing.
+There is example you can found in `examples` directory to know how to create an editor by using Shijing. Running up `server.js` to start server, then you can open it by using browser.
+```
+http://localhost:3000
+```
 
 License
 -
