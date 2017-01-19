@@ -1,5 +1,5 @@
 import Shijing from '../../';
-import CollaborationClient from './CollaborationClient';
+import CollaborationClient from './client/CollaborationClient';
 
 $(function() {
 	var $window = $(window);
@@ -228,16 +228,28 @@ $(function() {
 		shijing.actions.on('internal', actionHandler);
 	});
 
-	client.on('update_document', (doc) => {
-		if (doc) {
+	client.on('update_document', async (doc) => {
+		if (doc.source) {
 			console.log(doc);
-			return shijing.load(doc);
+
+			// Update source
+			await shijing.load(doc.source);
+console.log('XXXXXXXX');
+			// Update selections
+			shijing.dispatch({
+				type: 'SYNC_SELECTIONS',
+				payload: {
+					selections: doc.selections
+				}
+			}, true);
+
+			return;
 		}
 
 		// no existed document, upload it
 		client.send('document', {
 			type: 'CREATE',
-			doc: shijing.getSource()
+			source: shijing.getSource()
 		});
 	});
 
@@ -262,4 +274,26 @@ $(function() {
 
 	client.connect('ws://localhost:3000/example');
 
+	// Toolbar
+	$('#toolbar-bold-btn').on('click', () => {
+		var selection = shijing.inputs.getInput().selection;
+		var cursors = selection.getAllCursors();
+
+		shijing.dispatch({
+			type: 'ADD_STYLES',
+			payload: {
+				ranges: cursors.map((cursor) => {
+					return {
+						startNode: cursor.startNode.id,
+						startOffset: cursor.startOffset,
+						endNode: cursor.endNode.id,
+						endOffset: cursor.endOffset
+					};
+				}),
+				styles: {
+					'font-weight': 'bold'
+				}
+			}
+		}, true);
+	});
 });

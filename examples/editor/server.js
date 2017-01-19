@@ -4,6 +4,7 @@ var serve = require('koa-static');
 var Router = require('koa-router');
 var websockify = require('koa-websocket');
 var Collaborator = require('./server/Collaborator');
+var DocumentService = require('./server/DocumentService');
 
 var app = koa();
 var socket = websockify(app);
@@ -107,6 +108,13 @@ console.log('<=', connection.collaborator.id, msgObj);
 			eventEmitter.removeListener('document', connection.collaborator.handlers.documentHandler);
 			eventEmitter.removeListener('action', connection.collaborator.handlers.actionHandler);
 			eventEmitter.removeListener('collaborator', connection.collaborator.handlers.collaboratorHandler);
+/*
+			eventRouter.handleAction(connection, {
+				payload: {
+					type: 'REMOVE_SELECTION'
+				}
+			});
+*/
 			eventEmitter.emit('collaborator', {
 				payload: {
 					type: 'REMOVE',
@@ -124,11 +132,13 @@ console.log('<=', connection.collaborator.id, msgObj);
 		case 'GET':
 
 			var doc = documents[connection.documentId] || null
+			console.log('GET', doc);
 			connection.socket.send(JSON.stringify({
 				type: 'document',
 				payload: {
 					type: 'UPDATE',
-					doc: doc
+					source: doc ? doc.source : null,
+					selections: doc ? doc.selections : null
 				}
 			}));
 
@@ -139,13 +149,16 @@ console.log('<=', connection.collaborator.id, msgObj);
 			if (doc)
 				break;
 
-			documents[connection.documentId] = action.doc;
+			doc = new DocumentService(action.source);
+
+			documents[connection.documentId] = doc;
 
 			eventEmitter.emit('document', {
 				collaboratorId: connection.collaborator.id,
 				payload: {
 					type: 'UPDATE',
-					doc: action.doc
+					source: doc.source,
+					selections: doc.selections
 				}
 			});
 			break;
@@ -180,6 +193,15 @@ console.log('<=', connection.collaborator.id, msgObj);
 		var action = msgObj.payload;
 
 		msgObj.collaboratorId = connection.collaborator.id;
+
+		var doc = documents[connection.documentId] || null
+		if (doc) {
+			doc.handleAction(action);
+		}
+
+		if (connection.collaborator) {
+			connection.collaborator.handleAction(action);
+		}
 
 		eventEmitter.emit(msgObj.type, msgObj);
 	},
@@ -247,6 +269,20 @@ wsRouter.get('/:documentId', function *() {
 				type: 'SIGN_OUT'
 			}
 		});
+
+		var doc = documents[connection.documentId] || null
+		if (doc) {
+			if (connection.collaborator) {
+				var selections = connection.collaborator.selections;
+
+				Object.keys(selections).forEach((selection, id) => {
+					doc.removeSelection(id);
+					connection.collaborator.removeSelection(id);
+				});
+
+			}
+		}
+
 	});
 });
 

@@ -116,7 +116,10 @@ export default class CollaborationClient extends events.EventEmitter {
 	handleDocumentEvent(event) {
 		switch(event.type) {
 		case 'UPDATE':
-			this.emit('update_document', event.doc);
+			this.emit('update_document', {
+				source: event.source,
+				selections: event.selections
+			});
 			break;
 		}
 	}

@@ -296,7 +296,7 @@ class InputHandler {
 		this.ctx.dispatch({
 			type: 'SET_SELECTION',
 			payload: {
-				targetId: this.selection.id,
+				id: this.selection.id,
 				cursors: [
 					{
 						startNode: this.input.cursor.startNode.id,

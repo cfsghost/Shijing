@@ -115,7 +115,7 @@ class Input extends events.EventEmitter {
 		this.ctx.dispatch({
 			type: 'SET_SELECTION',
 			payload: {
-				targetId: this.selection.id,
+				id: this.selection.id,
 				cursors: [
 					{
 						startNode: this.cursor.startNode.id,

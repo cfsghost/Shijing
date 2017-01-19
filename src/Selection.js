@@ -1,5 +1,6 @@
 import events from 'events';
 import treeOperator from './TreeOperator';
+import Cursor from './Cursor';
 import Utils from './Utils';
 
 class Selection extends events.EventEmitter {
@@ -12,6 +13,28 @@ class Selection extends events.EventEmitter {
 			background: '#cceeff'
 		};
 		this.cursors = [];
+	}
+
+	createCursor(ctx, prototype) {
+
+		// Create cursor
+		var newCursor = new Cursor(ctx.renderer);
+
+		if (prototype.startNode) {
+			var startNode = ctx.documentTree.getNodeById(prototype.startNode);
+			newCursor.setStart(startNode, prototype.startOffset || 0);
+		}
+
+		if (prototype.endNode) {
+			var endNode = ctx.documentTree.getNodeById(prototype.endNode);
+			newCursor.setEnd(endNode, prototype.endOffset || 0);
+		}
+
+		newCursor.update();
+		newCursor.show();
+
+		// Add to selection
+		this.addCursor(newCursor);
 	}
 
 	getCursorById(id) {

@@ -48,206 +48,7 @@
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _events = __webpack_require__(3);
-
-	var _events2 = _interopRequireDefault(_events);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Collaborators = function (_events$EventEmitter) {
-		_inherits(Collaborators, _events$EventEmitter);
-
-		function Collaborators() {
-			_classCallCheck(this, Collaborators);
-
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Collaborators).call(this));
-
-			_this.collaborators = {};
-			return _this;
-		}
-
-		_createClass(Collaborators, [{
-			key: 'add',
-			value: function add(collaborator) {
-				this.collaborators[collaborator.id] = collaborator;
-				this.emit('added', collaborator);
-			}
-		}, {
-			key: 'remove',
-			value: function remove(id) {
-				var collaborator = this.collaborators[id];
-				if (collaborator) {
-					delete this.collaborator[id];
-					this.emit('deleted', collaborator);
-				}
-			}
-		}]);
-
-		return Collaborators;
-	}(_events2.default.EventEmitter);
-
-	var CollaborationClient = function (_events$EventEmitter2) {
-		_inherits(CollaborationClient, _events$EventEmitter2);
-
-		function CollaborationClient() {
-			_classCallCheck(this, CollaborationClient);
-
-			var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(CollaborationClient).call(this));
-
-			_this2.websocket = null;
-			_this2.conencted = false;
-			_this2.authorized = false;
-			_this2.connectionId = null;
-			_this2.collaborators = new Collaborators();
-
-			_this2.on('collabortor', function (e) {
-				_this2.send('collaborator', e);
-			});
-			return _this2;
-		}
-
-		_createClass(CollaborationClient, [{
-			key: 'connect',
-			value: function connect(url) {
-				var _this3 = this;
-
-				this.websocket = new WebSocket(url);
-				this.websocket.onopen = function () {
-					_this3.connected = true;
-					_this3.emit('online');
-				};
-
-				this.websocket.onclose = function () {
-					_this3.connected = false;
-
-					if (_this3.authorized) _this3.emit('signout');
-
-					_this3.emit('offline');
-				};
-
-				this.websocket.onmessage = function (e) {
-					_this3.handleMessage(e.data);
-				};
-			}
-		}, {
-			key: 'disconnect',
-			value: function disconnect() {
-
-				if (!this.websocket) {
-					this.connected = false;
-					return;
-				}
-
-				this.websocket.close();
-				this.websocket = null;
-
-				if (this.collaborators[this.connectionId]) delete this.collaborators[this.connectionId];
-
-				this.connectionId = null;
-			}
-		}, {
-			key: 'send',
-			value: function send(eventName, payload) {
-				if (!this.websocket) return;
-
-				this.websocket.send(JSON.stringify({
-					type: eventName,
-					payload: payload
-				}));
-			}
-		}, {
-			key: 'handleMessage',
-			value: function handleMessage(msg) {
-
-				try {
-					var msgObj = JSON.parse(msg);
-				} catch (e) {
-					// Do nothing if we got invalid format
-					return;
-				}
-
-				console.log('handleMessage', msgObj);
-
-				// Process events
-				switch (msgObj.type) {
-					case 'document':
-						this.handleDocumentEvent(msgObj.payload);
-						break;
-					case 'collaborator':
-						this.handleCollaboratorEvent(msgObj.payload);
-						break;
-					case 'service':
-						this.handleServiceEvent(msgObj.payload);
-						break;
-					case 'action':
-						this.emit('action', msgObj.payload);
-						break;
-				}
-			}
-		}, {
-			key: 'handleDocumentEvent',
-			value: function handleDocumentEvent(event) {
-				switch (event.type) {
-					case 'UPDATE':
-						this.emit('update_document', event.doc);
-						break;
-				}
-			}
-		}, {
-			key: 'handleServiceEvent',
-			value: function handleServiceEvent(event) {
-				switch (event.type) {
-					case 'READY':
-
-						this.emit('ready');
-						break;
-
-					case 'AUTHORIZED':
-
-						this.connectionId = event.collaborator.id;
-						this.authorized = true;
-						this.emit('authorized');
-						break;
-				}
-			}
-		}, {
-			key: 'handleCollaboratorEvent',
-			value: function handleCollaboratorEvent(event) {
-				console.log('handleCollaboratorEvent', event);
-				switch (event.type) {
-					case 'ADD':
-						this.collaborators.add(event.collaborator);
-						break;
-					case 'REMOVE':
-						this.collaborators.remove(event.id);
-						break;
-				}
-			}
-		}]);
-
-		return CollaborationClient;
-	}(_events2.default.EventEmitter);
-
-	exports.default = CollaborationClient;
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -257,13 +58,17 @@
 
 	var _2 = _interopRequireDefault(_);
 
-	var _CollaborationClient = __webpack_require__(1);
+	var _CollaborationClient = __webpack_require__(7);
 
 	var _CollaborationClient2 = _interopRequireDefault(_CollaborationClient);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
+
 	$(function () {
+		var _this = this;
+
 		var $window = $(window);
 		var $layout = $('.layout');
 		var $toolbar = $('.toolbar');
@@ -438,18 +243,55 @@
 			shijing.actions.on('internal', actionHandler);
 		});
 
-		client.on('update_document', function (doc) {
-			if (doc) {
-				console.log(doc);
-				return shijing.load(doc);
-			}
+		client.on('update_document', function () {
+			var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(doc) {
+				return regeneratorRuntime.wrap(function _callee$(_context) {
+					while (1) {
+						switch (_context.prev = _context.next) {
+							case 0:
+								if (!doc.source) {
+									_context.next = 7;
+									break;
+								}
 
-			// no existed document, upload it
-			client.send('document', {
-				type: 'CREATE',
-				doc: shijing.getSource()
-			});
-		});
+								console.log(doc);
+
+								// Update source
+								_context.next = 4;
+								return shijing.load(doc.source);
+
+							case 4:
+								console.log('XXXXXXXX');
+								// Update selections
+								shijing.dispatch({
+									type: 'SYNC_SELECTIONS',
+									payload: {
+										selections: doc.selections
+									}
+								}, true);
+
+								return _context.abrupt('return');
+
+							case 7:
+
+								// no existed document, upload it
+								client.send('document', {
+									type: 'CREATE',
+									source: shijing.getSource()
+								});
+
+							case 8:
+							case 'end':
+								return _context.stop();
+						}
+					}
+				}, _callee, _this);
+			}));
+
+			return function (_x) {
+				return _ref.apply(this, arguments);
+			};
+		}());
 
 		client.collaborators.on('added', function (collaborator) {
 			console.log('ADDED', collaborator);
@@ -470,6 +312,29 @@
 		});
 
 		client.connect('ws://localhost:3000/example');
+
+		// Toolbar
+		$('#toolbar-bold-btn').on('click', function () {
+			var selection = shijing.inputs.getInput().selection;
+			var cursors = selection.getAllCursors();
+
+			shijing.dispatch({
+				type: 'ADD_STYLES',
+				payload: {
+					ranges: cursors.map(function (cursor) {
+						return {
+							startNode: cursor.startNode.id,
+							startOffset: cursor.startOffset,
+							endNode: cursor.endNode.id,
+							endOffset: cursor.endOffset
+						};
+					}),
+					styles: {
+						'font-weight': 'bold'
+					}
+				}
+			}, true);
+		});
 	});
 
 /***/ },
@@ -10060,6 +9925,10 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
+		var _Selection = __webpack_require__(316);
+
+		var _Selection2 = _interopRequireDefault(_Selection);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -10073,6 +9942,21 @@
 			}
 
 			_createClass(SelectionManager, [{
+				key: 'createSelection',
+				value: function createSelection(prototype) {
+					var _this = this;
+
+					var selection = new _Selection2.default();
+					selection.id = prototype.id;
+
+					prototype.cursors.forEach(function (cursor) {
+
+						selection.createCursor(_this.ctx, cursor);
+					});
+
+					this.addSelection(selection);
+				}
+			}, {
 				key: 'getAllSelections',
 				value: function getAllSelections() {
 					return this.selections;
@@ -10092,19 +9976,19 @@
 			}, {
 				key: 'addSelection',
 				value: function addSelection(selection) {
-					var _this = this;
+					var _this2 = this;
 
 					var index = this.selections.indexOf(selection);
 					if (index != -1) return;
 
 					selection.on('added', function (cursor) {
 						// Append cursor DOM
-						_this.ctx.$overlay.append(cursor.$dom);
+						_this2.ctx.$overlay.append(cursor.$dom);
 					});
 
 					// Append cursors of selection to current overlay
 					selection.cursors.forEach(function (cursor) {
-						_this.ctx.$overlay.append(cursor.$dom);
+						_this2.ctx.$overlay.append(cursor.$dom);
 					});
 
 					this.selections.push(selection);
@@ -10129,11 +10013,25 @@
 			}, {
 				key: 'update',
 				value: function update(selection) {
+					var _this3 = this;
+
+					if (!selection) {
+						// update all
+						this.selections.forEach(function (selection) {
+							_this3.removeDOMs(selection);
+							selection.update();
+						});
+
+						return;
+					}
+
 					var index = this.selections.indexOf(selection);
 					if (index != -1) {
 
 						this.removeDOMs(selection);
 						selection.update();
+
+						return;
 					}
 				}
 			}]);
@@ -12549,7 +12447,7 @@
 					this.ctx.dispatch({
 						type: 'SET_SELECTION',
 						payload: {
-							targetId: this.selection.id,
+							id: this.selection.id,
 							cursors: [{
 								startNode: this.cursor.startNode.id,
 								startOffset: this.cursor.startOffset,
@@ -12586,6 +12484,10 @@
 
 		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
 
+		var _Cursor = __webpack_require__(334);
+
+		var _Cursor2 = _interopRequireDefault(_Cursor);
+
 		var _Utils = __webpack_require__(317);
 
 		var _Utils2 = _interopRequireDefault(_Utils);
@@ -12615,6 +12517,29 @@
 			}
 
 			_createClass(Selection, [{
+				key: 'createCursor',
+				value: function createCursor(ctx, prototype) {
+
+					// Create cursor
+					var newCursor = new _Cursor2.default(ctx.renderer);
+
+					if (prototype.startNode) {
+						var startNode = ctx.documentTree.getNodeById(prototype.startNode);
+						newCursor.setStart(startNode, prototype.startOffset || 0);
+					}
+
+					if (prototype.endNode) {
+						var endNode = ctx.documentTree.getNodeById(prototype.endNode);
+						newCursor.setEnd(endNode, prototype.endOffset || 0);
+					}
+
+					newCursor.update();
+					newCursor.show();
+
+					// Add to selection
+					this.addCursor(newCursor);
+				}
+			}, {
 				key: 'getCursorById',
 				value: function getCursorById(id) {
 					return this.cursors.find(function (cursor) {
@@ -13023,7 +12948,7 @@
 					this.ctx.dispatch({
 						type: 'SET_SELECTION',
 						payload: {
-							targetId: this.selection.id,
+							id: this.selection.id,
 							cursors: [{
 								startNode: this.input.cursor.startNode.id,
 								startOffset: this.input.cursor.startOffset
@@ -13913,12 +13838,104 @@
 		function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
 		exports.default = {
-			'WRAP_TEXT': function () {
+			'ADD_STYLES': function () {
 				var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(action) {
+					var _this = this;
+
+					var payload, targetNodes, id, node;
 					return regeneratorRuntime.wrap(function _callee$(_context) {
 						while (1) {
 							switch (_context.prev = _context.next) {
 								case 0:
+									payload = action.payload;
+									targetNodes = {};
+
+									payload.ranges.forEach(function (range) {
+
+										var startNode = _this.ctx.documentTree.getNodeById(range.startNode);
+										if (!startNode) return;
+
+										var endNode = _this.ctx.documentTree.getNodeById(range.endNode);
+										if (!endNode) return;
+
+										var nodes = {};
+										_TreeOperator2.default.traverse(startNode, endNode, function (node) {
+
+											// Filtering node which is zero length
+											if (startNode == node) {
+
+												var len = startNode.component.getLength();
+												if (range.startOffset == len) {
+													return;
+												}
+											}
+
+											// Filtering node which is zero length
+											if (endNode == node) {
+
+												if (range.endOffset == 0) {
+													return;
+												}
+											}
+
+											// We only deal with node which is text type
+											if (!node.text) return;
+
+											nodes[node.id] = node;
+
+											console.log('TRAVERSE', node);
+										});
+
+										for (var id in nodes) {
+											var node = nodes[id];
+
+											if (node == startNode && node == endNode) {
+												var newNode = node.component.split(range.startOffset);
+
+												// Generate ID for new Node
+												newNode.id = _TreeOperator2.default.generateId();
+
+												_this.ctx.documentTree.registerNode(newNode);
+
+												targetNodes[newNode.id] = newNode;
+
+												continue;
+											} else if (node == startNode) {
+												var newNode = node.component.split(range.startOffset);
+
+												// Generate ID for new Node
+												newNode.id = _TreeOperator2.default.generateId();
+
+												_this.ctx.documentTree.registerNode(newNode);
+
+												targetNodes[newNode.id] = newNode;
+											} else if (node == endNode) {
+												var newNode = node.component.split(range.startOffset);
+
+												// Generate ID for new Node
+												newNode.id = _TreeOperator2.default.generateId();
+
+												_this.ctx.documentTree.registerNode(newNode);
+											}
+
+											targetNodes[node.id] = node;
+										}
+									});
+
+									for (id in targetNodes) {
+										node = targetNodes[id];
+
+
+										if (!node.style) node.style = {};
+
+										node.style = Object.assign(node.style, payload.styles);
+									}
+									console.log(targetNodes);
+									// Refresh component
+									_context.next = 7;
+									return this.ctx.documentTree.getRoot().component.refresh();
+
+								case 7:
 								case 'end':
 									return _context.stop();
 							}
@@ -13926,11 +13943,11 @@
 					}, _callee, this);
 				}));
 
-				function WRAP_TEXT(_x) {
+				function ADD_STYLES(_x) {
 					return _ref.apply(this, arguments);
 				}
 
-				return WRAP_TEXT;
+				return ADD_STYLES;
 			}(),
 			'INSERT_TEXT': function () {
 				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
@@ -14109,12 +14126,132 @@
 
 				return UPDATE_CURRENT_USER;
 			}(),
-			'ADD_SELECTION': function () {
+			'SYNC_SELECTIONS': function () {
 				var _ref2 = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(action) {
-					var renderer, payload, selection;
+					var _this = this;
+
+					var renderer, selectionMgr, payload, newSelections, selections, removed, id, selection, isNew, index, s;
 					return regeneratorRuntime.wrap(function _callee2$(_context2) {
 						while (1) {
 							switch (_context2.prev = _context2.next) {
+								case 0:
+									renderer = this.ctx.renderer;
+									selectionMgr = renderer.Selection;
+									payload = action.payload;
+
+									if (payload.selections) {
+										_context2.next = 5;
+										break;
+									}
+
+									return _context2.abrupt('return');
+
+								case 5:
+									newSelections = payload.selections;
+									selections = selectionMgr.getAllSelections();
+
+									// Getting all selection which has to be removed
+
+									removed = [];
+
+									selections.forEach(function (selection) {
+
+										for (var index in newSelections) {
+											var s = newSelections[index];
+
+											if (selection.id == s.id) {
+												return;
+											}
+										}
+
+										removed.push(selection);
+									});
+
+									// Remove selection we don't need
+									removed.forEach(function (selection) {
+
+										var index = selections.indexOf(selection);
+										if (index == -1) return;
+
+										selections.splice(index, 1);
+									});
+
+									// Add or update selection
+									_context2.t0 = regeneratorRuntime.keys(newSelections);
+
+								case 11:
+									if ((_context2.t1 = _context2.t0()).done) {
+										_context2.next = 29;
+										break;
+									}
+
+									id = _context2.t1.value;
+									selection = newSelections[id];
+									isNew = true;
+									_context2.t2 = regeneratorRuntime.keys(selections);
+
+								case 16:
+									if ((_context2.t3 = _context2.t2()).done) {
+										_context2.next = 26;
+										break;
+									}
+
+									index = _context2.t3.value;
+
+									if (!(selections[index].id == selection.id)) {
+										_context2.next = 24;
+										break;
+									}
+
+									// Update selection
+									s = selections[index];
+
+									s.removeAllCursors();
+									selection.cursors.forEach(function (cursor) {
+										s.createCursor(_this.ctx, cursor);
+									});
+
+									isNew = false;
+
+									return _context2.abrupt('break', 26);
+
+								case 24:
+									_context2.next = 16;
+									break;
+
+								case 26:
+
+									if (isNew) {
+										// add a new selection
+										selectionMgr.createSelection(selection);
+									}
+									_context2.next = 11;
+									break;
+
+								case 29:
+
+									selectionMgr.update();
+
+								case 30:
+								case 'end':
+									return _context2.stop();
+							}
+						}
+					}, _callee2, this);
+				}));
+
+				function SYNC_SELECTIONS(_x2) {
+					return _ref2.apply(this, arguments);
+				}
+
+				return SYNC_SELECTIONS;
+			}(),
+			'ADD_SELECTION': function () {
+				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
+					var renderer, payload, selection;
+					return regeneratorRuntime.wrap(function _callee3$(_context3) {
+						while (1) {
+							switch (_context3.prev = _context3.next) {
 								case 0:
 									renderer = this.ctx.renderer;
 									payload = action.payload;
@@ -14126,46 +14263,46 @@
 
 								case 5:
 								case 'end':
-									return _context2.stop();
+									return _context3.stop();
 							}
 						}
-					}, _callee2, this);
+					}, _callee3, this);
 				}));
 
-				function ADD_SELECTION(_x2) {
-					return _ref2.apply(this, arguments);
+				function ADD_SELECTION(_x3) {
+					return _ref3.apply(this, arguments);
 				}
 
 				return ADD_SELECTION;
 			}(),
 			'SET_SELECTION': function () {
-				var _ref3 = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(action) {
-					var _this = this;
+				var _ref4 = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(action) {
+					var _this2 = this;
 
 					var payload, renderer, selection;
-					return regeneratorRuntime.wrap(function _callee3$(_context3) {
+					return regeneratorRuntime.wrap(function _callee4$(_context4) {
 						while (1) {
-							switch (_context3.prev = _context3.next) {
+							switch (_context4.prev = _context4.next) {
 								case 0:
 									payload = action.payload;
 
-									if (!(!payload.cursors || !payload.targetId)) {
-										_context3.next = 3;
+									if (!(!payload.cursors || !payload.id)) {
+										_context4.next = 3;
 										break;
 									}
 
-									return _context3.abrupt('return');
+									return _context4.abrupt('return');
 
 								case 3:
 									renderer = this.ctx.renderer;
-									selection = renderer.Selection.getSelectionById(payload.targetId);
+									selection = renderer.Selection.getSelectionById(payload.id);
 
 									if (selection) {
-										_context3.next = 7;
+										_context4.next = 7;
 										break;
 									}
 
-									return _context3.abrupt('return');
+									return _context4.abrupt('return');
 
 								case 7:
 
@@ -14178,12 +14315,12 @@
 										var newCursor = new _cursor2.default(renderer);
 
 										if (cursor.startNode) {
-											var startNode = _this.ctx.documentTree.getNodeById(cursor.startNode);
+											var startNode = _this2.ctx.documentTree.getNodeById(cursor.startNode);
 											newCursor.setStart(startNode, cursor.startOffset || 0);
 										}
 
 										if (cursor.endNode) {
-											var endNode = _this.ctx.documentTree.getNodeById(cursor.endNode);
+											var endNode = _this2.ctx.documentTree.getNodeById(cursor.endNode);
 											newCursor.setEnd(endNode, cursor.endOffset || 0);
 										}
 
@@ -14198,14 +14335,14 @@
 
 								case 10:
 								case 'end':
-									return _context3.stop();
+									return _context4.stop();
 							}
 						}
-					}, _callee3, this);
+					}, _callee4, this);
 				}));
 
-				function SET_SELECTION(_x3) {
-					return _ref3.apply(this, arguments);
+				function SET_SELECTION(_x4) {
+					return _ref4.apply(this, arguments);
 				}
 
 				return SET_SELECTION;
@@ -14823,6 +14960,336 @@
 		// exports
 
 
+	/***/ },
+	/* 334 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _events = __webpack_require__(298);
+
+		var _events2 = _interopRequireDefault(_events);
+
+		var _TreeOperator = __webpack_require__(300);
+
+		var _TreeOperator2 = _interopRequireDefault(_TreeOperator);
+
+		var _caret = __webpack_require__(320);
+
+		var _caret2 = _interopRequireDefault(_caret);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+		var Cursor = function (_events$EventEmitter) {
+			_inherits(Cursor, _events$EventEmitter);
+
+			function Cursor(renderer) {
+				_classCallCheck(this, Cursor);
+
+				var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cursor).call(this));
+
+				_this.ctx = renderer.ctx;
+				_this.renderer = renderer;
+				_this.ancestorNode = null;
+				_this.startOffset = -1;
+				_this.startNode = null;
+				_this.endNode = null;
+				_this.endOffset = -1;
+				_this.baseline = null;
+				_this.$dom = $('<div>').addClass('shijing-cursor').css({
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					zIndex: 10000
+				});
+
+				_this.caret = new _caret2.default();
+				_this.caret.$dom.appendTo(_this.$dom);
+
+				//		renderer.ctx.$overlay.append(this.$dom);
+				return _this;
+			}
+
+			_createClass(Cursor, [{
+				key: 'release',
+				value: function release() {
+					this.caret.release();
+					this.$dom.remove();
+				}
+			}, {
+				key: 'update',
+				value: function update() {
+
+					// Figure out position
+					var caret = this.startNode.component.getCaret(this.startOffset);
+
+					this.caret.move(caret.x, caret.y);
+					this.caret.setStyle(Object.assign({
+						height: caret.height,
+						fontSize: $(caret.DOM).css('font-size')
+					}, this.startNode.style || {}));
+
+					this.emit('update', this);
+				}
+			}, {
+				key: '_setPosition',
+				value: function _setPosition(node, offset) {
+					this.startOffset = offset;
+
+					// Change component
+					var old = this.startNode;
+					this.startNode = node;
+
+					var changed = false;
+					if (old && this.startNode) {
+						if (old.id != this.startNode.id) {
+							changed = true;
+						}
+					} else if (old != this.startNode) {
+						changed = true;
+					}
+
+					if (changed) {
+
+						// fire events
+						if (old) {
+							old.component.onBlur(this);
+						}
+
+						// trigger onFocus
+						if (this.startNode) {
+							this.startNode.component.onFocus(this);
+						}
+					}
+
+					setTimeout(function () {
+						this.emit('update', this);
+					}.bind(this), 0);
+				}
+			}, {
+				key: 'setPosition',
+				value: function setPosition(node, offset) {
+
+					// Figure out position
+					var caret = node.component.getCaret(offset);
+
+					this.caret.move(caret.x, caret.y);
+					this._setPosition(node, offset);
+
+					this.caret.setStyle(Object.assign({
+						height: caret.height,
+						fontSize: $(caret.DOM).css('font-size')
+					}, node.style || {}));
+				}
+			}, {
+				key: '_setPositionByAxis',
+				value: function _setPositionByAxis(x, y) {
+					var range = document.caretRangeFromPoint(x, y);
+					var textNode = range.startContainer;
+					var offset = this.startOffset = range.startOffset;
+
+					//		range.detach();
+
+					// We don't need text node, just getting its parent
+					var parentNode = textNode;
+					if (textNode.nodeType == Node.TEXT_NODE) {
+						parentNode = textNode.parentNode;
+					}
+
+					// Set position
+					this.setPositionByDOM(parentNode, offset);
+				}
+			}, {
+				key: 'setPositionByAxis',
+				value: function setPositionByAxis(x, y) {
+					this.baseline = null;
+					this._setPositionByAxis(x, y);
+				}
+			}, {
+				key: 'setPositionByDOM',
+				value: function setPositionByDOM(dom, offset) {
+
+					var _offset = offset;
+					var point = this.ctx.Misc.figurePosition(dom, offset, this.ctx.$overlay[0]);
+
+					this.caret.move(point.x, point.y);
+
+					// Find out component
+					var component = this.renderer.getOwnerByDOM(dom);
+					if (!component) return;
+
+					// Getting the correct offset by using DOM and offset of DOM
+					_offset = component.getOffset(point.DOM, point.offset);
+
+					// Store it
+					this._setPosition(component.node, _offset);
+
+					// Apply styles
+					this.caret.setStyle(Object.assign({
+						height: point.height,
+						fontSize: $(dom).css('font-size')
+					}, component.node.style || {}));
+				}
+			}, {
+				key: 'getCurrentPosition',
+				value: function getCurrentPosition() {
+
+					return {
+						startNode: this.startNode,
+						startOffset: this.startOffset
+					};
+				}
+			}, {
+				key: 'moveUp',
+				value: function moveUp() {
+
+					var y;
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
+					if (lineView) {
+						// Previous line
+						if (lineView.index > 0) {
+							var $lineView = lineView.arr[lineView.index - 1];
+							y = $lineView.position().top;
+						}
+					}
+
+					var $container = this.ctx.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					if (y == undefined) {
+						y = this.caret.y - this.caret.$dom.height();
+						if (y < 0) {
+							y = 0;
+						}
+					}
+
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+				}
+			}, {
+				key: 'moveDown',
+				value: function moveDown() {
+
+					var y;
+					var lineView = this.ctx.Misc.getLineView(this.startNode, this.startOffset);
+					if (lineView) {
+						// Next line
+						if (lineView.index + 1 <= lineView.arr.length) {
+							var $lineView = lineView.arr[lineView.index + 1];
+							y = $lineView.position().top;
+						}
+					}
+
+					var $container = this.ctx.$overlay;
+
+					if (this.baseline == null) this.baseline = this.caret.x;
+
+					if (y == undefined) y = this.caret.y + this.caret.$dom.height();
+
+					this._setPositionByAxis(this.baseline + $container.offset().left, y + $container.offset().top);
+				}
+			}, {
+				key: 'move',
+				value: function move(offset) {
+
+					if (offset == 0) return 0;
+
+					this.baseline = null;
+					//console.log('Cursor1', this, this.startNode, this.startOffset, offset);
+
+					// Call start node to move cursor
+					var leftOffset = this.startNode.component.move(this, offset);
+					//console.log('MOVED', this, this.startNode, this.startOffset, leftOffset);
+					if (leftOffset == 0) {
+						this.startNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
+						return 0;
+					}
+					//console.log('Cursor2', this.startNode, leftOffset);
+
+					// Getting target index of childrens
+					var index = _TreeOperator2.default.getIndex(this.startNode);
+					if (index == -1) {
+						return 0;
+					}
+
+					// Put curosr on parent
+					var parentNode = _TreeOperator2.default.getParentNode(this.startNode);
+					if (!parentNode) return 0;
+
+					//		console.log('PARENT', parentNode, index, leftOffset);
+					if (leftOffset > 0) {
+						this.setPosition(parentNode, index + 1);
+						leftOffset--;
+					} else {
+						this.setPosition(parentNode, index);
+						leftOffset++;
+					}
+
+					parentNode.component.adjustCursorPosition(this, offset > 0 ? true : false);
+
+					return this.move(leftOffset);
+				}
+			}, {
+				key: 'setStart',
+				value: function setStart(node, offset) {
+					this.startNode = node;
+					this.startOffset = offset == null ? -1 : offset;
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
+				}
+			}, {
+				key: 'setEnd',
+				value: function setEnd(node, offset) {
+					this.endNode = node;
+					this.endOffset = offset == null ? -1 : offset;
+					this.ancestorNode = _TreeOperator2.default.getAncestorNode(this.startNode, this.endNode);
+				}
+			}, {
+				key: 'deleteContents',
+				value: function deleteContents() {
+					var _this2 = this;
+
+					this.nodeList = [];
+
+					// Getting all nodes in range
+					_TreeOperator2.default.traverse(this.startNode, this.endNode, function (node) {
+						_this2.nodeList.push(node);
+					});
+				}
+			}, {
+				key: 'show',
+				value: function show() {
+					/*
+		   // Range was selected
+		   if (this.endNode != null && this.endOffset != null) {
+		   	treeOperator.getAncestorNode(this.startNode, this.endNode);
+		   }
+		   */
+					this.caret.show();
+				}
+			}, {
+				key: 'hide',
+				value: function hide() {
+					this.caret.hide();
+				}
+			}]);
+
+			return Cursor;
+		}(_events2.default.EventEmitter);
+
+		exports.default = Cursor;
+
 	/***/ }
 	/******/ ]);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(4)))
@@ -15134,6 +15601,209 @@
 	  return arg === void 0;
 	}
 
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _events = __webpack_require__(3);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Collaborators = function (_events$EventEmitter) {
+		_inherits(Collaborators, _events$EventEmitter);
+
+		function Collaborators() {
+			_classCallCheck(this, Collaborators);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Collaborators).call(this));
+
+			_this.collaborators = {};
+			return _this;
+		}
+
+		_createClass(Collaborators, [{
+			key: 'add',
+			value: function add(collaborator) {
+				this.collaborators[collaborator.id] = collaborator;
+				this.emit('added', collaborator);
+			}
+		}, {
+			key: 'remove',
+			value: function remove(id) {
+				var collaborator = this.collaborators[id];
+				if (collaborator) {
+					delete this.collaborator[id];
+					this.emit('deleted', collaborator);
+				}
+			}
+		}]);
+
+		return Collaborators;
+	}(_events2.default.EventEmitter);
+
+	var CollaborationClient = function (_events$EventEmitter2) {
+		_inherits(CollaborationClient, _events$EventEmitter2);
+
+		function CollaborationClient() {
+			_classCallCheck(this, CollaborationClient);
+
+			var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(CollaborationClient).call(this));
+
+			_this2.websocket = null;
+			_this2.conencted = false;
+			_this2.authorized = false;
+			_this2.connectionId = null;
+			_this2.collaborators = new Collaborators();
+
+			_this2.on('collabortor', function (e) {
+				_this2.send('collaborator', e);
+			});
+			return _this2;
+		}
+
+		_createClass(CollaborationClient, [{
+			key: 'connect',
+			value: function connect(url) {
+				var _this3 = this;
+
+				this.websocket = new WebSocket(url);
+				this.websocket.onopen = function () {
+					_this3.connected = true;
+					_this3.emit('online');
+				};
+
+				this.websocket.onclose = function () {
+					_this3.connected = false;
+
+					if (_this3.authorized) _this3.emit('signout');
+
+					_this3.emit('offline');
+				};
+
+				this.websocket.onmessage = function (e) {
+					_this3.handleMessage(e.data);
+				};
+			}
+		}, {
+			key: 'disconnect',
+			value: function disconnect() {
+
+				if (!this.websocket) {
+					this.connected = false;
+					return;
+				}
+
+				this.websocket.close();
+				this.websocket = null;
+
+				if (this.collaborators[this.connectionId]) delete this.collaborators[this.connectionId];
+
+				this.connectionId = null;
+			}
+		}, {
+			key: 'send',
+			value: function send(eventName, payload) {
+				if (!this.websocket) return;
+
+				this.websocket.send(JSON.stringify({
+					type: eventName,
+					payload: payload
+				}));
+			}
+		}, {
+			key: 'handleMessage',
+			value: function handleMessage(msg) {
+
+				try {
+					var msgObj = JSON.parse(msg);
+				} catch (e) {
+					// Do nothing if we got invalid format
+					return;
+				}
+
+				console.log('handleMessage', msgObj);
+
+				// Process events
+				switch (msgObj.type) {
+					case 'document':
+						this.handleDocumentEvent(msgObj.payload);
+						break;
+					case 'collaborator':
+						this.handleCollaboratorEvent(msgObj.payload);
+						break;
+					case 'service':
+						this.handleServiceEvent(msgObj.payload);
+						break;
+					case 'action':
+						this.emit('action', msgObj.payload);
+						break;
+				}
+			}
+		}, {
+			key: 'handleDocumentEvent',
+			value: function handleDocumentEvent(event) {
+				switch (event.type) {
+					case 'UPDATE':
+						this.emit('update_document', {
+							source: event.source,
+							selections: event.selections
+						});
+						break;
+				}
+			}
+		}, {
+			key: 'handleServiceEvent',
+			value: function handleServiceEvent(event) {
+				switch (event.type) {
+					case 'READY':
+
+						this.emit('ready');
+						break;
+
+					case 'AUTHORIZED':
+
+						this.connectionId = event.collaborator.id;
+						this.authorized = true;
+						this.emit('authorized');
+						break;
+				}
+			}
+		}, {
+			key: 'handleCollaboratorEvent',
+			value: function handleCollaboratorEvent(event) {
+				console.log('handleCollaboratorEvent', event);
+				switch (event.type) {
+					case 'ADD':
+						this.collaborators.add(event.collaborator);
+						break;
+					case 'REMOVE':
+						this.collaborators.remove(event.id);
+						break;
+				}
+			}
+		}]);
+
+		return CollaborationClient;
+	}(_events2.default.EventEmitter);
+
+	exports.default = CollaborationClient;
 
 /***/ }
 /******/ ]);
